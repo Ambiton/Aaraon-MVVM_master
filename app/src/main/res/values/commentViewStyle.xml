@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <!-- 放置在低端的Button 的的模板 -->
+    <style name="blueRoundButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">60dip</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginLeft">10dip</item>
+        <item name="android:layout_marginRight">10dip</item>
+        <item name="android:layout_marginBottom">2dip</item>
+        <item name="android:layout_marginTop">2dip</item>
+        <item name="android:background">@drawable/blue_round_selector</item>
+    </style>
+
+    <style name="yellowRoundButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">60dip</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginLeft">10dip</item>
+        <item name="android:layout_marginRight">10dip</item>
+        <item name="android:layout_marginBottom">2dip</item>
+        <item name="android:layout_marginTop">2dip</item>
+        <item name="android:background">@drawable/yellow_round_selector</item>
+    </style>
+
+    <style name="greenRoundButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">60dip</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginLeft">10dip</item>
+        <item name="android:layout_marginRight">10dip</item>
+        <item name="android:layout_marginBottom">2dip</item>
+        <item name="android:layout_marginTop">2dip</item>
+        <item name="android:background">@drawable/green_round_selector</item>
+    </style>
+
+    <style name="buttonOfBottom">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/rl_height_comment</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/transparent</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginLeft">16dip</item>
+        <item name="android:layout_marginRight">16dip</item>
+        <item name="android:layout_marginBottom">@dimen/margin_screenBottom</item>
+        <item name="android:layout_marginTop">2dip</item>
+        <item name="android:background">@drawable/white_redside_round_selector</item>
+    </style>
+
+    <style name="whiteButton">
+        <item name="android:layout_width">200dip</item>
+        <item name="android:layout_height">60dip</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">#99000000</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_centerVertical">true</item>
+
+        <item name="android:background">@drawable/white_round_selector</item>
+
+    </style>
+
+    <style name="whiteAndredSideButton">
+        <item name="android:layout_width">200dip</item>
+        <item name="android:layout_height">60dip</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/whiteColor88</item>
+
+
+        <item name="android:background">@drawable/white_redside_round_selector</item>
+    </style>
+
+    <style name="whiteAndgreenSideButton">
+        <item name="android:layout_width">200dip</item>
+        <item name="android:layout_height">60dip</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/main_zoomview_bg_green</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_centerVertical">true</item>
+
+        <item name="android:background">@drawable/white_greenside_round_selector</item>
+    </style>
+    <!-- TextView的模板 -->
+    <style name="blackTextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">#66000000</item>
+    </style>
+
+    <style name="grayTextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#66000000</item>
+    </style>
+
+    <style name="grayTextView_Selector">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/radio_selector</item>
+    </style>
+
+    <style name="grayTextView_large">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">#66000000</item>
+    </style>
+
+    <style name="whiteTextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/whiteColor88</item>
+    </style>
+
+    <style name="whiteTextView_large">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/whiteColor88</item>
+    </style>
+
+    <style name="whiteTextView_larger">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:textColor">@color/whiteColor88</item>
+    </style>
+
+    <style name="grayTextView_larger">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">#66000000</item>
+
+    </style>
+
+    <style name="grayTextView_largest">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:textColor">#66000000</item>
+    </style>
+
+    <style name="grayTextView_larger_Selector">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:ellipsize">end</item>
+
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/radio_selector</item>
+    </style>
+
+    <style name="EditText_Style">
+        <item name="android:layout_width">250dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:paddingLeft">10dip</item>
+        <item name="android:paddingRight">10dip</item>
+        <item name="android:textColorHint">@color/whiteColor44</item>
+        <item name="android:textColor">@color/whiteColor88</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:background">@drawable/whiteside_round_selector</item>
+    </style>
+
+    <style name="SingleLineEditTextStyle">
+        <item name="android:layout_width">250dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:singleLine">true</item>
+
+        <item name="android:paddingLeft">10dip</item>
+        <item name="android:paddingRight">10dip</item>
+        <item name="android:textColor">@color/whiteColor88</item>
+        <item name="android:textColorHint">@color/whiteColor44</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:background">@null</item>
+    </style>
+</resources>

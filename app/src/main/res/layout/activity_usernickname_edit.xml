@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:binding="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.goldze.mvvmhabit.ui.register.UserNickNameViewModel" />
+    </data>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@mipmap/mainbackground"
+            android:gravity="center"
+            android:orientation="vertical">
+            <View
+                android:id="@+id/view1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="3"/>
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/margin_title_large"
+                style="@style/whiteTextView_larger"
+                android:text="@string/user_nickname" />
+
+            <EditText
+                android:id="@+id/editText"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:ems="10"
+                android:hint="@string/user_nickname_hint"
+                style="@style/EditText_Style"
+                android:inputType="textPersonName" />
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/buttonOfBottom"
+                android:text="@string/btn_nextstep"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                binding:onClickCommand="@{viewModel.nextOnClickCommand}" />
+        </LinearLayout>
+
+</layout>

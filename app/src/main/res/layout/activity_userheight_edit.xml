@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:binding="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.goldze.mvvmhabit.ui.register.UserHeightViewModel" />
+    </data>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@mipmap/mainbackground"
+            android:gravity="center"
+            android:orientation="vertical">
+            <View
+                android:id="@+id/view1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="3"/>
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/margin_title_large"
+                style="@style/whiteTextView_larger"
+                android:text="@string/user_heightchoose" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <EditText
+                    android:id="@+id/editText"
+                    android:ems="10"
+                    style="@style/EditText_Style"
+                    android:layout_width="wrap_content"
+                    android:text="170"
+                    android:inputType="number" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_min"
+                    android:textSize="@dimen/text_large"
+                    android:textColor="@color/whiteColor88"
+                    android:text="cm" />
+            </LinearLayout>
+
+
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/buttonOfBottom"
+                android:text="@string/btn_nextstep"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                binding:onClickCommand="@{viewModel.nextBtnClick}" />
+        </LinearLayout>
+
+</layout>

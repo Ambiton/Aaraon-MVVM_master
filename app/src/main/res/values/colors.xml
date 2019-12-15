@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="textColor">#202020</color>
+    <color name="textColorHint">#A0A0A0</color>
+    <color name="textColorVice">#6C6C6C</color>
+    <color name="viewLineColor">#F0F0F0</color>
+
+
+    <!-- 设计规范颜色值 begin -->
+
+
+    <color name="textColorPrimary">#212121</color>
+    <color name="textColorSecondary">#757575</color>
+    <!-- 主背景色值 -->
+    <color name="background_color">#fff8f8f8</color>
+
+    <color name="status_bar_bg_green">#a0cc3b</color>
+    <color name="main_header_bg_green">#8fcc04</color>
+    <color name="main_zoomview_bg_green">#b5db74</color>
+    <color name="status_bar_bg_red">#EF3A19</color>
+    <color name="main_header_bg_red">#FF4141</color>
+    <color name="main_zoomview_bg_red">#FF4141</color>
+
+    <color name="status_bar_bg">@color/status_bar_bg_red</color>
+    <color name="main_header_bg">@color/main_header_bg_red</color>
+    <color name="main_zoomview_bg">@color/main_zoomview_bg_red</color>
+    <color name="main_footer_bg">#f5f5f5</color>
+
+    <!-- 底栏字体颜色 -->
+    <color name="footer_text_color_normal">#707070</color>
+    <color name="footer_text_color_selected">@color/main_header_bg</color>
+    <color name="btn_press_color">#FF1111ee</color>
+    <color name="btn_unpress_color">#FF1196ee</color>
+
+    <!-- 字体颜色值 -->
+    <color name="text_color_blue">#0081E1</color>
+    <color name="text_color_black">#323232</color>
+    <color name="text_color_white">#ffffff</color>
+    <color name="text_color_gray">#888888</color>
+    <color name="text_color_gray_light">#A8A8A8</color>
+    <color name="text_color_red">#ff5b46</color>
+    <color name="text_color_hint">#ffaaaaaa</color>
+    <color name="text_color_input">#ff111111</color>
+
+    <color name="btn_blue_normal">#0081E1</color>
+    <color name="btn_blue_pressed">#0066FF</color>
+
+    <color name="textColor_redpackge1">#ECCC91</color>
+    <color name="textColor_redpackge2">#D6B57B</color>
+
+    <!-- 分割线色值 -->
+    <color name="short_blue">#48B7FF</color>
+    <color name="short_red">#FF5B46</color>
+    <color name="short_orange">#F3B720</color>
+    <color name="split_color">#D9D9D9</color>
+    <color name="border_color">#A8A8A8</color>
+
+    <!--竖分割线-->
+    <color name="vertical_line_color">#B5B5B5</color>
+
+    <!-- 透明半透明色值 -->
+    <color name="transparent">#00000000</color>
+    <color name="transparent_half">#66000000</color>
+
+    <!-- 设计规范颜色值 end-->
+
+    <!-- 黑白色值 -->
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="orange">#FFA500</color>
+    <color name="gray">#808080</color>
+    <color name="red">#FF0000</color>
+    <color name="gold">#FFD700</color>
+    <color name="yellow">#FFFF00</color>
+    <color name="green">#008000</color>
+    <color name="blue">#0000FF</color>
+    <color name="purple">#800080</color>
+    <color name="pink">#FFC0CB</color>
+    <color name="yellow_lemon">#FFFACD</color>
+    <color name="gray_light">#DFDFDF</color>
+    <color name="gray_white">#F5F5F5</color>
+    <color name="gray_slate">#708090</color>
+    <color name="blue_light">#0083FF</color>
+    <color name="bluecc">#99ccff</color>
+    <color name="whiteColor88">#bbffffff</color>
+    <color name="whiteColor44">#88ffffff</color>
+    <color name="littlewhiteColor">#08000000</color>
+    <color name="orange_light">#FF6500</color>
+    <color name="gray11_color">#11000000</color>
+    <color name="gray33_color">#33000000</color>
+    <color name="gray66_color">#66000000</color>
+    <color name="gray99_color">#99000000</color>
+
+    <!--NotifyDilog-->
+    <color name="dialog_bg">@color/main_header_bg</color>
+    <color name="dialog_bg_click">#FF5B46</color>
+
+    <!--日历滚轮-->
+    <color name="colorGregorian">#ff3388ff</color>
+    <color name="colorLunar">#ffee5544</color>
+    <color name="colorPickerTextNormal">#FF555555</color>
+    <color name="colorPickerTextSelected">#FFF56313</color>
+    <color name="colorIndicatorTextNormal">#FF555555</color>
+    <color name="colorTransparent">#00000000</color>
+
+</resources>
