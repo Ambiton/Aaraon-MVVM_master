@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <import type="com.goldze.mvvmhabit.ui.main.DeviceListItemViewModel" />
+
+        <variable
+            name="viewModel"
+            type="com.goldze.mvvmhabit.ui.main.DeviceListItemViewModel" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:binding="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/white_round_selector"
+        android:layout_margin="@dimen/margin_min"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="10dp"
+        binding:onClickCommand="@{viewModel.itemClick}"
+        binding:onLongClickCommand="@{viewModel.itemLongClick}">
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@{viewModel.drawableImg}" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:textSize="@dimen/text_max"
+            android:textColor="@color/text_color_gray"
+            android:text="@{viewModel.entity.deviceName}" />
+    </LinearLayout>
+</layout>

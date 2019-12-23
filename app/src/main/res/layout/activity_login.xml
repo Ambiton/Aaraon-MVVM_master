@@ -6,7 +6,6 @@
 
         <variable
             name="viewModel"
-            
             type="com.goldze.mvvmhabit.ui.login.LoginViewModel" />
     </data>
 
@@ -118,7 +117,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_large">
+                android:layout_marginTop="@dimen/margin_min">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -130,14 +129,30 @@
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="16sp" />
             </RelativeLayout>
-            <CheckBox
-                android:id="@+id/cb_login_useragreement"
-                android:gravity="center|start"
-                android:layout_width="wrap_content"
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/accept_agreement"
-                binding:onCheckedChangeCommand="@{viewModel.userAgreementClick}"
-                android:textColor="@color/text_color_red" />
+                android:layout_margin="@dimen/margin_normal"
+                android:orientation="horizontal">
+                <CheckBox
+                    android:id="@+id/checkBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="" />
+                <TextView
+                    android:id="@+id/cb_login_useragreement"
+                    android:gravity="center|start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_min"
+                    android:text="@string/accept_agreement"
+                    binding:onClickCommand="@{viewModel.userAgreementClick}"
+                    android:textColor="@color/selector_redtext" />
+            </LinearLayout>
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -155,6 +170,7 @@
                     android:textSize="18sp"
                     binding:onClickCommand="@{viewModel.loginOnClickCommand}" />
             </LinearLayout>
+
         </LinearLayout>
     </RelativeLayout>
 </layout>

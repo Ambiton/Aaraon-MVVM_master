@@ -32,7 +32,7 @@
             binding:adapter="@{adapter}"
             binding:itemBinding="@{viewModel.itemBinding}"
             binding:items="@{viewModel.observableList}"
-            binding:layoutManager="@{LayoutManagers.linear()}"
+            binding:layoutManager="@{LayoutManagers.grid(2)}"
             binding:lineManager="@{LineManagers.horizontal()}" />
 
     </LinearLayout>

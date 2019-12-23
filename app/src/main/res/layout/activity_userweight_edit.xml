@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="com.goldze.mvvmhabit.ui.register.UserHeightViewModel" />
+            type="com.goldze.mvvmhabit.ui.register.UserWeightViewModel" />
     </data>
 
         <LinearLayout
@@ -42,7 +42,7 @@
                     android:ems="10"
                     style="@style/EditText_Style"
                     android:layout_width="wrap_content"
-                    android:text="170"
+                    android:text="120"
                     android:inputType="number" />
 
                 <TextView
@@ -52,7 +52,7 @@
                     android:layout_marginStart="@dimen/margin_min"
                     android:textSize="@dimen/text_large"
                     android:textColor="@color/whiteColor88"
-                    android:text="cm" />
+                    android:text="kg" />
             </LinearLayout>
 
 

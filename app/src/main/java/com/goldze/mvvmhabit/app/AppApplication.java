@@ -1,5 +1,6 @@
 package com.goldze.mvvmhabit.app;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.goldze.mvvmhabit.BuildConfig;
@@ -7,6 +8,7 @@ import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.entity.DaoMaster;
 import com.goldze.mvvmhabit.entity.DaoSession;
 import com.goldze.mvvmhabit.ui.login.LoginActivity;
+import com.inuker.bluetooth.library.BluetoothClient;
 //import com.squareup.leakcanary.LeakCanary;
 
 import me.goldze.mvvmhabit.base.BaseApplication;
@@ -18,6 +20,7 @@ import me.goldze.mvvmhabit.utils.KLog;
  */
 
 public class AppApplication extends BaseApplication {
+    private static BluetoothClient mClient;
     private static final String DB_NAME="appdate";
     private volatile DaoMaster.DevOpenHelper mHelper;
     private SQLiteDatabase db;
@@ -33,10 +36,18 @@ public class AppApplication extends BaseApplication {
         initCrash();
         //GreenDao数据库设置
         setDatabase();
+        mClient = new BluetoothClient(this);
         //内存泄漏检测
 //        if (!LeakCanary.isInAnalyzerProcess(this)) {
 //            LeakCanary.install(this);
 //        }
+    }
+
+    public static synchronized BluetoothClient getBluetoothClient(Context context) {
+        if (mClient == null) {
+            mClient = new BluetoothClient(context.getApplicationContext());
+        }
+        return mClient;
     }
     /**
      * 设置greenDAO

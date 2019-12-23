@@ -51,7 +51,7 @@
                 android:layout_marginTop="@dimen/margin_normal"
                 android:textColor="@color/white"
                 android:textSize="18sp"
-                binding:onClickCommand="@{viewModel.nextOnClickCommand}" />
+                binding:onClickCommand="@{viewModel.nextButtonClick}" />
         </LinearLayout>
 
 </layout>

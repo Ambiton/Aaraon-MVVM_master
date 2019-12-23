@@ -3,7 +3,7 @@ android {
     compileSdkVersion rootProject.ext.android.compileSdkVersion
     defaultConfig {
         minSdkVersion rootProject.ext.android.minSdkVersion
-        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        targetSdkVersion 26
         versionCode rootProject.ext.android.versionCode
         versionName rootProject.ext.android.versionName
     }

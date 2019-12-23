@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:binding="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="com.goldze.mvvmhabit.ui.main.DeviceListViewModel" />
+
+        <import type="me.tatarka.bindingcollectionadapter2.BindingRecyclerViewAdapter" />
+
+        <variable
+            name="viewModel"
+            type="DeviceListViewModel" />
+
+        <variable
+            name="adapter"
+            type="BindingRecyclerViewAdapter" />
+        <variable
+            name="adapter2"
+            type="BindingRecyclerViewAdapter" />
+
+        <import type="me.tatarka.bindingcollectionadapter2.LayoutManagers" />
+
+        <import type="me.goldze.mvvmhabit.binding.viewadapter.recyclerview.LineManagers" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <include
+            android:id="@+id/include"
+            layout="@layout/layout_toolbar"
+            binding:toolbarViewModel="@{viewModel.toolbarViewModel}" />
+<!--        <com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout-->
+<!--            android:id="@+id/twinklingRefreshLayout"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            binding:onLoadMoreCommand="@{viewModel.onLoadMoreCommand}"-->
+<!--            binding:onRefreshCommand="@{viewModel.onRefreshCommand}"-->
+<!--            binding:tr_head_height="80dp"-->
+<!--            binding:tr_wave_height="80dp">-->
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/ll_bindlist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_color_gray"
+                        android:padding="@dimen/margin_min"
+                        android:gravity="center"
+                        android:textSize="@dimen/text_max"
+                        android:background="@color/gray33_color"
+                        android:text="@{viewModel.bindListStr}" />
+
+                    <com.goldze.mvvmhabit.utils.view.DefineHeightRecycleListView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        binding:adapter="@{adapter2}"
+                        binding:itemBinding="@{viewModel.itemBinding}"
+                        binding:items="@{viewModel.observableBindedList}"
+                        binding:layoutManager="@{LayoutManagers.grid(2)}"
+                        binding:lineManager="@{LineManagers.horizontal()}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_newlist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/textView51"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_color_gray"
+                        android:padding="@dimen/margin_min"
+                        android:gravity="center"
+                        android:textSize="@dimen/text_max"
+                        android:background="@color/gray33_color"
+                        android:text="@{viewModel.canUseListStr}" />
+
+                    <com.goldze.mvvmhabit.utils.view.DefineHeightRecycleListView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        binding:adapter="@{adapter}"
+                        binding:itemBinding="@{viewModel.itemBinding}"
+                        binding:items="@{viewModel.observableCanUseList}"
+                        binding:layoutManager="@{LayoutManagers.grid(2)}"
+                        binding:lineManager="@{LineManagers.horizontal()}" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+
+
+            <Button
+                android:id="@+id/btn_scan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/blueRoundButton"
+                binding:onClickCommand="@{viewModel.onRefreshCommand}"
+                android:text="重新扫描" />
+
+<!--        </com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout>-->
+
+    </LinearLayout>
+</layout>

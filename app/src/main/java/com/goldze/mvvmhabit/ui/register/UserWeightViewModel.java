@@ -25,7 +25,7 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
  * @description:
  * @date : 2019/12/14 20:25
  */
-public class UserWeightViewModel extends BaseViewModel<DemoRepository> {
+public class UserWeightViewModel extends BaseViewModel{
     //用户名的绑定
     public ObservableField<String> userWeight = new ObservableField<>("");
     //密码的绑定
@@ -40,11 +40,9 @@ public class UserWeightViewModel extends BaseViewModel<DemoRepository> {
         public SingleLiveEvent<Boolean> pSwitchEvent = new SingleLiveEvent<>();
     }
 
-    public UserWeightViewModel(@NonNull Application application, DemoRepository repository) {
-        super(application, repository);
+    public UserWeightViewModel(@NonNull Application application) {
+        super(application);
         //从本地取得数据绑定到View层
-        userWeight.set(model.getUserName());
-        password.set(model.getPassword());
     }
 
     //清除用户名的点击事件, 逻辑从View层转换到ViewModel层
@@ -77,46 +75,10 @@ public class UserWeightViewModel extends BaseViewModel<DemoRepository> {
     public BindingCommand nextBtnClick = new BindingCommand(new BindingAction() {
         @Override
         public void call() {
-            //跳转到用户协议
+            //点击下一步，进入记录身高的生日信息
+            startActivity(UserHeightActivity.class);
         }
     });
-
-    /**
-     * 网络模拟一个登陆操作
-     **/
-    private void login() {
-        if (TextUtils.isEmpty(userWeight.get())) {
-            ToastUtils.showShort("请输入账号！");
-            return;
-        }
-        if (TextUtils.isEmpty(password.get())) {
-            ToastUtils.showShort("请输入密码！");
-            return;
-        }
-        //RaJava模拟登录
-        addSubscribe(model.login()
-                .compose(RxUtils.schedulersTransformer()) //线程调度
-                .doOnSubscribe(new Consumer<Disposable>() {
-                    @Override
-                    public void accept(Disposable disposable) throws Exception {
-                        showDialog();
-                    }
-                })
-                .subscribe(new Consumer<Object>() {
-                    @Override
-                    public void accept(Object o) throws Exception {
-                        dismissDialog();
-                        //保存账号密码
-//                        model.saveUserName(userWeight.get());
-//                        model.savePassword(password.get());
-                        //进入DemoActivity页面
-                        startActivity(DemoActivity.class);
-                        //关闭页面
-                        finish();
-                    }
-                }));
-
-    }
 
     @Override
     public void onDestroy() {

@@ -6,6 +6,8 @@ import android.databinding.ObservableInt;
 import android.support.annotation.NonNull;
 import android.view.View;
 
+import com.goldze.mvvmhabit.R;
+
 import me.goldze.mvvmhabit.base.BaseModel;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingAction;
@@ -28,6 +30,8 @@ public class ToolbarViewModel<M extends BaseModel> extends BaseViewModel<M> {
     public ObservableInt rightTextVisibleObservable = new ObservableInt(View.GONE);
     //右边图标的观察者
     public ObservableInt rightIconVisibleObservable = new ObservableInt(View.GONE);
+    //右边图标
+    public ObservableInt rightIcon = new ObservableInt(R.mipmap.toolbar_more);
     //兼容databinding，去泛型化
     public ToolbarViewModel toolbarViewModel;
 
@@ -48,7 +52,6 @@ public class ToolbarViewModel<M extends BaseModel> extends BaseViewModel<M> {
     public void setTitleText(String text) {
         titleText.set(text);
     }
-
     /**
      * 设置右边文字
      *
@@ -74,6 +77,15 @@ public class ToolbarViewModel<M extends BaseModel> extends BaseViewModel<M> {
      */
     public void setRightIconVisible(int visibility) {
         rightIconVisibleObservable.set(visibility);
+    }
+
+    /**
+     * 设置右边图标的显示和隐藏
+     *
+     * @param resId
+     */
+    public void setRightIcon(int resId) {
+        rightIcon.set(resId);
     }
 
     /**

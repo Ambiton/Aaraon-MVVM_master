@@ -8,7 +8,8 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.goldze.mvvmhabit.data.DemoRepository;
-import com.goldze.mvvmhabit.ui.main.DemoActivity;
+import com.goldze.mvvmhabit.ui.main.AgreementFragment;
+import com.goldze.mvvmhabit.ui.main.DeviceListActivity;
 
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -85,6 +86,7 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> {
         @Override
         public void call() {
             //跳转到用户协议
+            startContainerActivity(AgreementFragment.class.getCanonicalName());
         }
     });
 
@@ -117,7 +119,8 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> {
                         model.saveUserName(userName.get());
                         model.savePassword(password.get());
                         //进入DemoActivity页面
-                        startActivity(DemoActivity.class);
+                      //  startActivity(UserNickNameActivity.class);
+                        startActivity(DeviceListActivity.class);
                         //关闭页面
                         finish();
                     }

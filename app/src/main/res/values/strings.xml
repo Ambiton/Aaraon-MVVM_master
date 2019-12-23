@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MVVMHabit-sample</string>
+    <string name="app_name">明远按摩器</string>
 
     <string name="accept_agreement">接受明远按摩器产品相关的服务条款</string>
     <string name="user_nickname">用户昵称</string>
@@ -9,22 +9,39 @@
     <string name="user_birthdaychoose">您的生日是：</string>
     <string name="user_heightchoose">您的身高是：</string>
     <string name="user_weightchoose">您的体重是：</string>
+    <string name="devicelist_title_devicelist">设备列表</string>
+    <string name="devicelist_title_bindlist">已配对设备</string>
+    <string name="devicelist_title_canuselist">可用设备</string>
+    <string name="devicelist_title_bindlist_scaning">已配对设备扫描中...</string>
+    <string name="devicelist_title_canuselist_scaning">可用设备扫描中...</string>
+    <string name="devicecontrol_switch_open">开关</string>
+    <string name="devicecontrol_switch_warm">加热</string>
+    <string name="devicecontrol_rotation_mode_positive">正转</string>
+    <string name="devicecontrol_rotation_mode_reversal">反转</string>
+    <string name="devicecontrol_rotation_mode_auto">自动</string>
+    <string name="devicecontrol_rotation_speed_low">低速</string>
+    <string name="devicecontrol_rotation_speed_middle">中速</string>
+    <string name="devicecontrol_rotation_speed_high">高速</string>
+    <string name="devicecontrol_volume_high">高</string>
+    <string name="devicecontrol_volume_middle">中</string>
+    <string name="devicecontrol_volume_low">低</string>
+    <string name="devicecontrol_volume_mute">静音</string>
     <string name="user_agreement_title">用户协议</string>
-    <string name="user_agreement_content">1)    明远按摩器APP旨在通过采集和跟踪与健康相关的信息来帮助用户管理自身的整体健康状况。仅用于健康和健身方面的目的，并不用于治疗、缓解、护理疾病或其他情况。
-2)	明远按摩器APP以及通过应用程序提供的任何信息或服务仅用于检测或监控，并不用于诊断理任何医疗状况、疾病或生理过程的管理或护理。此处提供的任何监控信息或通过明远按摩器APP收集或访问的任何材料或信息中的健康相关的信息都旨在向您提供便利，不得视为医疗诊断依据。用户向医生寻求医疗建议，您通过使用明远按摩器APP所获得的信息都不一定适合、准确、完整、可靠。
-3)	正在接受治疗或身体不适的人员，在使用机器前，应咨询医师。
-4)	使用中感到身体异常、或使用后觉得没有效果时，请立即停止使用，并咨询医师。
-5)	在使用机器前，一定要检查机器是否破损。（无论发现多么细小的破损，都请立	刻停止使用，并将本机送修。）
-6)	请勿脸朝下趴着使用。在按摩颈部时，请勿将机体放在颈部前方使用。
-7)	请勿让不能表达自己意思的人或没有能力操作本机的人使用本机。
-8)	请勿和其它治疗器械同时使用。
-9)	请勿将水等液体撒在机器上。
-10)	请严格遵守插座和配线器具的使用规定。使用规定的交流电（中国大陆：220 V ）。
-11)	清洗及保养机器前，必须先从插座上拔出适配器。
-12)	使用结束后，请务必从插座上拔出适配器。
-所有及许可
-所有在明远按摩器APP中提供或可以通过其获得的文章、文本、软件、音乐、声音、照片、图形、视频、页面布局设计和其他材料，及其所有知识产权归明远按摩器APP或第三方许可人所有。除此处明确规定，否则您无权使用这些明远按摩器APP内容或其生成的任何数据。且不得在其中享有权益。
-免责声明
+    <string name="user_agreement_content">1)    明远按摩器APP旨在通过采集和跟踪与健康相关的信息来帮助用户管理自身的整体健康状况。仅用于健康和健身方面的目的，并不用于治疗、缓解、护理疾病或其他情况。\n
+2)	明远按摩器APP以及通过应用程序提供的任何信息或服务仅用于检测或监控，并不用于诊断理任何医疗状况、疾病或生理过程的管理或护理。此处提供的任何监控信息或通过明远按摩器APP收集或访问的任何材料或信息中的健康相关的信息都旨在向您提供便利，不得视为医疗诊断依据。用户向医生寻求医疗建议，您通过使用明远按摩器APP所获得的信息都不一定适合、准确、完整、可靠。\n
+3)	正在接受治疗或身体不适的人员，在使用机器前，应咨询医师。\n
+4)	使用中感到身体异常、或使用后觉得没有效果时，请立即停止使用，并咨询医师。\n
+5)	在使用机器前，一定要检查机器是否破损。（无论发现多么细小的破损，都请立	刻停止使用，并将本机送修。）\n
+6)	请勿脸朝下趴着使用。在按摩颈部时，请勿将机体放在颈部前方使用。\n
+7)	请勿让不能表达自己意思的人或没有能力操作本机的人使用本机。\n
+8)	请勿和其它治疗器械同时使用。\n
+9)	请勿将水等液体撒在机器上。\n
+10)	请严格遵守插座和配线器具的使用规定。使用规定的交流电（中国大陆：220 V ）。\n
+11)	清洗及保养机器前，必须先从插座上拔出适配器。\n
+12)	使用结束后，请务必从插座上拔出适配器。\n\n\n\n
+所有及许可\n\n
+所有在明远按摩器APP中提供或可以通过其获得的文章、文本、软件、音乐、声音、照片、图形、视频、页面布局设计和其他材料，及其所有知识产权归明远按摩器APP或第三方许可人所有。除此处明确规定，否则您无权使用这些明远按摩器APP内容或其生成的任何数据。且不得在其中享有权益。\n\n\n\n
+免责声明\n\n
 除明远按摩器APP存在故意或重大过失外，明远按摩器APP对应该明远按摩器APP提供的或通过访问的服务和信息而导致用户遭受的任何财产损失或费用不负责任。
 明远按摩器APP及其任何内容均以“现状”和“现有”的基础提供，且明远按摩器APP或其第三方许可人未作出任何明示或隐含的保证。在适用法律允许的最大范围内，明远按摩器APP声明不作出所有明示、暗示的，包括但不限于适销、满意品质、特定用途适应性、可靠性、可用性、准确性、无病毒、不侵犯第三方权利或无其他侵权行为的隐含保证。您从明远按摩器APP或其关联公司获取的任何建议或信息，不管是口头或书面形式，都不得视为修改本声明。</string>
 </resources>

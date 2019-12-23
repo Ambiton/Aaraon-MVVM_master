@@ -4,28 +4,22 @@ import android.app.Application;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 import android.view.View;
 
-import com.goldze.mvvmhabit.data.DemoRepository;
-import com.goldze.mvvmhabit.ui.main.DemoActivity;
+import com.goldze.mvvmhabit.ui.main.DeviceListActivity;
 
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.binding.command.BindingConsumer;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
-import me.goldze.mvvmhabit.utils.RxUtils;
-import me.goldze.mvvmhabit.utils.ToastUtils;
 
 /**
  * @author Areo
  * @description:
  * @date : 2019/12/14 20:25
  */
-public class UserHeightViewModel extends BaseViewModel<DemoRepository> {
+public class UserHeightViewModel extends BaseViewModel {
     //用户名的绑定
     public ObservableField<String> userHeight = new ObservableField<>("");
     //密码的绑定
@@ -40,11 +34,9 @@ public class UserHeightViewModel extends BaseViewModel<DemoRepository> {
         public SingleLiveEvent<Boolean> pSwitchEvent = new SingleLiveEvent<>();
     }
 
-    public UserHeightViewModel(@NonNull Application application, DemoRepository repository) {
-        super(application, repository);
+    public UserHeightViewModel(@NonNull Application application) {
+        super(application);
         //从本地取得数据绑定到View层
-        userHeight.set(model.getUserName());
-        password.set(model.getPassword());
     }
 
     //清除用户名的点击事件, 逻辑从View层转换到ViewModel层
@@ -77,46 +69,11 @@ public class UserHeightViewModel extends BaseViewModel<DemoRepository> {
     public BindingCommand nextBtnClick = new BindingCommand(new BindingAction() {
         @Override
         public void call() {
-            //跳转到用户协议
+            //跳转到设备列表
+            startContainerActivity(DeviceListActivity.class.getCanonicalName());
         }
     });
 
-    /**
-     * 网络模拟一个登陆操作
-     **/
-    private void login() {
-        if (TextUtils.isEmpty(userHeight.get())) {
-            ToastUtils.showShort("请输入账号！");
-            return;
-        }
-        if (TextUtils.isEmpty(password.get())) {
-            ToastUtils.showShort("请输入密码！");
-            return;
-        }
-        //RaJava模拟登录
-        addSubscribe(model.login()
-                .compose(RxUtils.schedulersTransformer()) //线程调度
-                .doOnSubscribe(new Consumer<Disposable>() {
-                    @Override
-                    public void accept(Disposable disposable) throws Exception {
-                        showDialog();
-                    }
-                })
-                .subscribe(new Consumer<Object>() {
-                    @Override
-                    public void accept(Object o) throws Exception {
-                        dismissDialog();
-                        //保存账号密码
-//                        model.saveUserName(userHeight.get());
-//                        model.savePassword(password.get());
-                        //进入DemoActivity页面
-                        startActivity(DemoActivity.class);
-                        //关闭页面
-                        finish();
-                    }
-                }));
-
-    }
 
     @Override
     public void onDestroy() {

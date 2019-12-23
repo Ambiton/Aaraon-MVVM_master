@@ -1,5 +1,6 @@
 package com.goldze.mvvmhabit.ui.login;
 
+import android.Manifest;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -11,8 +12,11 @@ import com.goldze.mvvmhabit.BR;
 import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.app.AppViewModelFactory;
 import com.goldze.mvvmhabit.databinding.ActivityLoginBinding;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
+import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 /**
  * 一个MVVM模式的登陆界面
@@ -42,6 +46,7 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding, LoginViewM
         viewModel.uc.pSwitchEvent.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean aBoolean) {
+                requestCameraPermissions();
                 //pSwitchObservable是boolean类型的观察者,所以可以直接使用它的值改变密码开关的图标
                 if (viewModel.uc.pSwitchEvent.getValue()) {
                     //密码可见
@@ -55,5 +60,26 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding, LoginViewM
                 }
             }
         });
+    }
+
+
+    /**
+     * 请求扫描蓝牙设备需要的权限
+     */
+    private void requestCameraPermissions() {
+        //请求打开相机权限
+        RxPermissions rxPermissions = new RxPermissions(this);
+        rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION)
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        if (aBoolean) {
+                            ToastUtils.showShort("设备扫描限已经打开");
+                            //扫描蓝牙设备数据
+                        } else {
+                            finish();
+                        }
+                    }
+                });
     }
 }
