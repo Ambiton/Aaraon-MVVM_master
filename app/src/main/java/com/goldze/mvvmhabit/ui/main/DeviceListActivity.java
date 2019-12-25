@@ -12,6 +12,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.goldze.mvvmhabit.BR;
 import com.goldze.mvvmhabit.R;
+import com.goldze.mvvmhabit.app.AppApplication;
 import com.goldze.mvvmhabit.app.AppViewModelFactory;
 import com.goldze.mvvmhabit.databinding.ActivityDevicelistBinding;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -38,7 +39,6 @@ public class DeviceListActivity extends BaseActivity<ActivityDevicelistBinding, 
     public void initParam() {
         super.initParam();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        requestCameraPermissions();
     }
 
 
@@ -60,14 +60,14 @@ public class DeviceListActivity extends BaseActivity<ActivityDevicelistBinding, 
         // Adapter属于View层的东西, 不建议定义到ViewModel中绑定，以免内存泄漏
         binding.setAdapter(new BindingRecyclerViewAdapter());
         viewModel.initToolbar();
-        viewModel.requestDeviceList();
+        requestBlutoothScanPermissions();
     }
 
 
     /**
      * 请求扫描蓝牙设备需要的权限
      */
-    private void requestCameraPermissions() {
+    private void requestBlutoothScanPermissions() {
         //请求打开相机权限
         RxPermissions rxPermissions = new RxPermissions(this);
         rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION)

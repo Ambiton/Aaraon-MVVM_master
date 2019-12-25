@@ -29,7 +29,7 @@
 	<dimen name="margin_max">15dp</dimen>
 	<dimen name="margin_large">30dp</dimen>
 	<dimen name="margin_large_more">35dp</dimen>
-
+	<dimen name="margin_top_loading">120dp</dimen>
 
 	<!-- 通用 -->
 	<dimen name="text_size_32">32.0sp</dimen>

@@ -110,6 +110,7 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
      */
     public void requestDeviceList() {
         // Get the local Bluetooth adapter
+        AppApplication.getBluetoothClient(getApplication()).openBluetooth();
         BluetoothAdapter mBtAdapter = BluetoothAdapter.getDefaultAdapter();
         //可以调用addSubscribe()添加Disposable，请求与View周期同步
         SearchRequest request = new SearchRequest.Builder()
