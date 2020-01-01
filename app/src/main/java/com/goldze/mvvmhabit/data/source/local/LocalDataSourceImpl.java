@@ -11,6 +11,7 @@ import me.goldze.mvvmhabit.utils.SPUtils;
  */
 public class LocalDataSourceImpl implements LocalDataSource {
     private volatile static LocalDataSourceImpl INSTANCE = null;
+    private static final String KEY_TOKEN = "Token";
 
     public static LocalDataSourceImpl getInstance() {
         if (INSTANCE == null) {
@@ -32,6 +33,11 @@ public class LocalDataSourceImpl implements LocalDataSource {
     }
 
     @Override
+    public void saveToken(String token) {
+        SPUtils.getInstance().put(KEY_TOKEN, token);
+    }
+
+    @Override
     public void saveUserName(String userName) {
         SPUtils.getInstance().put("UserName", userName);
     }
@@ -49,5 +55,10 @@ public class LocalDataSourceImpl implements LocalDataSource {
     @Override
     public String getPassword() {
         return SPUtils.getInstance().getString("password");
+    }
+
+    @Override
+    public String getToken() {
+        return SPUtils.getInstance().getString(KEY_TOKEN);
     }
 }

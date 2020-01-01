@@ -3,6 +3,13 @@ package com.goldze.mvvmhabit.data.source.http;
 import com.goldze.mvvmhabit.data.source.HttpDataSource;
 import com.goldze.mvvmhabit.data.source.http.service.DemoApiService;
 import com.goldze.mvvmhabit.entity.DemoEntity;
+import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
+import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
+import com.goldze.mvvmhabit.entity.http.login.LoginBodyEntity;
+import com.goldze.mvvmhabit.entity.http.register.RegisterBodyEntity;
+import com.goldze.mvvmhabit.entity.http.register.RegisterResponseEntity;
+import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeEntity;
+import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,9 +47,30 @@ public class HttpDataSourceImpl implements HttpDataSource {
     }
 
     @Override
+    public Observable<VerifiedCodeResponseEntity> getVerifiedCode(VerifiedCodeEntity body) {
+        return apiService.getVerifiedCode(body);
+    }
+
+    @Override
+    public Observable<RegisterResponseEntity> registerUser(RegisterBodyEntity entity) {
+        return apiService.registerUser(entity);
+    }
+
+    @Override
     public Observable<Object> login() {
         return Observable.just(new Object()).delay(3, TimeUnit.SECONDS); //延迟3秒
     }
+
+    @Override
+    public Observable<CheckUpdateResponseEntity> checkUpdate(String appid, String sign,String token,CheckUpdateBodyEntity entity ) {
+        return apiService.checkUpdate(appid,sign,token,entity);
+    }
+
+    @Override
+    public Observable<Object> loginUser(LoginBodyEntity entity) {
+        return apiService.login(entity);
+    }
+
 
     @Override
     public Observable<DemoEntity> loadMore() {

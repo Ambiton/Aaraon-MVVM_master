@@ -62,7 +62,7 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
      */
     public void initToolbar() {
         //初始化标题栏
-        setRightIcon(R.mipmap.launcher);
+        setRightIcon(R.mipmap.applauncher);
         setRightIconVisible(View.VISIBLE);
        // setRightTextVisible(View.GONE);
         setTitleText(getApplication().getString(R.string.devicelist_title_devicelist));
@@ -131,7 +131,7 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
 
             @Override
             public void onDeviceFounded(SearchResult device) {
-                DeviceInfoEntity entity=new DeviceInfoEntity(R.mipmap.launcher,device.rssi,device.getName(),device.getAddress());
+                DeviceInfoEntity entity=new DeviceInfoEntity(R.mipmap.applauncher,device.rssi,device.getName(),device.getAddress());
                 DeviceListItemViewModel itemViewModel = new DeviceListItemViewModel(DeviceListViewModel.this, entity);
                 BluetoothLog.e("device  is "+device.getName());
                 if(AppApplication.getBluetoothClient(getApplication()).getBondState(device.getAddress())==BluetoothDevice.BOND_BONDED){

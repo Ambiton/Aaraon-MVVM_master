@@ -4,13 +4,10 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.goldze.mvvmhabit.BR;
 import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.app.AppViewModelFactory;
@@ -53,6 +50,7 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
         //请求设备信息数据
         viewModel.requestDeviceInfo();
         viewModel.initToolbar();
+       binding.ivDevicecontrolGif.setGifResource("asset:inner_high_hot");
     }
 
     @Override

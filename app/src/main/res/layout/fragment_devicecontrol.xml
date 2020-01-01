@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:binding="http://schemas.android.com/apk/res-auto">
+    xmlns:binding="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/tools">
 
     <data>
 
         <import type="com.goldze.mvvmhabit.ui.main.DeviceControlViewModel" />
-
         <import type="me.tatarka.bindingcollectionadapter2.BindingRecyclerViewAdapter" />
 
         <variable
@@ -40,12 +40,14 @@
                 android:paddingTop="@dimen/margin_large">
 
 
-                <ImageView
+                <com.whygraphics.gifview.gif.GIFView
+                    xmlns:gif_view="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/iv_devicecontrol_gif"
                     android:layout_width="wrap_content"
-                    android:layout_height="400dp"
+                    android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    binding:srcCompat="@raw/inner_low_hot" />
+                    gif_view:gif_src="asset:inner_high_hot"
+                    />
                 <LinearLayout
                     android:id="@+id/ll_devicecontrol_switch"
                     android:layout_width="match_parent"

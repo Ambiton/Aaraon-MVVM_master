@@ -6,11 +6,15 @@ android {
         targetSdkVersion 26
         versionCode rootProject.ext.android.versionCode
         versionName rootProject.ext.android.versionName
+        multiDexEnabled true
     }
     dataBinding {
         enabled true
     }
     buildTypes {
+        dexOptions {
+            preDexLibraries false
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -71,4 +75,5 @@ dependencies {
     //Google LiveData和ViewModel组件
     api rootProject.ext.dependencies["lifecycle-extensions"]
     annotationProcessor rootProject.ext.dependencies["lifecycle-compiler"]
+    implementation 'com.android.support:multidex:1.0.1'
 }

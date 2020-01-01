@@ -48,7 +48,7 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> {
      */
     public void initToolbar() {
         //初始化标题栏
-        setRightIcon(R.mipmap.launcher);
+        setRightIcon(R.mipmap.applauncher);
         setRightIconVisible(View.GONE);
         setRightTextVisible(View.GONE);
         setTitleText(getApplication().getString(R.string.devicelist_title_devicelist));

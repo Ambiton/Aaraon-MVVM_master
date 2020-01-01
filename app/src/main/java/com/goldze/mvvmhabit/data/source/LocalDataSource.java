@@ -5,6 +5,10 @@ package com.goldze.mvvmhabit.data.source;
  */
 public interface LocalDataSource {
     /**
+     * 保存token
+     */
+    void saveToken(String token);
+    /**
      * 保存用户名
      */
     void saveUserName(String userName);
@@ -24,4 +28,9 @@ public interface LocalDataSource {
      * 获取用户密码
      */
     String getPassword();
+
+    /**
+     * 获取Token
+     */
+    String getToken();
 }

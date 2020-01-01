@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/margin_top_loading"
-        binding:srcCompat="@mipmap/launcher" />
+        binding:srcCompat="@mipmap/applauncher" />
 
     <TextView
         android:id="@+id/textView5"

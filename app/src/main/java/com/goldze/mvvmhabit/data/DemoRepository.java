@@ -6,6 +6,13 @@ import android.support.annotation.VisibleForTesting;
 import com.goldze.mvvmhabit.data.source.HttpDataSource;
 import com.goldze.mvvmhabit.data.source.LocalDataSource;
 import com.goldze.mvvmhabit.entity.DemoEntity;
+import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
+import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
+import com.goldze.mvvmhabit.entity.http.login.LoginBodyEntity;
+import com.goldze.mvvmhabit.entity.http.register.RegisterBodyEntity;
+import com.goldze.mvvmhabit.entity.http.register.RegisterResponseEntity;
+import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeEntity;
+import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeResponseEntity;
 
 import io.reactivex.Observable;
 import me.goldze.mvvmhabit.base.BaseModel;
@@ -46,8 +53,29 @@ public class DemoRepository extends BaseModel implements HttpDataSource, LocalDa
 
 
     @Override
+    public Observable<VerifiedCodeResponseEntity> getVerifiedCode(VerifiedCodeEntity entity) {
+        return mHttpDataSource.getVerifiedCode(entity);
+    }
+
+
+    @Override
     public Observable<Object> login() {
         return mHttpDataSource.login();
+    }
+
+    @Override
+    public Observable<CheckUpdateResponseEntity> checkUpdate(String appid, String sign,String token,CheckUpdateBodyEntity entity) {
+        return mHttpDataSource.checkUpdate(appid, sign, token, entity);
+    }
+
+    @Override
+    public Observable<Object> loginUser(LoginBodyEntity entity) {
+        return mHttpDataSource.loginUser(entity);
+    }
+
+    @Override
+    public Observable<RegisterResponseEntity> registerUser(RegisterBodyEntity entity) {
+        return mHttpDataSource.registerUser(entity);
     }
 
     @Override
@@ -63,6 +91,12 @@ public class DemoRepository extends BaseModel implements HttpDataSource, LocalDa
     @Override
     public Observable<BaseResponse<DemoEntity>> demoPost(String catalog) {
         return mHttpDataSource.demoPost(catalog);
+    }
+
+
+    @Override
+    public void saveToken(String token) {
+        mLocalDataSource.saveToken(token);
     }
 
     @Override
@@ -83,5 +117,10 @@ public class DemoRepository extends BaseModel implements HttpDataSource, LocalDa
     @Override
     public String getPassword() {
         return mLocalDataSource.getPassword();
+    }
+
+    @Override
+    public String getToken() {
+        return null;
     }
 }

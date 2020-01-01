@@ -20,6 +20,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        dexOptions {
+            preDexLibraries false
+        }
     }
     dataBinding {
         enabled true
@@ -44,4 +47,6 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
     debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.2'
     compile 'com.inuker.bluetooth:library:1.4.0'
+    implementation 'com.android.support:multidex:1.0.1'
+    compile 'com.github.Gavras:GIFView:v1.2'
 }
