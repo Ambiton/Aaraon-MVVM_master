@@ -6,7 +6,7 @@
 
         <import type="com.goldze.mvvmhabit.ui.main.DeviceListViewModel" />
 
-        <import type="me.tatarka.bindingcollectionadapter2.BindingRecyclerViewAdapter" />
+        <import type="com.goldze.mvvmhabit.ui.viewpager.adapter.DeviceListBindingAdapter" />
 
         <variable
             name="viewModel"
@@ -14,10 +14,10 @@
 
         <variable
             name="adapter"
-            type="BindingRecyclerViewAdapter" />
+            type="DeviceListBindingAdapter" />
         <variable
             name="adapter2"
-            type="BindingRecyclerViewAdapter" />
+            type="DeviceListBindingAdapter" />
 
         <import type="me.tatarka.bindingcollectionadapter2.LayoutManagers" />
 
@@ -76,7 +76,7 @@
                         binding:itemBinding="@{viewModel.itemBinding}"
                         binding:items="@{viewModel.observableBindedList}"
                         binding:layoutManager="@{LayoutManagers.grid(2)}"
-                        binding:lineManager="@{LineManagers.horizontal()}" />
+                        />
                 </LinearLayout>
 
                 <LinearLayout
@@ -102,8 +102,7 @@
                         binding:adapter="@{adapter}"
                         binding:itemBinding="@{viewModel.itemBinding}"
                         binding:items="@{viewModel.observableCanUseList}"
-                        binding:layoutManager="@{LayoutManagers.grid(2)}"
-                        binding:lineManager="@{LineManagers.horizontal()}" />
+                        binding:layoutManager="@{LayoutManagers.grid(2)}" />
 
                 </LinearLayout>
 

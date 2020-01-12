@@ -5,7 +5,7 @@
 
         <import type="com.goldze.mvvmhabit.ui.rv_multi.MultiRecycleViewModel" />
 
-        <import type="me.tatarka.bindingcollectionadapter2.BindingRecyclerViewAdapter" />
+        <import type="com.goldze.mvvmhabit.ui.viewpager.adapter.MultiRvBindingAdapter" />
 
         <variable
             name="viewModel"
@@ -13,7 +13,7 @@
 
         <variable
             name="adapter"
-            type="BindingRecyclerViewAdapter" />
+            type="MultiRvBindingAdapter" />
 
         <import type="me.tatarka.bindingcollectionadapter2.LayoutManagers" />
 

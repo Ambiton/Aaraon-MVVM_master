@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableField;
 import android.databinding.ObservableList;
@@ -46,6 +47,16 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
     public ObservableField<String> canUseListStr = new ObservableField<>(getApplication().getString(R.string.devicelist_title_canuselist));
     //封装一个界面发生改变的观察者
     public UIChangeObservable uc = new UIChangeObservable();
+
+    private Context contex;
+
+    public void setContext(Context context){
+        this.contex=context;
+    }
+
+    public Context getContext(){
+        return this.contex;
+    }
 
     public class UIChangeObservable {
         //下拉刷新完成
@@ -134,6 +145,9 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
                 DeviceInfoEntity entity=new DeviceInfoEntity(R.mipmap.applauncher,device.rssi,device.getName(),device.getAddress());
                 DeviceListItemViewModel itemViewModel = new DeviceListItemViewModel(DeviceListViewModel.this, entity);
                 BluetoothLog.e("device  is "+device.getName());
+//                if(!device.getName().startsWith("ECG")){
+//                    return;
+//                }
                 if(AppApplication.getBluetoothClient(getApplication()).getBondState(device.getAddress())==BluetoothDevice.BOND_BONDED){
                     if(bindeduseList.add(device.getAddress())){
                         observableBindedList.add(itemViewModel);

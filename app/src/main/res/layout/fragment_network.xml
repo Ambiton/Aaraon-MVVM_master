@@ -5,7 +5,7 @@
 
         <import type="com.goldze.mvvmhabit.ui.network.NetWorkViewModel" />
 
-        <import type="me.tatarka.bindingcollectionadapter2.BindingRecyclerViewAdapter" />
+        <import type="com.goldze.mvvmhabit.ui.viewpager.adapter.NetWorkBindingAdapter" />
 
         <variable
             name="viewModel"
@@ -13,7 +13,7 @@
 
         <variable
             name="adapter"
-            type="BindingRecyclerViewAdapter" />
+            type="NetWorkBindingAdapter" />
 
         <import type="me.tatarka.bindingcollectionadapter2.LayoutManagers" />
 

@@ -49,6 +49,7 @@ public class AppApplication extends BaseApplication {
         }
         return mClient;
     }
+
     /**
      * 设置greenDAO
      */

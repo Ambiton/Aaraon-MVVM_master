@@ -15,6 +15,7 @@ import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.app.AppApplication;
 import com.goldze.mvvmhabit.app.AppViewModelFactory;
 import com.goldze.mvvmhabit.databinding.ActivityDevicelistBinding;
+import com.goldze.mvvmhabit.ui.viewpager.adapter.DeviceListBindingAdapter;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import io.reactivex.functions.Consumer;
@@ -58,7 +59,8 @@ public class DeviceListActivity extends BaseActivity<ActivityDevicelistBinding, 
     public void initData() {
         //给RecyclerView添加Adpter，请使用自定义的Adapter继承BindingRecyclerViewAdapter，重写onBindBinding方法，里面有你要的Item对应的binding对象。
         // Adapter属于View层的东西, 不建议定义到ViewModel中绑定，以免内存泄漏
-        binding.setAdapter(new BindingRecyclerViewAdapter());
+        viewModel.setContext(this);
+        binding.setAdapter(new DeviceListBindingAdapter());
         viewModel.initToolbar();
         requestBlutoothScanPermissions();
     }
