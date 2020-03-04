@@ -52,6 +52,7 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
         //给RecyclerView添加Adpter，请使用自定义的Adapter继承BindingRecyclerViewAdapter，重写onBindBinding方法，里面有你要的Item对应的binding对象。
         // Adapter属于View层的东西, 不建议定义到ViewModel中绑定，以免内存泄漏
         //请求设备信息数据
+        viewModel.initBleEvent();
         viewModel.requestDeviceInfo();
         viewModel.initToolbar();
        //binding.ivDevicecontrolGif.setBackgroundResource("asset:inner_high_hot");
@@ -104,7 +105,6 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
                 }
                 binding.ivDevicecontrolGif.setVisibility(View.VISIBLE);
                 if (viewModel.uc.warmSwitch.getValue()!=null&&viewModel.uc.warmSwitch.getValue()) {
-                    //密码可见
                     //在xml中定义id后,使用binding可以直接拿到这个view的引用,不再需要findViewById去找控件了
                     binding.ivDevicecontrolBg.setImageResource(R.drawable.pillow);
                     binding.ivDevicecontrolGif.setImageResource(R.drawable.inner_high_hot);

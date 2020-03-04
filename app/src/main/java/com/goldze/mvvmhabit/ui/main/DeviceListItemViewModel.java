@@ -15,8 +15,10 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.app.AppApplication;
 import com.goldze.mvvmhabit.entity.DeviceInfoEntity;
+import com.goldze.mvvmhabit.utils.BleOption;
 import com.goldze.mvvmhabit.utils.HexUtil;
 import com.goldze.mvvmhabit.utils.RxDataTool;
+import com.goldze.mvvmhabit.utils.heatbeat.HeatBleOption;
 import com.inuker.bluetooth.library.connect.options.BleConnectOptions;
 import com.inuker.bluetooth.library.connect.response.BleConnectResponse;
 import com.inuker.bluetooth.library.connect.response.BleNotifyResponse;
@@ -49,7 +51,7 @@ import static com.inuker.bluetooth.library.Constants.REQUEST_SUCCESS;
  * Created by goldze on 2017/7/17.
  */
 
-public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> {
+public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> implements BleConnectResponse {
     public ObservableField<DeviceInfoEntity> entity = new ObservableField<>();
     public Drawable drawableImg;
     MaterialDialog  dialog;
@@ -88,74 +90,76 @@ public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> 
             //这里可以通过一个标识,做出判断，已达到跳入不同界面的逻辑
             dialog.show();
             AppApplication.getBluetoothClient(viewModel.getApplication()).stopSearch();
-            AppApplication.getBluetoothClient(viewModel.getContext()).connect(BluetoothUtils.getRemoteDevice(entity.get().getMacAddress()).getAddress(), new BleConnectResponse() {
-                @Override
-                public void onResponse(int code, BleGattProfile data) {
-                    dialog.dismiss();
-                    if (code == REQUEST_SUCCESS) {
-
-                        int status =  AppApplication.getBluetoothClient(viewModel.getApplication()).getConnectStatus(entity.get().getMacAddress());
-                        ToastUtils.showLong("连接成功"+status);
-                        List<BleGattService> services = data.getServices();
-
-                        BleGattService service=services.get(services.size()-1);
-                        List<BleGattCharacter> characters = service.getCharacters();
-                        byte[]sends= "ATSTART".getBytes();
-                        for(byte dataB:sends){
-                            Log.e("yuanjian",dataB+" data value");
-                        }
-                        Log.e("yuanjian",service.getUUID()+" =service.getUUID()"+UUID_SERVICE_CHANNEL);
-                        Log.e("yuanjian",characters.get(characters.size()-1).getUuid()+" =characters.get(characters.size()-1).getUuid()"+UUID_CHARACTERISTIC_CHANNEL);
-                        if(services.size()>0){
-                            AppApplication.getBluetoothClient(viewModel.getContext()).write(entity.get().getMacAddress(),UUID_SERVICE_CHANNEL, UUID_CHARACTERISTIC_CHANNEL_WRITE, HexUtil.decodeHex("41545354415254".toCharArray()), new BleWriteResponse() {
-                                @Override
-                                public void onResponse(int code) {
-                                    Log.e("yuanjian","code is  "+code);
-                                    if(code == REQUEST_SUCCESS){
-                                        //ToastUtils.showLong("通信成功"+code);
-                                        Log.e("yuanjian","通信成功 ");
-                                    }
-                                }
-                            });
-                            AppApplication.getBluetoothClient(viewModel.getContext()).readRssi(entity.get().getMacAddress(), new BleReadRssiResponse() {
-                                @Override
-                                public void onResponse(int code, Integer rssi) {
-                                    if (code == REQUEST_SUCCESS) {
-                                        Log.e("yuanjian","rssi is "+rssi);
-                                    }
-                                }
-                            });
-
-                            AppApplication.getBluetoothClient(viewModel.getContext()).notify(entity.get().getMacAddress(), UUID_SERVICE_CHANNEL, UUID_CHARACTERISTIC_CHANNEL, new BleNotifyResponse() {
-                                @Override
-                                public void onNotify(UUID service, UUID character, byte[] value) {
-                                    Log.e("yuanjian","onNotify UUID is "+character +RxDataTool.bytes2HexString(value));
-                                }
-
-                                @Override
-                                public void onResponse(int code) {
-                                    if (code == REQUEST_SUCCESS) {
-                                        Log.e("yuanjian","onNotify is sucess");
-                                    }
-                                }
-                            });
-                            AppApplication.getBluetoothClient(viewModel.getContext()).read(entity.get().getMacAddress(), UUID_SERVICE_CHANNEL, UUID_CHARACTERISTIC_CHANNEL_WRITE, new BleReadResponse() {
-                                @Override
-                                public void onResponse(int code, byte[] data) {
-                                    Log.e("yuanjian","code is "+code);
-                                    if (code == REQUEST_SUCCESS) {
-                                        Log.e("yuanjian","recive is "+RxDataTool.bytes2HexString(data));
-                                    }
-                                }
-                            });
-                        }
-
-                        //viewModel.startContainerActivity(DeviceControlFragment.class.getCanonicalName());
-                    }else{
-                        ToastUtils.showLong("连接失败，请重试");
-                    }
-                }
-            });
+            BleOption.getInstance().connectDevice(entity.get().getMacAddress(),DeviceListItemViewModel.this);
+//            HeatBleOption.getInstance().connectDevice(entity.get().getMacAddress(),DeviceListItemViewModel.this);
+//            AppApplication.getBluetoothClient(viewModel.getContext()).connect(BluetoothUtils.getRemoteDevice(entity.get().getMacAddress()).getAddress(), new BleConnectResponse() {
+//                @Override
+//                public void onResponse(int code, BleGattProfile data) {
+//                    dialog.dismiss();
+//                    if (code == REQUEST_SUCCESS) {
+//
+//                        int status =  AppApplication.getBluetoothClient(viewModel.getApplication()).getConnectStatus(entity.get().getMacAddress());
+//                        ToastUtils.showLong("连接成功"+status);
+//                        List<BleGattService> services = data.getServices();
+//
+//                        BleGattService service=services.get(services.size()-1);
+//                        List<BleGattCharacter> characters = service.getCharacters();
+//                        byte[]sends= "ATSTART".getBytes();
+//                        for(byte dataB:sends){
+//                            Log.e("yuanjian",dataB+" data value");
+//                        }
+//                        Log.e("yuanjian",service.getUUID()+" =service.getUUID()"+UUID_SERVICE_CHANNEL);
+//                        Log.e("yuanjian",characters.get(characters.size()-1).getUuid()+" =characters.get(characters.size()-1).getUuid()"+UUID_CHARACTERISTIC_CHANNEL);
+//                        if(services.size()>0){
+//                            AppApplication.getBluetoothClient(viewModel.getContext()).write(entity.get().getMacAddress(),UUID_SERVICE_CHANNEL, UUID_CHARACTERISTIC_CHANNEL_WRITE, HexUtil.decodeHex("41545354415254".toCharArray()), new BleWriteResponse() {
+//                                @Override
+//                                public void onResponse(int code) {
+//                                    Log.e("yuanjian","code is  "+code);
+//                                    if(code == REQUEST_SUCCESS){
+//                                        //ToastUtils.showLong("通信成功"+code);
+//                                        Log.e("yuanjian","通信成功 ");
+//                                    }
+//                                }
+//                            });
+//                            AppApplication.getBluetoothClient(viewModel.getContext()).readRssi(entity.get().getMacAddress(), new BleReadRssiResponse() {
+//                                @Override
+//                                public void onResponse(int code, Integer rssi) {
+//                                    if (code == REQUEST_SUCCESS) {
+//                                        Log.e("yuanjian","rssi is "+rssi);
+//                                    }
+//                                }
+//                            });
+//
+//                            AppApplication.getBluetoothClient(viewModel.getContext()).notify(entity.get().getMacAddress(), UUID_SERVICE_CHANNEL, UUID_CHARACTERISTIC_CHANNEL, new BleNotifyResponse() {
+//                                @Override
+//                                public void onNotify(UUID service, UUID character, byte[] value) {
+//                                    Log.e("yuanjian","onNotify UUID is "+character +RxDataTool.bytes2HexString(value));
+//                                }
+//
+//                                @Override
+//                                public void onResponse(int code) {
+//                                    if (code == REQUEST_SUCCESS) {
+//                                        Log.e("yuanjian","onNotify is sucess");
+//                                    }
+//                                }
+//                            });
+//                            AppApplication.getBluetoothClient(viewModel.getContext()).read(entity.get().getMacAddress(), UUID_SERVICE_CHANNEL, UUID_CHARACTERISTIC_CHANNEL_WRITE, new BleReadResponse() {
+//                                @Override
+//                                public void onResponse(int code, byte[] data) {
+//                                    Log.e("yuanjian","code is "+code);
+//                                    if (code == REQUEST_SUCCESS) {
+//                                        Log.e("yuanjian","recive is "+RxDataTool.bytes2HexString(data));
+//                                    }
+//                                }
+//                            });
+//                        }
+//
+//                        //viewModel.startContainerActivity(DeviceControlFragment.class.getCanonicalName());
+//                    }else{
+//                        ToastUtils.showLong("连接失败，请重试");
+//                    }
+//                }
+//            });
         }
     });
     //条目的长按事件
@@ -168,6 +172,17 @@ public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> 
             ToastUtils.showShort(entity.get().getDeviceName());
         }
     });
+
+    @Override
+    public void onResponse(int code, BleGattProfile data) {
+        dialog.dismiss();
+        if (code == REQUEST_SUCCESS) {
+            ToastUtils.showLong(viewModel.getContext().getString(R.string.toast_title_hasconnected)+";connect statu is "+AppApplication.getBluetoothClient(AppApplication.getInstance()).getConnectStatus(BleOption.getInstance().getMac()));
+            viewModel.startContainerActivity(DeviceControlFragment.class.getCanonicalName());
+        }else{
+            ToastUtils.showLong(viewModel.getContext().getString(R.string.toast_title_connect_error));
+        }
+    }
 //    /**
 //     * 可以在xml中使用binding:currentView="@{viewModel.titleTextView}" 拿到这个控件的引用, 但是强烈不推荐这样做，避免内存泄漏
 //     **/

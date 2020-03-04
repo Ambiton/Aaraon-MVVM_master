@@ -1,6 +1,5 @@
 package com.goldze.mvvmhabit.ui.main;
 
-import android.Manifest;
 import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -8,7 +7,6 @@ import android.content.Context;
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableField;
 import android.databinding.ObservableList;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.view.View;
 
@@ -16,19 +14,15 @@ import com.goldze.mvvmhabit.BR;
 import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.app.AppApplication;
 import com.goldze.mvvmhabit.data.DemoRepository;
-import com.goldze.mvvmhabit.entity.DemoEntity;
 import com.goldze.mvvmhabit.entity.DeviceInfoEntity;
 import com.goldze.mvvmhabit.ui.base.viewmodel.ToolbarViewModel;
+import com.goldze.mvvmhabit.utils.BleOption;
 import com.inuker.bluetooth.library.search.SearchRequest;
 import com.inuker.bluetooth.library.search.SearchResult;
 import com.inuker.bluetooth.library.search.response.SearchResponse;
 import com.inuker.bluetooth.library.utils.BluetoothLog;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.HashSet;
-import java.util.Set;
-
-import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
@@ -50,11 +44,11 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
 
     private Context contex;
 
-    public void setContext(Context context){
-        this.contex=context;
+    public void setContext(Context context) {
+        this.contex = context;
     }
 
-    public Context getContext(){
+    public Context getContext() {
         return this.contex;
     }
 
@@ -68,6 +62,7 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
     public DeviceListViewModel(@NonNull Application application, DemoRepository repository) {
         super(application, repository);
     }
+
     /**
      * 初始化Toolbar
      */
@@ -75,7 +70,7 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
         //初始化标题栏
         setRightIcon(R.mipmap.applauncher);
         setRightIconVisible(View.VISIBLE);
-       // setRightTextVisible(View.GONE);
+        // setRightTextVisible(View.GONE);
         setTitleText(getApplication().getString(R.string.devicelist_title_devicelist));
     }
 
@@ -83,6 +78,7 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
     public void rightTextOnClick() {
         ToastUtils.showShort("更多");
     }
+
     public ObservableList<DeviceListItemViewModel> observableBindedList = new ObservableArrayList<>();
     //给RecyclerView添加ObservableList
     public ObservableList<DeviceListItemViewModel> observableCanUseList = new ObservableArrayList<>();
@@ -111,7 +107,7 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
     /**
      * 停止扫描
      */
-    public void cancelScan(){
+    public void cancelScan() {
         AppApplication.getBluetoothClient(getApplication()).stopSearch();
     }
 
@@ -129,8 +125,8 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
                 .searchBluetoothClassicDevice(5000) // 再扫经典蓝牙5s
                 .searchBluetoothLeDevice(2000)      // 再扫BLE设备2s
                 .build();
-        final HashSet<String>canuseList=new HashSet<>();
-        final HashSet<String>bindeduseList=new HashSet<>();
+        final HashSet<String> canuseList = new HashSet<>();
+        final HashSet<String> bindeduseList = new HashSet<>();
         AppApplication.getBluetoothClient(getApplication()).search(request, new SearchResponse() {
             @Override
             public void onSearchStarted() {
@@ -142,26 +138,23 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
 
             @Override
             public void onDeviceFounded(SearchResult device) {
-                DeviceInfoEntity entity=new DeviceInfoEntity(R.mipmap.applauncher,device.rssi,device.getName(),device.getAddress());
-                DeviceListItemViewModel itemViewModel = new DeviceListItemViewModel(DeviceListViewModel.this, entity);
-                BluetoothLog.e("device  is "+device.getName());
-//                if(!device.getName().startsWith("ECG")){
-//                    return;
-//                }
-                if(AppApplication.getBluetoothClient(getApplication()).getBondState(device.getAddress())==BluetoothDevice.BOND_BONDED){
-                    if(bindeduseList.add(device.getAddress())){
+                DeviceInfoEntity entity = new DeviceInfoEntity(R.mipmap.applauncher, device.rssi, device.getName(), device.getAddress());
+                BluetoothLog.e("device  is " + device.getName()+";device.getAddress() is "+device.getAddress());
+                if (AppApplication.getBluetoothClient(getApplication()).getBondState(device.getAddress()) == BluetoothDevice.BOND_BONDED) {
+                    if (BleOption.getInstance().isDeviceBluetooth(device.getName()) && bindeduseList.add(device.getAddress())) {
+                        DeviceListItemViewModel itemViewModel = new DeviceListItemViewModel(DeviceListViewModel.this, entity);
                         observableBindedList.add(itemViewModel);
-                        BluetoothLog.e("bindList is "+device.getName()+" MacAdress is "+device.getAddress());
+                        BluetoothLog.e("bindList is " + device.getName() + " MacAdress is " + device.getAddress());
                     }
-                }else {
+                } else {
                     //
-                    if(canuseList.add(device.getAddress())){
+                    if (BleOption.getInstance().isDeviceBluetooth(device.getName()) && canuseList.add(device.getAddress())) {
+                        DeviceListItemViewModel itemViewModel = new DeviceListItemViewModel(DeviceListViewModel.this, entity);
                         observableCanUseList.add(itemViewModel);
-                        BluetoothLog.e("CanUseList is "+device.getName()+" MacAdress is "+device.getAddress());
+                        BluetoothLog.e("CanUseList is " + device.getName() + " MacAdress is " + device.getAddress());
                     }
 
                 }
-
 
 
             }
@@ -170,16 +163,16 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
             public void onSearchStopped() {
                 //请求刷新完成收回
                 uc.finishRefreshing.call();
-                bindListStr.set(getApplication().getString(R.string.devicelist_title_bindlist)+"("+observableBindedList.size()+")");
-                canUseListStr.set(getApplication().getString(R.string.devicelist_title_canuselist)+"("+observableCanUseList.size()+")");
+                bindListStr.set(getApplication().getString(R.string.devicelist_title_bindlist) + "(" + observableBindedList.size() + ")");
+                canUseListStr.set(getApplication().getString(R.string.devicelist_title_canuselist) + "(" + observableCanUseList.size() + ")");
             }
 
             @Override
             public void onSearchCanceled() {
                 //请求刷新完成收回
                 uc.finishRefreshing.call();
-                bindListStr.set(getApplication().getString(R.string.devicelist_title_bindlist)+"("+observableBindedList.size()+")");
-                canUseListStr.set(getApplication().getString(R.string.devicelist_title_canuselist)+"("+observableCanUseList.size()+")");
+                bindListStr.set(getApplication().getString(R.string.devicelist_title_bindlist) + "(" + observableBindedList.size() + ")");
+                canUseListStr.set(getApplication().getString(R.string.devicelist_title_canuselist) + "(" + observableCanUseList.size() + ")");
             }
         });
     }

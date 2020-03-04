@@ -109,45 +109,26 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> {
             ToastUtils.showShort("请输入密码！");
             return;
         }
-//        //RaJava获取验证码
-//        addSubscribe(model.getVerifiedCode(new VerifiedCodeEntity("13266504756","1"))
-//                .compose(RxUtils.schedulersTransformer()) //线程调度
-//                .doOnSubscribe(new Consumer<Disposable>() {
-//                    @Override
-//                    public void accept(Disposable disposable) throws Exception {
-//                        showDialog();
-//                    }
-//                })
-//                .subscribe(new Consumer<VerifiedCodeResponseEntity>() {
-//                    @Override
-//                    public void accept(VerifiedCodeResponseEntity entity) throws Exception {
-//                        dismissDialog();
-//                        Log.e(TAG,"getStatus is:"+entity.getStatus()+";smstoken is "+entity.getData());
-//                        //保存Token
-////                        model.saveToken(entity.getData());
-//                    }
-//                }));
+        //RaJava获取验证码
+        addSubscribe(model.getVerifiedCode(new VerifiedCodeEntity("13266504756","1"))
+                .compose(RxUtils.schedulersTransformer()) //线程调度
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                        showDialog();
+                    }
+                })
+                .subscribe(new Consumer<VerifiedCodeResponseEntity>() {
+                    @Override
+                    public void accept(VerifiedCodeResponseEntity entity) throws Exception {
+                        dismissDialog();
+                        Log.e(TAG,"getStatus is:"+entity.getStatus()+";smstoken is "+entity.getData());
+                        //保存Token
+                        model.saveToken(entity.getData());
+                    }
+                }));
 
-//        //RaJava检测更新
-//        addSubscribe(model.checkUpdate("1uMqYWpHo3MoLH","sig-result","ac37cda5cdfd42e59a65f60bd32728af",new CheckUpdateBodyEntity("01.00","01.00","01.00"))
-//                .compose(RxUtils.schedulersTransformer()) //线程调度
-//                .doOnSubscribe(new Consumer<Disposable>() {
-//                    @Override
-//                    public void accept(Disposable disposable) throws Exception {
-//                        showDialog();
-//                    }
-//                })
-//                .subscribe(new Consumer<CheckUpdateResponseEntity>() {
-//                    @Override
-//                    public void accept(CheckUpdateResponseEntity o) throws Exception {
-//                        dismissDialog();
-//                        Log.e(TAG,"getStatus is:"+o.getStatus()+";Array is "+o.getResponseDataEntityArray());
-//                        //保存账号密码
-//                        model.saveUserName(userName.get());
-//                        model.savePassword(password.get());
-//                    }
-//                }));
-//        //RaJava模拟登录
+        //RaJava模拟登录
         addSubscribe(model.login()
                 .compose(RxUtils.schedulersTransformer()) //线程调度
                 .doOnSubscribe(new Consumer<Disposable>() {
@@ -164,15 +145,63 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> {
                         model.saveUserName(userName.get());
                         model.savePassword(password.get());
                         //进入DemoActivity页面
-                      //  startActivity(UserNickNameActivity.class);
+                        //  startActivity(UserNickNameActivity.class);
                         startActivity(DeviceListActivity.class);
                         //关闭页面
                         //finish();
                     }
                 }));
 
+
     }
 
+    private void registerAcount(){
+        //RaJava模拟登录
+        addSubscribe(model.login()
+                .compose(RxUtils.schedulersTransformer()) //线程调度
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                        showDialog();
+                    }
+                })
+                .subscribe(new Consumer<Object>() {
+                    @Override
+                    public void accept(Object o) throws Exception {
+                        dismissDialog();
+                        //保存账号密码
+                        model.saveUserName(userName.get());
+                        model.savePassword(password.get());
+                        //进入DemoActivity页面
+                        //  startActivity(UserNickNameActivity.class);
+                        startActivity(DeviceListActivity.class);
+                        //关闭页面
+                        //finish();
+                    }
+                }));
+    }
+
+    private void checkVersion(){
+        //RaJava检测更新
+        addSubscribe(model.checkUpdate("1uMqYWpHo3MoLH","sig-result","ac37cda5cdfd42e59a65f60bd32728af",new CheckUpdateBodyEntity("01.00","01.00","01.00"))
+                .compose(RxUtils.schedulersTransformer()) //线程调度
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                        showDialog();
+                    }
+                })
+                .subscribe(new Consumer<CheckUpdateResponseEntity>() {
+                    @Override
+                    public void accept(CheckUpdateResponseEntity o) throws Exception {
+                        dismissDialog();
+                        Log.e(TAG,"getStatus is:"+o.getStatus()+";Array is "+o.getResponseDataEntityArray());
+                        //保存账号密码
+                        model.saveUserName(userName.get());
+                        model.savePassword(password.get());
+                    }
+                }));
+    }
     @Override
     public void onDestroy() {
         super.onDestroy();

@@ -6,7 +6,7 @@
 
         <import type="com.goldze.mvvmhabit.ui.main.DeviceControlViewModel" />
         <import type="me.tatarka.bindingcollectionadapter2.BindingRecyclerViewAdapter" />
-
+        <import type="com.goldze.mvvmhabit.entity.DeviceStatusInfoEntity" />
         <variable
             name="viewModel"
             type="DeviceControlViewModel" />
@@ -71,6 +71,7 @@
                     android:layout_marginEnd="@dimen/margin_large_more"
                     android:checked="false"
                     binding:onCheckedChangeCommand="@{viewModel.onPowSwitchChangeCommand}"
+                    style="@style/whiteTextView_large"
                     android:text="@string/devicecontrol_switch_open" />
                     <Switch
                         android:id="@+id/switch_warm"
@@ -80,6 +81,7 @@
                         android:layout_marginStart="@dimen/margin_large_more"
                         android:checked="false"
                         binding:onCheckedChangeCommand="@{viewModel.onWarmSwitchChangeCommand}"
+                        style="@style/whiteTextView_large"
                         android:text="@string/devicecontrol_switch_warm" />
                 </LinearLayout>
                 <LinearLayout
@@ -99,6 +101,7 @@
                         android:textSize="@dimen/text_size_18"
                         android:background="@drawable/orange_round_normal_left"
                         android:padding="@dimen/margin_min"
+                        binding:onClickCommand="@{viewModel.onRoationPositiveCommand}"
                         android:text="@string/devicecontrol_rotation_mode_positive" />
 
                     <include
@@ -116,6 +119,7 @@
                         android:padding="@dimen/margin_min"
                         android:gravity="center"
                         android:background="@drawable/white_noround_normal"
+                        binding:onClickCommand="@{viewModel.onRoationReversalCommand}"
                         android:text="@string/devicecontrol_rotation_mode_reversal" />
                     <include
                         layout="@layout/model_diver_ver"
@@ -131,6 +135,7 @@
                         android:gravity="center"
                         android:padding="@dimen/margin_min"
                         android:background="@drawable/white_round_normal_right"
+                        binding:onClickCommand="@{viewModel.onRoationAutoCommand}"
                         android:text="@string/devicecontrol_rotation_mode_auto" />
                 </LinearLayout>
                 <CheckedTextView
@@ -141,6 +146,7 @@
                     android:layout_toStartOf="@+id/iv_devicecontrol_gif"
                     style="@style/whiteTextView_large"
                     binding:onClickCommand="@{viewModel.onHighSpeeSwitchChangeCommand}"
+                    android:checked="@{viewModel.statusInfoChageObeserver.isSpeedHigh==1}"
                     android:text="@string/devicecontrol_rotation_speed_high" />
                 <ImageView
                     android:id="@+id/imageViewLeftTop"
@@ -159,8 +165,11 @@
                     android:layout_marginTop="90dp"
                     android:layout_marginEnd="25dp"
                     style="@style/whiteTextView_large"
+                    android:checked="@{viewModel.statusInfoChageObeserver.isSpeedMid==1}"
                     binding:onClickCommand="@{viewModel.onMidSpeeSwitchChangeCommand}"
                     android:text="@string/devicecontrol_rotation_speed_middle" />
+<!--                    android:text="@string/devicecontrol_rotation_speed_middle" -->
+
                 <ImageView
                     android:id="@+id/imageViewleftBottom"
                     android:layout_width="wrap_content"
