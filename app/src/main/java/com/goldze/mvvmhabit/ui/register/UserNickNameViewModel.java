@@ -8,6 +8,8 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.goldze.mvvmhabit.data.DemoRepository;
+import com.goldze.mvvmhabit.entity.User;
+import com.goldze.mvvmhabit.entity.UserDao;
 import com.goldze.mvvmhabit.ui.main.DemoActivity;
 
 import io.reactivex.disposables.Disposable;

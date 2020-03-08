@@ -11,6 +11,9 @@ import com.goldze.mvvmhabit.data.DemoRepository;
 import com.goldze.mvvmhabit.ui.login.LoginViewModel;
 import com.goldze.mvvmhabit.ui.main.DeviceControlViewModel;
 import com.goldze.mvvmhabit.ui.main.DeviceListViewModel;
+import com.goldze.mvvmhabit.ui.main.LoadingViewModel;
+import com.goldze.mvvmhabit.ui.main.RegisterActivity;
+import com.goldze.mvvmhabit.ui.main.RegisterViewModel;
 import com.goldze.mvvmhabit.ui.network.NetWorkViewModel;
 
 /**
@@ -54,6 +57,10 @@ public class AppViewModelFactory extends ViewModelProvider.NewInstanceFactory {
             return (T) new DeviceControlViewModel(mApplication, mRepository);
         } else if (modelClass.isAssignableFrom(LoginViewModel.class)) {
             return (T) new LoginViewModel(mApplication, mRepository);
+        }else if (modelClass.isAssignableFrom(RegisterViewModel.class)) {
+            return (T) new RegisterViewModel(mApplication, mRepository);
+        }else if (modelClass.isAssignableFrom(LoadingViewModel.class)) {
+            return (T) new LoadingViewModel(mApplication, mRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }

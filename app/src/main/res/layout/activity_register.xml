@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:binding="http://schemas.android.com/apk/res-auto"
-    android:fitsSystemWindows="true">
+    xmlns:binding="http://schemas.android.com/apk/res-auto">
 
     <data>
 
         <variable
             name="viewModel"
-            type="com.goldze.mvvmhabit.ui.login.LoginViewModel" />
+            type="com.goldze.mvvmhabit.ui.main.RegisterViewModel" />
     </data>
 
     <RelativeLayout
@@ -163,28 +162,16 @@
                     android:textColor="@color/selector_redtext" />
             </LinearLayout>
 
-
-
                 <Button
-                    android:id="@+id/bt_login_useragreement"
+                    android:id="@+id/bt_register_useragreement"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/blueRoundButton"
                     android:layout_marginTop="16dp"
-                    android:text="登录"
+                    android:text="注册"
                     android:textColor="@color/white"
                     android:textSize="18sp"
-                    binding:onClickCommand="@{viewModel.loginOnClickCommand}" />
-
-            <Button
-                android:id="@+id/bt_register_user"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/buttonOfBottom"
-                android:text="注册新用户"
-                android:layout_marginTop="16dp"
-                android:textSize="18sp"
-                binding:onClickCommand="@{viewModel.registerOnClickCommand}"  />
+                    binding:onClickCommand="@{viewModel.registerOnClickCommand}" />
 
         </LinearLayout>
     </RelativeLayout>

@@ -12,6 +12,8 @@ import com.inuker.bluetooth.library.connect.response.BleReadRssiResponse;
 import com.inuker.bluetooth.library.connect.response.BleWriteResponse;
 import com.inuker.bluetooth.library.utils.BluetoothUtils;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 import me.goldze.mvvmhabit.utils.StringUtils;
@@ -53,14 +55,15 @@ public class BleOption {
     private static final int OPTION_SPEED_MIN = 0x10;
 
     private static final int OPTION_VOL_MAX = 0x11;
-    private static final int OPTION_VOL_MID= 0x12;
+    private static final int OPTION_VOL_MID = 0x12;
     private static final int OPTION_VOL_MIN = 0x13;
-    private static final int OPTION_GET_DEVICEINFO= 0x14;
-    private static final int OPTION_VOL_SILENT= 0x15;
+    private static final int OPTION_GET_DEVICEINFO = 0x14;
+    private static final int OPTION_VOL_SILENT = 0x15;
 
     private static BleOption instance;
     private String curDeviceMac;
     private volatile boolean isDeviceConnected;
+    private Timer deviceInfoTimer;
 
     public static synchronized BleOption getInstance() {
         if (instance == null) {
@@ -103,17 +106,41 @@ public class BleOption {
         AppApplication.getBluetoothClient(AppApplication.getInstance()).read(this.curDeviceMac, UUID_SERVICE_CHANNEL, UUID_CHARACTERISTIC_CHANNEL_NOTIFY, bleReadResponse);
 
     }
+
     /**
-     * 设备音量Min
+     * 开启获取设备信息的定时器，每2秒获取一次
      *
      * @param bleWriteResponse
      */
-    public void getDeviceInfo(BleWriteResponse bleWriteResponse) {
-        writeDate(new byte[]{OPTION_GET_DEVICEINFO}, bleWriteResponse);
+    public synchronized void startGetDeviceInfo(final BleWriteResponse bleWriteResponse) {
+        if (deviceInfoTimer != null) {
+            deviceInfoTimer.cancel();
+            deviceInfoTimer = null;
+        }
+        deviceInfoTimer = new Timer();
+        deviceInfoTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                writeDate(new byte[]{OPTION_GET_DEVICEINFO}, bleWriteResponse);
+            }
+        }, 500, 5 * 1000);
+
     }
+
+    /**
+     * 停止获取设备信息的定时器
+     */
+    public void stopGetDeviceInfo() {
+        if (deviceInfoTimer != null) {
+            deviceInfoTimer.cancel();
+            deviceInfoTimer = null;
+        }
+    }
+
     public void getRssiData(BleReadRssiResponse bleReadRssiResponse) {
         AppApplication.getBluetoothClient(AppApplication.getInstance()).readRssi(this.curDeviceMac, bleReadRssiResponse);
     }
+
     /**
      * 连接设备蓝牙
      *
@@ -197,6 +224,7 @@ public class BleOption {
     public void setMaxSpeed(BleWriteResponse bleWriteResponse) {
         writeDate(new byte[]{OPTION_SPEED_MAX}, bleWriteResponse);
     }
+
     /**
      * 设备mid速
      *
@@ -214,6 +242,7 @@ public class BleOption {
     public void setMinSpeed(BleWriteResponse bleWriteResponse) {
         writeDate(new byte[]{OPTION_SPEED_MIN}, bleWriteResponse);
     }
+
     /**
      * 设备加速
      *
@@ -305,13 +334,13 @@ public class BleOption {
     }
 
 
-    private void writeDate(byte[] datas, BleWriteResponse bleWriteResponse) {
+    private synchronized void writeDate(byte[] datas, BleWriteResponse bleWriteResponse) {
         if (StringUtils.isEmpty(this.curDeviceMac) || AppApplication.getBluetoothClient(AppApplication.getInstance()).getConnectStatus(this.curDeviceMac) != Constants.STATUS_DEVICE_CONNECTED) {
-            Log.e(TAG, "curDeviceMac is empty or disconnected,cannot do any option,mac is " + this.curDeviceMac+";connect statu is "+AppApplication.getBluetoothClient(AppApplication.getInstance()).getConnectStatus(this.curDeviceMac));
+            Log.e(TAG, "curDeviceMac is empty or disconnected,cannot do any option,mac is " + this.curDeviceMac + ";connect statu is " + AppApplication.getBluetoothClient(AppApplication.getInstance()).getConnectStatus(this.curDeviceMac));
             bleWriteResponse.onResponse(Code.REQUEST_FAILED);
             return;
         }
-        Log.e(TAG, "write date is  " +RxDataTool.bytes2HexString(datas));
+        Log.e(TAG, "write date is  " + RxDataTool.bytes2HexString(datas));
         AppApplication.getBluetoothClient(AppApplication.getInstance()).write(this.curDeviceMac, UUID_SERVICE_CHANNEL, UUID_CHARACTERISTIC_CHANNEL_WRITE_READ, datas, bleWriteResponse);
     }
 }

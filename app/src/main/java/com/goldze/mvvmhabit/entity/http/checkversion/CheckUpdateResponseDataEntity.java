@@ -44,6 +44,9 @@ import android.os.Parcelable;
  *  *     }
  */
 public class CheckUpdateResponseDataEntity implements Parcelable{
+
+    public static final String FORCE_UPGRADE="1";
+    public static final String TYPE_APP="3";
     private String type;
     private String appKey;
     private String newestVerno;

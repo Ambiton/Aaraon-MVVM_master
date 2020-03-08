@@ -3,6 +3,7 @@ package com.goldze.mvvmhabit.ui.login;
 import android.Manifest;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.databinding.Observable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.method.HideReturnsTransformationMethod;
@@ -13,16 +14,16 @@ import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.app.AppViewModelFactory;
 import com.goldze.mvvmhabit.databinding.ActivityLoginBinding;
 import com.tbruyelle.rxpermissions2.RxPermissions;
-
 import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.utils.MaterialDialogUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
 /**
  * 一个MVVM模式的登陆界面
  */
 public class LoginActivity extends BaseActivity<ActivityLoginBinding, LoginViewModel> {
-    //ActivityLoginBinding类是databinding框架自定生成的,对应activity_login.xml
+    private static final String TAG="LoginActivity";
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_login;
@@ -43,6 +44,13 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding, LoginViewM
     @Override
     public void initViewObservable() {
         //监听ViewModel中pSwitchObservable的变化, 当ViewModel中执行【uc.pSwitchObservable.set(!uc.pSwitchObservable.get());】时会回调该方法
+
+        viewModel.dialogEvent.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                MaterialDialogUtils.showBasicDialogNoCancel(LoginActivity.this,viewModel.dialogEvent.get()).show();
+            }
+        });
         viewModel.uc.pSwitchEvent.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean aBoolean) {
@@ -60,6 +68,8 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding, LoginViewM
                 }
             }
         });
+
+
     }
 
 

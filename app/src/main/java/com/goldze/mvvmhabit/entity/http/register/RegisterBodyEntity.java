@@ -20,6 +20,13 @@ public class RegisterBodyEntity implements Parcelable{
     private String password;
     private String type;
 
+    public RegisterBodyEntity(String smsToken, String userName, String password, String type) {
+        this.smsToken = smsToken;
+        this.userName = userName;
+        this.password = password;
+        this.type = type;
+    }
+
     protected RegisterBodyEntity(Parcel in) {
         smsToken = in.readString();
         userName = in.readString();

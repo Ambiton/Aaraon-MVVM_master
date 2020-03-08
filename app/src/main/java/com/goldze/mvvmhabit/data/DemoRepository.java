@@ -10,9 +10,12 @@ import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.entity.http.login.LoginBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterBodyEntity;
-import com.goldze.mvvmhabit.entity.http.register.RegisterResponseEntity;
+import com.goldze.mvvmhabit.entity.http.register.RegisterOrLoginResponseEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeResponseEntity;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import io.reactivex.Observable;
 import me.goldze.mvvmhabit.base.BaseModel;
@@ -64,17 +67,22 @@ public class DemoRepository extends BaseModel implements HttpDataSource, LocalDa
     }
 
     @Override
-    public Observable<CheckUpdateResponseEntity> checkUpdate(String appid, String sign,String token,CheckUpdateBodyEntity entity) {
-        return mHttpDataSource.checkUpdate(appid, sign, token, entity);
+    public Observable<CheckUpdateResponseEntity> checkUpdate(String appid, String sign,String token,String callId,CheckUpdateBodyEntity entity) {
+        Map<String, String> map=new HashMap<>();
+        map.put("appKey",appid);
+        map.put("mysig",sign);
+        map.put("token",token);
+        map.put("callId",callId);
+        return mHttpDataSource.checkUpdate(appid, sign, token,callId, entity);
     }
 
     @Override
-    public Observable<Object> loginUser(LoginBodyEntity entity) {
+    public Observable<RegisterOrLoginResponseEntity> loginUser(LoginBodyEntity entity) {
         return mHttpDataSource.loginUser(entity);
     }
 
     @Override
-    public Observable<RegisterResponseEntity> registerUser(RegisterBodyEntity entity) {
+    public Observable<RegisterOrLoginResponseEntity> registerUser(RegisterBodyEntity entity) {
         return mHttpDataSource.registerUser(entity);
     }
 
@@ -98,6 +106,10 @@ public class DemoRepository extends BaseModel implements HttpDataSource, LocalDa
     public void saveToken(String token) {
         mLocalDataSource.saveToken(token);
     }
+    @Override
+    public void saveUserID(int token) {
+        mLocalDataSource.saveUserID(token);
+    }
 
     @Override
     public void saveUserName(String userName) {
@@ -115,12 +127,27 @@ public class DemoRepository extends BaseModel implements HttpDataSource, LocalDa
     }
 
     @Override
+    public void saveSmsToken(String smsToken) {
+        mLocalDataSource.saveSmsToken(smsToken);
+    }
+
+    @Override
+    public String getSmsToken() {
+        return mLocalDataSource.getSmsToken();
+    }
+
+    @Override
+    public int getUserID() {
+        return mLocalDataSource.getUserID();
+    }
+
+    @Override
     public String getPassword() {
         return mLocalDataSource.getPassword();
     }
 
     @Override
     public String getToken() {
-        return null;
+        return mLocalDataSource.getToken();
     }
 }

@@ -13,7 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
-            android:background="@mipmap/mainbackground"
+            android:background="@mipmap/otherbackup"
             android:gravity="center"
             android:orientation="vertical">
             <View
@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/margin_title_large"
-                style="@style/whiteTextView_larger"
+                style="@style/grayTextView_large"
                 android:text="@string/user_heightchoose" />
 
 
@@ -51,7 +51,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_min"
                     android:textSize="@dimen/text_large"
-                    android:textColor="@color/whiteColor88"
+                    android:textColor="@color/gray66_color"
                     android:text="cm" />
             </LinearLayout>
 
@@ -68,7 +68,6 @@
                 style="@style/buttonOfBottom"
                 android:text="@string/btn_nextstep"
                 android:layout_marginTop="@dimen/margin_normal"
-                android:textColor="@color/white"
                 android:textSize="18sp"
                 binding:onClickCommand="@{viewModel.nextBtnClick}" />
         </LinearLayout>

@@ -3,6 +3,9 @@ package com.goldze.mvvmhabit.entity;
 import android.databinding.BaseObservable;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
+
+import com.goldze.mvvmhabit.utils.RxDataTool;
 
 /**
  * @author Areo
@@ -11,20 +14,24 @@ import android.os.Parcelable;
  */
 public class DeviceStatusInfoEntity extends BaseObservable implements Parcelable {
 
-    public static final byte FLAG_TRUE=0x01;
-    public static final byte FLAG_FALSE=0x00;
+    public static final byte FLAG_TRUE = 1;
+    public static final byte FLAG_FALSE = 0;
+    public static final byte FLAG_SPEED_MAX = 2;
+    public static final byte FLAG_SPEED_MID = 1;
+    public static final byte FLAG_SPEED_MIN = 0;
+    public static final byte FLAG_ROATION_AUTO = 0;
+    public static final byte FLAG_ROATION_POSISTION = 1;
+    public static final byte FLAG_ROATION_REV = 2;
+    public static final byte FLAG_VOICE_MAX = 25;
+    public static final byte FLAG_VOICE_MID = 20;
+    public static final byte FLAG_VOICE_MIN = 15;
+    public static final byte FLAG_VOICE_MUTE = 0;
     private byte isDeviceOpen;
     private byte isHeatingOpen;
-    private byte isRoationPositive;
-    private byte isRoationReversal;
-    private byte isRoationAuto;
-    private byte isVoiceHigh;
-    private byte isVoiceMid;
-    private byte isVoiceLow;
-    private byte isVoiceMute;
-    private byte isSpeedHigh;
-    private byte isSpeedMid;
-    private byte isSpeedLow;
+    private byte deviceSpeed;
+    private byte deviceRoation;
+    private byte deviceVoice;
+    private byte deviceVoiceSwitch;
 
     public byte getIsDeviceOpen() {
         return isDeviceOpen;
@@ -42,102 +49,59 @@ public class DeviceStatusInfoEntity extends BaseObservable implements Parcelable
         this.isHeatingOpen = isHeatingOpen;
     }
 
-    public byte getIsRoationPositive() {
-        return isRoationPositive;
+    public byte getDeviceRoation() {
+        return deviceRoation;
     }
 
-    public void setIsRoationPositive(byte isRoationPositive) {
-        this.isRoationPositive = isRoationPositive;
+    public void setDeviceRoation(byte deviceRoation) {
+        this.deviceRoation = deviceRoation;
     }
 
-    public byte getIsRoationReversal() {
-        return isRoationReversal;
+    public byte getDeviceVoice() {
+        return deviceVoice;
     }
 
-    public void setIsRoationReversal(byte isRoationReversal) {
-        this.isRoationReversal = isRoationReversal;
+    public void setDeviceVoice(byte deviceVoice) {
+        this.deviceVoice = deviceVoice;
     }
 
-    public byte getIsRoationAuto() {
-        return isRoationAuto;
+    public byte getDeviceSpeed() {
+        return deviceSpeed;
     }
 
-    public void setIsRoationAuto(byte isRoationAuto) {
-        this.isRoationAuto = isRoationAuto;
+    public void setDeviceSpeed(byte deviceSpeed) {
+        this.deviceSpeed = deviceSpeed;
     }
 
-    public byte getIsVoiceHigh() {
-        return isVoiceHigh;
+    public byte getDeviceVoiceSwitch() {
+        return deviceVoiceSwitch;
     }
 
-    public void setIsVoiceHigh(byte isVoiceHigh) {
-        this.isVoiceHigh = isVoiceHigh;
+    public void setDeviceVoiceSwitch(byte deviceVoiceSwitch) {
+        this.deviceVoiceSwitch = deviceVoiceSwitch;
     }
-
-    public byte getIsVoiceMid() {
-        return isVoiceMid;
-    }
-
-    public void setIsVoiceMid(byte isVoiceMid) {
-        this.isVoiceMid = isVoiceMid;
-    }
-
-    public byte getIsVoiceLow() {
-        return isVoiceLow;
-    }
-
-    public void setIsVoiceLow(byte isVoiceLow) {
-        this.isVoiceLow = isVoiceLow;
-    }
-
-    public byte getIsVoiceMute() {
-        return isVoiceMute;
-    }
-
-    public void setIsVoiceMute(byte isVoiceMute) {
-        this.isVoiceMute = isVoiceMute;
-    }
-
-    public byte getIsSpeedHigh() {
-        return isSpeedHigh;
-    }
-
-    public void setIsSpeedHigh(byte isSpeedHigh) {
-        this.isSpeedHigh = isSpeedHigh;
-    }
-
-    public byte getIsSpeedMid() {
-        return isSpeedMid;
-    }
-
-    public void setIsSpeedMid(byte isSpeedMid) {
-        this.isSpeedMid = isSpeedMid;
-    }
-
-    public byte getIsSpeedLow() {
-        return isSpeedLow;
-    }
-
-    public void setIsSpeedLow(byte isSpeedLow) {
-        this.isSpeedLow = isSpeedLow;
-    }
-
     public DeviceStatusInfoEntity() {
+
     }
+    public DeviceStatusInfoEntity(byte[]info) {
+        if (info.length == 6) {
+            this.isDeviceOpen = info[0];
+            this.isHeatingOpen = info[1];
+            this.deviceSpeed = info[2];
+            this.deviceRoation = RxDataTool.getLow4(info[3]);
+            this.deviceVoice = info[4];
+            this.deviceVoiceSwitch = info[5];
+        }
+    }
+
 
     protected DeviceStatusInfoEntity(Parcel in) {
-        this.isDeviceOpen=in.readByte();
-        this.isHeatingOpen=in.readByte();
-        this.isRoationPositive=in.readByte();
-        this.isRoationReversal=in.readByte();
-        this.isRoationAuto=in.readByte();
-        this.isVoiceHigh=in.readByte();
-        this.isVoiceMid=in.readByte();
-        this.isVoiceLow=in.readByte();
-        this.isVoiceMute=in.readByte();
-        this.isSpeedHigh=in.readByte();
-        this.isSpeedMid=in.readByte();
-        this.isSpeedLow=in.readByte();
+        this.isDeviceOpen = in.readByte();
+        this.isHeatingOpen = in.readByte();
+        this.deviceSpeed = in.readByte();
+        this.deviceRoation = in.readByte();
+        this.deviceVoice = in.readByte();
+        this.deviceVoiceSwitch = in.readByte();
     }
 
     public static final Creator<DeviceStatusInfoEntity> CREATOR = new Creator<DeviceStatusInfoEntity>() {
@@ -156,19 +120,14 @@ public class DeviceStatusInfoEntity extends BaseObservable implements Parcelable
     public int describeContents() {
         return 0;
     }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(this.isDeviceOpen);
         dest.writeByte(this.isHeatingOpen);
-        dest.writeByte(this.isRoationPositive);
-        dest.writeByte(this.isRoationReversal);
-        dest.writeByte(this.isRoationAuto);
-        dest.writeByte(this.isVoiceHigh);
-        dest.writeByte(this.isVoiceMid);
-        dest.writeByte(this.isVoiceLow);
-        dest.writeByte(this.isVoiceMute);
-        dest.writeByte(this.isSpeedHigh);
-        dest.writeByte(this.isSpeedMid);
-        dest.writeByte(this.isSpeedLow);
+        dest.writeByte(this.deviceSpeed);
+        dest.writeByte(this.deviceRoation);
+        dest.writeByte(this.deviceVoice);
+        dest.writeByte(this.deviceVoiceSwitch);
     }
 }

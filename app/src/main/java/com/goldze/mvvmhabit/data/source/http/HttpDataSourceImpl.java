@@ -7,12 +7,14 @@ import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.entity.http.login.LoginBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterBodyEntity;
-import com.goldze.mvvmhabit.entity.http.register.RegisterResponseEntity;
+import com.goldze.mvvmhabit.entity.http.register.RegisterOrLoginResponseEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeResponseEntity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -48,11 +50,15 @@ public class HttpDataSourceImpl implements HttpDataSource {
 
     @Override
     public Observable<VerifiedCodeResponseEntity> getVerifiedCode(VerifiedCodeEntity body) {
-        return apiService.getVerifiedCode(body);
+        Map<String, String> map=new HashMap<>();
+        map.put("appKey","1uMqYWpHo3MoLH");
+        map.put("mysig","sig-result");
+        map.put("callId","1276418994");
+        return apiService.getVerifiedCode(map,body);
     }
 
     @Override
-    public Observable<RegisterResponseEntity> registerUser(RegisterBodyEntity entity) {
+    public Observable<RegisterOrLoginResponseEntity> registerUser(RegisterBodyEntity entity) {
         return apiService.registerUser(entity);
     }
 
@@ -62,12 +68,18 @@ public class HttpDataSourceImpl implements HttpDataSource {
     }
 
     @Override
-    public Observable<CheckUpdateResponseEntity> checkUpdate(String appid, String sign,String token,CheckUpdateBodyEntity entity ) {
-        return apiService.checkUpdate(appid,sign,token,entity);
+    public Observable<CheckUpdateResponseEntity> checkUpdate(String appid, String sign,String token,String callId,CheckUpdateBodyEntity entity ) {
+        Map<String, String> map=new HashMap<>();
+        map.put("appKey",appid);
+        map.put("mysig",sign);
+        map.put("token",token);
+        map.put("callId",callId);
+        return apiService.checkUpdate(map,entity);
     }
 
+
     @Override
-    public Observable<Object> loginUser(LoginBodyEntity entity) {
+    public Observable<RegisterOrLoginResponseEntity> loginUser(LoginBodyEntity entity) {
         return apiService.login(entity);
     }
 

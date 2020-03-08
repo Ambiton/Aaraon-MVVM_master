@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.vondear.rxtool.RxDataTool;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -19,8 +21,10 @@ public class ExampleInstrumentedTest {
     @Test
     public void useAppContext() throws Exception {
         // Context of the app under test.
-        Context appContext = InstrumentationRegistry.getTargetContext();
-
-        assertEquals("com.goldze.mvvmhabit", appContext.getPackageName());
+//        Context appContext = InstrumentationRegistry.getTargetContext();
+//
+//        assertEquals("com.goldze.mvvmhabit", appContext.getPackageName());
+        float v1=RxDataTool.stringToFloat("01.01");
+        float v2=RxDataTool.stringToFloat("00.98");
     }
 }

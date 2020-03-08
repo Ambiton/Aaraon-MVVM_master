@@ -14,11 +14,27 @@ import android.os.Parcelable;
  *
  */
 public class RegisterResponseDataEntity implements Parcelable{
-    private String userId;
+    private int userId;
     private String token;
 
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     protected RegisterResponseDataEntity(Parcel in) {
-        userId = in.readString();
+        userId = in.readInt();
         token = in.readString();
     }
 
@@ -42,7 +58,7 @@ public class RegisterResponseDataEntity implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.userId);
+        dest.writeInt(this.userId);
         dest.writeString(this.token);
     }
 }

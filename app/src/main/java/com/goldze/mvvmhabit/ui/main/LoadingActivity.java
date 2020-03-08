@@ -1,8 +1,7 @@
 package com.goldze.mvvmhabit.ui.main;
 
 import android.Manifest;
-import android.app.ProgressDialog;
-import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,12 +17,16 @@ import android.widget.Toast;
 import com.goldze.mvvmhabit.BR;
 import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.app.AppApplication;
+import com.goldze.mvvmhabit.app.AppViewModelFactory;
 import com.goldze.mvvmhabit.databinding.ActivityDemoBinding;
 import com.goldze.mvvmhabit.databinding.ActivityLoadingBinding;
 import com.goldze.mvvmhabit.ui.login.LoginActivity;
+import com.goldze.mvvmhabit.ui.login.LoginViewModel;
 import com.inuker.bluetooth.library.BluetoothClient;
 import com.inuker.bluetooth.library.connect.BleConnectManager;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+
+import java.io.File;
 
 import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.base.BaseActivity;
@@ -53,6 +56,12 @@ public class LoadingActivity extends BaseActivity<ActivityLoadingBinding, Loadin
     }
 
     @Override
+    public LoadingViewModel initViewModel() {
+        //使用自定义的ViewModelFactory来创建ViewModel，如果不重写该方法，则默认会调用LoginViewModel(@NonNull Application application)构造方法
+        AppViewModelFactory factory = AppViewModelFactory.getInstance(getApplication());
+        return ViewModelProviders.of(this, factory).get(LoadingViewModel.class);
+    }
+    @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_loading;
     }
@@ -80,13 +89,17 @@ public class LoadingActivity extends BaseActivity<ActivityLoadingBinding, Loadin
 
     private void openGPSSEtting() {
         if (checkGpsIsOpen()){
-            Toast.makeText(this, "true", Toast.LENGTH_SHORT).show();
             new Handler(getMainLooper()).postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    //startActivity(LoginActivity.class);
-                    startActivity(DeviceListActivity.class);
-                    finish();
+                    if(viewModel.isNeedLogin(LoadingActivity.this)){
+                        startActivity(LoginActivity.class);
+                        finish();
+                    }else{
+                        startActivity(DeviceListActivity.class);
+                        finish();
+                    }
+
                 }
             },1000);
         }else {
@@ -138,44 +151,7 @@ public class LoadingActivity extends BaseActivity<ActivityLoadingBinding, Loadin
                 });
     }
 
-    private void downFile(String url) {
-        String destFileDir = getApplication().getCacheDir().getPath();
-        String destFileName = System.currentTimeMillis() + ".apk";
-        final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog.setTitle("正在下载...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-        DownLoadManager.getInstance().load(url, new ProgressCallBack<ResponseBody>(destFileDir, destFileName) {
-            @Override
-            public void onStart() {
-                super.onStart();
-            }
 
-            @Override
-            public void onCompleted() {
-                progressDialog.dismiss();
-            }
-
-            @Override
-            public void onSuccess(ResponseBody responseBody) {
-                ToastUtils.showShort("文件下载完成！");
-            }
-
-            @Override
-            public void progress(final long progress, final long total) {
-                progressDialog.setMax((int) total);
-                progressDialog.setProgress((int) progress);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                ToastUtils.showShort("文件下载失败！");
-                progressDialog.dismiss();
-            }
-        });
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

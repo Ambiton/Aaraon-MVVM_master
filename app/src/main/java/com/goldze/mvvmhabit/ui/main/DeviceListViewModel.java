@@ -8,6 +8,7 @@ import android.databinding.ObservableArrayList;
 import android.databinding.ObservableField;
 import android.databinding.ObservableList;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 
 import com.goldze.mvvmhabit.BR;
@@ -15,17 +16,24 @@ import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.app.AppApplication;
 import com.goldze.mvvmhabit.data.DemoRepository;
 import com.goldze.mvvmhabit.entity.DeviceInfoEntity;
+import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
+import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.ui.base.viewmodel.ToolbarViewModel;
 import com.goldze.mvvmhabit.utils.BleOption;
+import com.goldze.mvvmhabit.utils.HttpsUtils;
 import com.inuker.bluetooth.library.search.SearchRequest;
 import com.inuker.bluetooth.library.search.SearchResult;
 import com.inuker.bluetooth.library.search.response.SearchResponse;
 import com.inuker.bluetooth.library.utils.BluetoothLog;
 
 import java.util.HashSet;
+
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
+import me.goldze.mvvmhabit.utils.RxUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 import me.tatarka.bindingcollectionadapter2.ItemBinding;
 
@@ -34,6 +42,8 @@ import me.tatarka.bindingcollectionadapter2.ItemBinding;
  */
 
 public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
+
+    private static final String TAG="DeviceListViewModel";
     public SingleLiveEvent<DeviceListItemViewModel> deleteItemLiveData = new SingleLiveEvent<>();
     //绑定列表的绑定
     public ObservableField<String> bindListStr = new ObservableField<>(getApplication().getString(R.string.devicelist_title_bindlist));
@@ -41,7 +51,8 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
     public ObservableField<String> canUseListStr = new ObservableField<>(getApplication().getString(R.string.devicelist_title_canuselist));
     //封装一个界面发生改变的观察者
     public UIChangeObservable uc = new UIChangeObservable();
-
+    //版本检测观察者
+    public ObservableField<CheckUpdateResponseEntity> versionEvent = new ObservableField<>();
     private Context contex;
 
     public void setContext(Context context) {
@@ -103,7 +114,28 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
             //requestDeviceList();
         }
     });
+    public void checkVersion(){
+        //RaJava检测更新
+        addSubscribe(model.checkUpdate("1uMqYWpHo3MoLH","sign",model.getToken(), HttpsUtils.getCurrentMills(),new CheckUpdateBodyEntity("01.00","01.00","01.00"))
+                .compose(RxUtils.schedulersTransformer()) //线程调度
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                        showDialog();
+                    }
+                })
+                .subscribe(new Consumer<CheckUpdateResponseEntity>() {
+                    @Override
+                    public void accept(CheckUpdateResponseEntity entity) throws Exception {
+                        dismissDialog();
+                        Log.e(TAG,"getStatus is:;Array is "+entity);
+                        //保存账号密码
+                        versionEvent.set(entity);
+                        versionEvent.notifyChange();
 
+                    }
+                }));
+    }
     /**
      * 停止扫描
      */

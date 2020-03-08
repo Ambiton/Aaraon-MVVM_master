@@ -13,6 +13,7 @@ import android.view.View;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.StackingBehavior;
 import com.afollestad.materialdialogs.Theme;
 
 import java.util.List;
@@ -102,7 +103,26 @@ public class MaterialDialogUtils {
                 });
         return builder;
     }
+    /***
+     * 获取更新对话框
+     *
+     * @param
+     * @return MaterialDialog.Builder
+     */
+    public static MaterialDialog.Builder showUpdateDialog(final Context context, String
+            content,boolean isForceUpdate) {
 
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(context)
+                .title("更新提示")
+                .content(content)
+                .positiveColor(Color.RED)
+                .positiveText("开始更新").canceledOnTouchOutside(false);
+
+        if(!isForceUpdate){
+            builder.negativeText("暂不更新").negativeColor(Color.GRAY) ;
+        }
+        return builder;
+    }
 
     /***
      * 获取基本对话框
@@ -147,7 +167,21 @@ public class MaterialDialogUtils {
 
         return builder;
     }
+    /***
+     * 显示一个基础的对话框  带标题 带内容
+     * 没有取消按钮
+     * @param
+     * @return MaterialDialog.Builder
+     */
+    public static MaterialDialog.Builder showBasicDialogNoCancel(final Context context,  String content) {
 
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(context)
+                .title("温馨提示")
+                .content(content)
+                .positiveText("确定");
+
+        return builder;
+    }
 
     /***
      * 显示一个基础的对话框  带标题 带内容

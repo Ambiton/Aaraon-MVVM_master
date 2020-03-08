@@ -4,10 +4,21 @@ package com.goldze.mvvmhabit.data.source;
  * Created by goldze on 2019/3/26.
  */
 public interface LocalDataSource {
+
+    /**
+     * 保存smsToken
+     */
+    void saveSmsToken(String smsToken);
+
     /**
      * 保存token
      */
     void saveToken(String token);
+
+    /**
+     * 保存用户ID
+     */
+    void saveUserID(int userId);
     /**
      * 保存用户名
      */
@@ -33,4 +44,14 @@ public interface LocalDataSource {
      * 获取Token
      */
     String getToken();
+
+    /**
+     * 获取smsToken
+     */
+    String getSmsToken();
+
+    /**
+     * 获取smsToken
+     */
+    int getUserID();
 }

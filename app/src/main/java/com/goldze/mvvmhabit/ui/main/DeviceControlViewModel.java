@@ -11,20 +11,15 @@ import android.view.View;
 import com.goldze.mvvmhabit.BR;
 import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.data.DemoRepository;
-import com.goldze.mvvmhabit.entity.DemoEntity;
 import com.goldze.mvvmhabit.entity.DeviceStatusInfoEntity;
 import com.goldze.mvvmhabit.ui.base.viewmodel.ToolbarViewModel;
 import com.goldze.mvvmhabit.utils.BleOption;
-import com.goldze.mvvmhabit.utils.DataConvertTools;
 import com.goldze.mvvmhabit.utils.RxDataTool;
-import com.goldze.mvvmhabit.utils.heatbeat.HeatBleOption;
 import com.inuker.bluetooth.library.Code;
 import com.inuker.bluetooth.library.connect.response.BleNotifyResponse;
 import com.inuker.bluetooth.library.connect.response.BleReadResponse;
 import com.inuker.bluetooth.library.connect.response.BleReadRssiResponse;
 import com.inuker.bluetooth.library.connect.response.BleWriteResponse;
-
-import java.util.ArrayList;
 import java.util.UUID;
 
 import me.goldze.mvvmhabit.binding.command.BindingAction;
@@ -54,15 +49,21 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
         Log.e(TAG, "heat value is " + (value[3]+value[4]));
         Log.e(TAG, "onNotify UUID is " + character + ",data is " + RxDataTool.bytes2HexString(value));
         if(value.length==6){
-            uc.powerSwitch.setValue(value[0]==1);
-            uc.warmSwitch.setValue(value[1]==1);
-            uc.highSpeedSwitch.setValue(value[2]==2);
-            uc.midSpeedSwitch.setValue(value[2]==1);
-            uc.lowSpeedSwitch.setValue(value[2]==0);
-            uc.highVolSwitch.setValue(value[3]==25);
-            uc.midVolSwitch.setValue(value[3]==20);
-            uc.lowVolSwitch.setValue(value[3]==15);
-            uc.muteVolSwitch.setValue(value[3]==0);
+            for(int i=0;i<6;i++){
+                Log.e(TAG, "getNotifyData,data  "+(i+1)+ "is"+ value[i]);
+            }
+            DeviceStatusInfoEntity recDeviceStatusInfoEntity=new DeviceStatusInfoEntity(value);
+            if (deviceStatusInfoEntity.getIsHeatingOpen() != recDeviceStatusInfoEntity.getIsHeatingOpen() ||
+                    deviceStatusInfoEntity.getIsDeviceOpen() != recDeviceStatusInfoEntity.getIsDeviceOpen() ||
+                    deviceStatusInfoEntity.getDeviceRoation() != recDeviceStatusInfoEntity.getDeviceRoation() ||
+                    deviceStatusInfoEntity.getDeviceSpeed() != recDeviceStatusInfoEntity.getDeviceSpeed() ||
+                    deviceStatusInfoEntity.getDeviceVoice() != recDeviceStatusInfoEntity.getDeviceVoice() ||
+                    deviceStatusInfoEntity.getDeviceVoiceSwitch() != recDeviceStatusInfoEntity.getDeviceVoiceSwitch()) {
+                deviceStatusInfoEntity = recDeviceStatusInfoEntity;
+                statusInfoChageObeserver.set(deviceStatusInfoEntity);
+                statusInfoChageObeserver.notifyChange();
+            }
+
         }
 
     }
@@ -115,6 +116,7 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
     public DeviceControlViewModel(@NonNull Application application, DemoRepository repository) {
         super(application, repository);
         statusInfoChageObeserver.set(deviceStatusInfoEntity);
+        //statusInfoChageObeserver.notifyChange();
     }
 
     /**
@@ -128,7 +130,7 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
         setTitleText(getApplication().getString(R.string.devicelist_title_mydevice));
         uc.powerSwitch.setValue(false);
         uc.warmSwitch.setValue(false);
-        BleOption.getInstance().getDeviceInfo(DeviceControlViewModel.this);
+        //BleOption.getInstance().startGetDeviceInfo(DeviceControlViewModel.this);
     }
 
     @Override
@@ -151,47 +153,47 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
         }
     });
     //电源开关
-    public BindingCommand<Boolean> onPowSwitchChangeCommand = new BindingCommand<>(new BindingConsumer<Boolean>() {
+    public BindingCommand onPowSwitchChangeCommand = new BindingCommand<>(new BindingAction() {
         @Override
-        public void call(Boolean aBoolean) {
-            //uc.powerSwitch.setValue(aBoolean);
-
+        public void call() {
+            Boolean aBoolean=!(deviceStatusInfoEntity.getIsDeviceOpen()==DeviceStatusInfoEntity.FLAG_TRUE);
+            uc.powerSwitch.setValue(aBoolean);
+            deviceStatusInfoEntity.setIsDeviceOpen(aBoolean?DeviceStatusInfoEntity.FLAG_TRUE:DeviceStatusInfoEntity.FLAG_FALSE);
             if (aBoolean) {
-                statusInfoChageObeserver.get().setIsDeviceOpen(DeviceStatusInfoEntity.FLAG_TRUE);
                 BleOption.getInstance().turnOnDevice(DeviceControlViewModel.this);
             } else {
-                statusInfoChageObeserver.get().setIsDeviceOpen(DeviceStatusInfoEntity.FLAG_FALSE);
                 BleOption.getInstance().turnOffDevice(DeviceControlViewModel.this);
             }
 
+            statusInfoChageObeserver.set(deviceStatusInfoEntity);
+            statusInfoChageObeserver.notifyChange();
         }
     });
     //加热开关
-    public BindingCommand onWarmSwitchChangeCommand = new BindingCommand<>(new BindingConsumer<Boolean>() {
+    public BindingCommand onWarmSwitchChangeCommand = new BindingCommand<>(new BindingAction() {
         @Override
-        public void call(Boolean aBoolean) {
-            uc.warmSwitch.setValue(aBoolean);
+        public void call() {
+            Boolean aBoolean = !(deviceStatusInfoEntity.getIsHeatingOpen() == DeviceStatusInfoEntity.FLAG_TRUE);
+            deviceStatusInfoEntity.setIsHeatingOpen(aBoolean ? DeviceStatusInfoEntity.FLAG_TRUE : DeviceStatusInfoEntity.FLAG_FALSE);
             if (aBoolean) {
-                statusInfoChageObeserver.get().setIsHeatingOpen(DeviceStatusInfoEntity.FLAG_TRUE);
                 BleOption.getInstance().turnOnHeating(DeviceControlViewModel.this);
             } else {
-                statusInfoChageObeserver.get().setIsHeatingOpen(DeviceStatusInfoEntity.FLAG_FALSE);
                 BleOption.getInstance().turnOffHeating(DeviceControlViewModel.this);
             }
+            statusInfoChageObeserver.set(deviceStatusInfoEntity);
+            statusInfoChageObeserver.notifyChange();
         }
     });
+
     //高速开关
     public BindingCommand onHighSpeeSwitchChangeCommand = new BindingCommand<>(new BindingAction() {
         @Override
         public void call() {
-            uc.highSpeedSwitch.call();
-            deviceStatusInfoEntity.setIsSpeedHigh(DeviceStatusInfoEntity.FLAG_TRUE);
-            deviceStatusInfoEntity.setIsSpeedMid(DeviceStatusInfoEntity.FLAG_FALSE);
-            deviceStatusInfoEntity.setIsSpeedLow(DeviceStatusInfoEntity.FLAG_FALSE);
-            testStr.set("high");
-            statusInfoChageObeserver.set(deviceStatusInfoEntity);
-            Log.e(TAG, "getIsSpeedHigh is " +  statusInfoChageObeserver.get().getIsSpeedHigh());
+            deviceStatusInfoEntity.setDeviceSpeed(DeviceStatusInfoEntity.FLAG_SPEED_MAX);
+            Log.e(TAG, "getIsSpeedHigh is " +  statusInfoChageObeserver.get().getDeviceSpeed());
             BleOption.getInstance().setMaxSpeed(DeviceControlViewModel.this);
+            statusInfoChageObeserver.set(deviceStatusInfoEntity);
+            statusInfoChageObeserver.notifyChange();
         }
     });
     //中速开关
@@ -199,10 +201,9 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
         @Override
         public void call() {
             uc.midSpeedSwitch.call();
-            deviceStatusInfoEntity.setIsSpeedHigh(DeviceStatusInfoEntity.FLAG_FALSE);
-            deviceStatusInfoEntity.setIsSpeedMid(DeviceStatusInfoEntity.FLAG_TRUE);
-            deviceStatusInfoEntity.setIsSpeedLow(DeviceStatusInfoEntity.FLAG_FALSE);
+            deviceStatusInfoEntity.setDeviceSpeed(DeviceStatusInfoEntity.FLAG_SPEED_MID);
             statusInfoChageObeserver.set(deviceStatusInfoEntity);
+            statusInfoChageObeserver.notifyChange();
             BleOption.getInstance().setMidSpeed(DeviceControlViewModel.this);
         }
     });
@@ -210,10 +211,9 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
     public BindingCommand onLowSpeeSwitchChangeCommand = new BindingCommand<>(new BindingAction() {
         @Override
         public void call() {
-            uc.lowSpeedSwitch.call();
-            statusInfoChageObeserver.get().setIsSpeedHigh(DeviceStatusInfoEntity.FLAG_FALSE);
-            statusInfoChageObeserver.get().setIsSpeedMid(DeviceStatusInfoEntity.FLAG_FALSE);
-            statusInfoChageObeserver.get().setIsSpeedLow(DeviceStatusInfoEntity.FLAG_TRUE);
+            deviceStatusInfoEntity.setDeviceSpeed(DeviceStatusInfoEntity.FLAG_SPEED_MIN);
+            statusInfoChageObeserver.set(deviceStatusInfoEntity);
+            statusInfoChageObeserver.notifyChange();
             BleOption.getInstance().setMinSpeed(DeviceControlViewModel.this);
         }
     });
@@ -222,8 +222,9 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
         @Override
         public void call() {
             uc.muteVolSwitch.call();
-            statusInfoChageObeserver.get().setIsVoiceMute(DeviceStatusInfoEntity.FLAG_TRUE);
-            BleOption.getInstance().reduceVoice(DeviceControlViewModel.this);
+            deviceStatusInfoEntity.setDeviceVoice(DeviceStatusInfoEntity.FLAG_VOICE_MUTE);
+            statusInfoChageObeserver.set(deviceStatusInfoEntity);
+            statusInfoChageObeserver.notifyChange();
             BleOption.getInstance().setSilentVoice(DeviceControlViewModel.this);
         }
     });
@@ -232,9 +233,9 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
         @Override
         public void call() {
             uc.lowVolSwitch.call();
-            statusInfoChageObeserver.get().setIsVoiceHigh(DeviceStatusInfoEntity.FLAG_FALSE);
-            statusInfoChageObeserver.get().setIsVoiceMid(DeviceStatusInfoEntity.FLAG_FALSE);
-            statusInfoChageObeserver.get().setIsVoiceLow(DeviceStatusInfoEntity.FLAG_TRUE);
+            deviceStatusInfoEntity.setDeviceVoice(DeviceStatusInfoEntity.FLAG_VOICE_MIN);
+            statusInfoChageObeserver.set(deviceStatusInfoEntity);
+            statusInfoChageObeserver.notifyChange();
             BleOption.getInstance().setMinVoice(DeviceControlViewModel.this);
         }
     });
@@ -243,9 +244,9 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
         @Override
         public void call() {
             uc.midVolSwitch.call();
-            statusInfoChageObeserver.get().setIsVoiceHigh(DeviceStatusInfoEntity.FLAG_FALSE);
-            statusInfoChageObeserver.get().setIsVoiceMid(DeviceStatusInfoEntity.FLAG_TRUE);
-            statusInfoChageObeserver.get().setIsVoiceLow(DeviceStatusInfoEntity.FLAG_FALSE);
+            deviceStatusInfoEntity.setDeviceVoice(DeviceStatusInfoEntity.FLAG_VOICE_MID);
+            statusInfoChageObeserver.set(deviceStatusInfoEntity);
+            statusInfoChageObeserver.notifyChange();
             BleOption.getInstance().setMidVoice(DeviceControlViewModel.this);
         }
     });
@@ -254,9 +255,9 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
         @Override
         public void call() {
             uc.highVolSwitch.call();
-            statusInfoChageObeserver.get().setIsVoiceHigh(DeviceStatusInfoEntity.FLAG_TRUE);
-            statusInfoChageObeserver.get().setIsVoiceMid(DeviceStatusInfoEntity.FLAG_FALSE);
-            statusInfoChageObeserver.get().setIsVoiceLow(DeviceStatusInfoEntity.FLAG_FALSE);
+            deviceStatusInfoEntity.setDeviceVoice(DeviceStatusInfoEntity.FLAG_VOICE_MAX);
+            statusInfoChageObeserver.set(deviceStatusInfoEntity);
+            statusInfoChageObeserver.notifyChange();
             BleOption.getInstance().setMaxVoice(DeviceControlViewModel.this);
         }
     });
@@ -264,9 +265,9 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
     public BindingCommand onRoationAutoCommand = new BindingCommand<>(new BindingAction() {
         @Override
         public void call() {
-            statusInfoChageObeserver.get().setIsRoationAuto(DeviceStatusInfoEntity.FLAG_TRUE);
-            statusInfoChageObeserver.get().setIsRoationPositive(DeviceStatusInfoEntity.FLAG_FALSE);
-            statusInfoChageObeserver.get().setIsRoationReversal(DeviceStatusInfoEntity.FLAG_FALSE);
+            deviceStatusInfoEntity.setDeviceRoation(DeviceStatusInfoEntity.FLAG_ROATION_AUTO);
+            statusInfoChageObeserver.set(deviceStatusInfoEntity);
+            statusInfoChageObeserver.notifyChange();
             BleOption.getInstance().roationAuto(DeviceControlViewModel.this);
         }
     });
@@ -274,9 +275,9 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
     public BindingCommand onRoationPositiveCommand = new BindingCommand<>(new BindingAction() {
         @Override
         public void call() {
-            statusInfoChageObeserver.get().setIsRoationAuto(DeviceStatusInfoEntity.FLAG_FALSE);
-            statusInfoChageObeserver.get().setIsRoationPositive(DeviceStatusInfoEntity.FLAG_TRUE);
-            statusInfoChageObeserver.get().setIsRoationReversal(DeviceStatusInfoEntity.FLAG_FALSE);
+            deviceStatusInfoEntity.setDeviceRoation(DeviceStatusInfoEntity.FLAG_ROATION_POSISTION);
+            statusInfoChageObeserver.set(deviceStatusInfoEntity);
+            statusInfoChageObeserver.notifyChange();
             BleOption.getInstance().roationPositive(DeviceControlViewModel.this);
         }
     });
@@ -284,9 +285,9 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
     public BindingCommand onRoationReversalCommand = new BindingCommand<>(new BindingAction() {
         @Override
         public void call() {
-            statusInfoChageObeserver.get().setIsRoationAuto(DeviceStatusInfoEntity.FLAG_FALSE);
-            statusInfoChageObeserver.get().setIsRoationPositive(DeviceStatusInfoEntity.FLAG_FALSE);
-            statusInfoChageObeserver.get().setIsRoationReversal(DeviceStatusInfoEntity.FLAG_TRUE);
+            deviceStatusInfoEntity.setDeviceRoation(DeviceStatusInfoEntity.FLAG_ROATION_REV);
+            statusInfoChageObeserver.set(deviceStatusInfoEntity);
+            statusInfoChageObeserver.notifyChange();
             BleOption.getInstance().roationReversal(DeviceControlViewModel.this);
         }
     });
@@ -320,13 +321,13 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
      * 设备信息请求方法，在ViewModel中调用Model层，通过Okhttp+Retrofit+RxJava发起请求
      */
     public void requestDeviceInfo() {
-        //可以调用addSubscribe()添加Disposable，请求与View周期同步
-
+        BleOption.getInstance().startGetDeviceInfo(this);
     }
 
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        BleOption.getInstance().stopGetDeviceInfo();
     }
 }

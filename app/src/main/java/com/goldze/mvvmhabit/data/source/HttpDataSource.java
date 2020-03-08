@@ -5,15 +5,12 @@ import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.entity.http.login.LoginBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterBodyEntity;
-import com.goldze.mvvmhabit.entity.http.register.RegisterResponseDataEntity;
-import com.goldze.mvvmhabit.entity.http.register.RegisterResponseEntity;
+import com.goldze.mvvmhabit.entity.http.register.RegisterOrLoginResponseEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeResponseEntity;
 
 import io.reactivex.Observable;
 import me.goldze.mvvmhabit.http.BaseResponse;
-import retrofit2.http.Body;
-import retrofit2.http.POST;
 
 /**
  * Created by goldze on 2019/3/26.
@@ -33,7 +30,7 @@ public interface HttpDataSource {
      * @param entity
      * @return
      */
-    Observable<CheckUpdateResponseEntity> checkUpdate(String appid, String sign,String token,CheckUpdateBodyEntity entity);
+    Observable<CheckUpdateResponseEntity> checkUpdate(String appid, String sign,String token,String callId,CheckUpdateBodyEntity entity);
 
     /**
      * 登录
@@ -41,7 +38,7 @@ public interface HttpDataSource {
      * @param entity
      * @return
      */
-    Observable<Object> loginUser(LoginBodyEntity entity);
+    Observable<RegisterOrLoginResponseEntity> loginUser(LoginBodyEntity entity);
 
     /**
      * 注册
@@ -49,7 +46,7 @@ public interface HttpDataSource {
      * @param entity
      * @return
      */
-    Observable<RegisterResponseEntity> registerUser(RegisterBodyEntity entity);
+    Observable<RegisterOrLoginResponseEntity> registerUser(RegisterBodyEntity entity);
 
     //模拟上拉加载
     Observable<DemoEntity> loadMore();

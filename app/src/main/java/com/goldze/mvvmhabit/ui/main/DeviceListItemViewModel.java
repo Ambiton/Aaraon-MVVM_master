@@ -91,7 +91,6 @@ public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> 
             dialog.show();
             AppApplication.getBluetoothClient(viewModel.getApplication()).stopSearch();
             BleOption.getInstance().connectDevice(entity.get().getMacAddress(),DeviceListItemViewModel.this);
-//            HeatBleOption.getInstance().connectDevice(entity.get().getMacAddress(),DeviceListItemViewModel.this);
 //            AppApplication.getBluetoothClient(viewModel.getContext()).connect(BluetoothUtils.getRemoteDevice(entity.get().getMacAddress()).getAddress(), new BleConnectResponse() {
 //                @Override
 //                public void onResponse(int code, BleGattProfile data) {

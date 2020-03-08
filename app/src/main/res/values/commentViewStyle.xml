@@ -47,7 +47,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/rl_height_comment</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/transparent</item>
+        <item name="android:textColor">@color/text_color_black</item>
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_marginLeft">16dip</item>
@@ -94,7 +94,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">18sp</item>
-        <item name="android:textColor">#66000000</item>
+        <item name="android:textColor">#FF000000</item>
     </style>
 
     <style name="grayTextView">
@@ -115,7 +115,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">18sp</item>
-        <item name="android:textColor">#66000000</item>
+        <item name="android:textColor">#99000000</item>
     </style>
 
     <style name="whiteTextView">
@@ -159,7 +159,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:ellipsize">end</item>
 
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/radio_selector</item>
     </style>
 
@@ -170,10 +170,10 @@
         <item name="android:singleLine">true</item>
         <item name="android:paddingLeft">10dip</item>
         <item name="android:paddingRight">10dip</item>
-        <item name="android:textColorHint">@color/whiteColor44</item>
-        <item name="android:textColor">@color/whiteColor88</item>
+        <item name="android:textColorHint">@color/gray33_color</item>
+        <item name="android:textColor">@color/gray99_color</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:background">@drawable/whiteside_round_selector</item>
+        <item name="android:background">@drawable/white_grayside_round_normal</item>
     </style>
 
     <style name="SingleLineEditTextStyle">

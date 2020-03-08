@@ -1,4 +1,4 @@
-package com.goldze.mvvmhabit.ui.login;
+package com.goldze.mvvmhabit.ui.main;
 
 import android.app.Application;
 import android.databinding.ObservableField;
@@ -9,16 +9,15 @@ import android.util.Log;
 import android.view.View;
 
 import com.goldze.mvvmhabit.data.DemoRepository;
-import com.goldze.mvvmhabit.entity.http.login.LoginBodyEntity;
+import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
+import com.goldze.mvvmhabit.entity.http.register.RegisterBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterOrLoginResponseEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeResponseEntity;
-import com.goldze.mvvmhabit.ui.main.AgreementFragment;
-import com.goldze.mvvmhabit.ui.main.DeviceListActivity;
-import com.goldze.mvvmhabit.ui.main.RegisterActivity;
+import com.goldze.mvvmhabit.ui.register.UserNickNameActivity;
 import com.goldze.mvvmhabit.utils.HttpStatus;
-import com.goldze.mvvmhabit.utils.HttpsUtils;
 import com.goldze.mvvmhabit.utils.RxRegTool;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -29,6 +28,7 @@ import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.binding.command.BindingConsumer;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
+import me.goldze.mvvmhabit.utils.MaterialDialogUtils;
 import me.goldze.mvvmhabit.utils.RxUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
@@ -36,15 +36,13 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
  * Created by goldze on 2017/7/17.
  */
 
-public class LoginViewModel extends BaseViewModel<DemoRepository> {
-    private static final String TAG="LoginViewModel";
+public class RegisterViewModel extends BaseViewModel<DemoRepository> {
+    private static final String TAG="RegisterViewModel";
     private static final String STR_SENDVERIFY="发送验证码";
     private static final String STR_SENDVERIFY_DURATION="s后重发";
     private static final int MAX_DURATION=60;
     private static  int timeLeft=60;
     private Timer getVerifyCodeTimer;
-    //发送dialogEvent
-    public ObservableField<String> dialogEvent = new ObservableField<>("");
     //用户名的绑定
     public ObservableField<String> userName = new ObservableField<>("");
     //密码的绑定
@@ -52,8 +50,13 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> {
 
     //发送验证码按钮绑定
     public ObservableField<String> verfyCodeText = new ObservableField<>("");
+
+    //发送dialogEvent
+    public ObservableField<String> dialogEvent = new ObservableField<>("");
     //用户名清除按钮的显示隐藏绑定
     public ObservableInt clearBtnVisibility = new ObservableInt();
+    //版本检测观察者
+    public ObservableField<CheckUpdateResponseEntity> versionEvent = new ObservableField<>();
     //封装一个界面发生改变的观察者
     public UIChangeObservable uc = new UIChangeObservable();
 
@@ -67,7 +70,7 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> {
         public SingleLiveEvent<Boolean> pSwitchEvent = new SingleLiveEvent<>();
     }
 
-    public LoginViewModel(@NonNull Application application, DemoRepository repository) {
+    public RegisterViewModel(@NonNull Application application, DemoRepository repository) {
         super(application, repository);
         //从本地取得数据绑定到View层
         userName.set(model.getUserName());
@@ -139,18 +142,11 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> {
             }
         }
     });
-    //登录按钮的点击事件
-    public BindingCommand loginOnClickCommand = new BindingCommand(new BindingAction() {
-        @Override
-        public void call() {
-            login();
-        }
-    });
-    //注册新用户按钮的点击事件
+    //注册按钮的点击事件
     public BindingCommand registerOnClickCommand = new BindingCommand(new BindingAction() {
         @Override
         public void call() {
-            startActivity(RegisterActivity.class);
+            register();
         }
     });
 
@@ -163,8 +159,45 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> {
         }
     });
 
+    private void register(){
+        if (TextUtils.isEmpty(userName.get())&& !RxRegTool.isMobileExact(userName.get())) {
+            ToastUtils.showShort("请输入正确的手机号！");
+            return;
+        }
+        if (TextUtils.isEmpty(password.get())) {
+            ToastUtils.showShort("请输入验证码！");
+            return;
+        }
+        addSubscribe(model.registerUser(new RegisterBodyEntity(model.getSmsToken(),userName.get(),password.get(),"1"))
+                .compose(RxUtils.schedulersTransformer()) //线程调度
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                        showDialog();
+                    }
+                })
+                .subscribe(new Consumer<RegisterOrLoginResponseEntity>() {
+                    @Override
+                    public void accept(RegisterOrLoginResponseEntity registerOrLoginResponseEntity) throws Exception {
+                        dismissDialog();
+                        if(registerOrLoginResponseEntity.getStatus()== HttpStatus.STATUS_CODE_SUCESS){
+                            model.saveToken(registerOrLoginResponseEntity.getRegisterResponseDataEntity().getToken());
+                            model.saveUserID(registerOrLoginResponseEntity.getRegisterResponseDataEntity().getUserId());
+                            startActivity(UserNickNameActivity.class);
+                            finish();
+                        }else{
+                            dialogEvent.set(registerOrLoginResponseEntity.getMessage());
+                            dialogEvent.notifyChange();
+                        }
+                        //保存账号密码
+                        model.saveUserName(userName.get());
+                        model.savePassword(password.get());
+                    }
+                }));
+    }
+
     private void getVersionCode(){
-        if (TextUtils.isEmpty(userName.get())|| !RxRegTool.isMobileExact(userName.get())) {
+        if (TextUtils.isEmpty(userName.get())&& !RxRegTool.isMobileExact(userName.get())) {
             ToastUtils.showShort("请输入正确的手机号！");
             return;
         }
@@ -187,48 +220,6 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> {
                         model.saveSmsToken(entity.getData());
                     }
                 }));
-    }
-    /**
-     * 网络登陆操作
-     **/
-    private void login() {
-        if (TextUtils.isEmpty(userName.get())||!RxRegTool.isMobileExact(userName.get())) {
-            ToastUtils.showShort("请输入正确的手机号！");
-            return;
-        }
-        if (TextUtils.isEmpty(password.get())) {
-            ToastUtils.showShort("请输入验证码！");
-            return;
-        }
-        //RaJava登录
-        addSubscribe(model.loginUser(new LoginBodyEntity(model.getSmsToken(),userName.get(),password.get(),PRIVATE_TYPE_REGISTER))
-                .compose(RxUtils.schedulersTransformer()) //线程调度
-                .doOnSubscribe(new Consumer<Disposable>() {
-                    @Override
-                    public void accept(Disposable disposable) throws Exception {
-                        showDialog();
-                    }
-                })
-                .subscribe(new Consumer<RegisterOrLoginResponseEntity>() {
-                    @Override
-                    public void accept(RegisterOrLoginResponseEntity entity) throws Exception {
-                        dismissDialog();
-                        Log.e(TAG,"getStatus is:"+entity);
-                        //保存Token
-                      //  smsToken=entity.getData();
-                        if(entity.getStatus()== HttpStatus.STATUS_CODE_SUCESS){
-                            model.saveToken(entity.getRegisterResponseDataEntity().getToken());
-                            model.saveUserID(entity.getRegisterResponseDataEntity().getUserId());
-                            startActivity(DeviceListActivity.class);
-                            finish();
-                        }else{
-                            dialogEvent.set(entity.getMessage());
-                            dialogEvent.notifyChange();
-                        }
-
-                    }
-                }));
-
     }
 
     @Override

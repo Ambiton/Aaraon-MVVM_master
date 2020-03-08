@@ -54,7 +54,7 @@ import android.os.Parcelable;
  */
 public class CheckUpdateResponseEntity implements Parcelable{
     private int status;
-    private CheckUpdateResponseDataEntity []responseDataEntityArray;
+    private CheckUpdateResponseDataEntity []data;
 
     public int getStatus() {
         return status;
@@ -65,16 +65,16 @@ public class CheckUpdateResponseEntity implements Parcelable{
     }
 
     public CheckUpdateResponseDataEntity[] getResponseDataEntityArray() {
-        return responseDataEntityArray;
+        return data;
     }
 
     public void setResponseDataEntityArray(CheckUpdateResponseDataEntity[] responseDataEntityArray) {
-        this.responseDataEntityArray = responseDataEntityArray;
+        this.data = responseDataEntityArray;
     }
 
     public CheckUpdateResponseEntity(Parcel in) {
         this.status=in.readInt();
-        this.responseDataEntityArray= (CheckUpdateResponseDataEntity[]) in.readParcelableArray(CheckUpdateResponseDataEntity.class.getClassLoader());
+        this.data= (CheckUpdateResponseDataEntity[]) in.readParcelableArray(CheckUpdateResponseDataEntity.class.getClassLoader());
     }
 
 
@@ -86,7 +86,7 @@ public class CheckUpdateResponseEntity implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.status);
-        dest.writeArray(this.responseDataEntityArray);
+        dest.writeArray(this.data);
     }
 
 

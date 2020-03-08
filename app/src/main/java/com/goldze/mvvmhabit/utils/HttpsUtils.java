@@ -49,6 +49,9 @@ public class HttpsUtils {
         return getSslSocketFactoryBase(null, null, null);
     }
 
+    public static String getCurrentMills(){
+        return String.valueOf(System.currentTimeMillis());
+    }
     /**
      * https单向认证
      * 可以额外配置信任服务端的证书策略，否则默认是按CA证书去验证的，若不是CA可信任的证书，则无法通过验证

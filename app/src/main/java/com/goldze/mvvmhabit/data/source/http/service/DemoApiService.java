@@ -5,9 +5,11 @@ import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.entity.http.login.LoginBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterBodyEntity;
-import com.goldze.mvvmhabit.entity.http.register.RegisterResponseEntity;
+import com.goldze.mvvmhabit.entity.http.register.RegisterOrLoginResponseEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeResponseEntity;
+
+import java.util.Map;
 
 import io.reactivex.Observable;
 import me.goldze.mvvmhabit.http.BaseResponse;
@@ -16,7 +18,9 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 
 /**
  * Created by goldze on 2017/6/15.
@@ -31,14 +35,14 @@ public interface DemoApiService {
     Observable<BaseResponse<DemoEntity>> demoPost(@Field("catalog") String catalog);
 
     @POST("v1/sms/token?appKey=1uMqYWpHo3MoLH&callId=1276418994&mysig=sig-result")
-    Observable<VerifiedCodeResponseEntity> getVerifiedCode(@Body VerifiedCodeEntity entity);
+    Observable<VerifiedCodeResponseEntity> getVerifiedCode(@QueryMap Map<String, String> map,@Body VerifiedCodeEntity entity);
 
-    @POST("v1/resource_info?callId=137896774355")
-    Observable<CheckUpdateResponseEntity> checkUpdate(@Query("appKey") String appid,@Query("mysig") String sign,@Query("token") String token,@Body CheckUpdateBodyEntity entity);
+    @POST("v1/resources/new")
+    Observable<CheckUpdateResponseEntity> checkUpdate(@QueryMap Map<String, String> map, @Body CheckUpdateBodyEntity entity);
 
     @POST("v1/login?appKey=1uMqYWpHo3MoLH&callId=1276418994&mysig=sig-result")
-    Observable<Object> login(@Body LoginBodyEntity entity);
+    Observable<RegisterOrLoginResponseEntity> login(@Body LoginBodyEntity entity);
 
     @POST("v1/register?appKey=1uMqYWpHo3MoLH&callId=1276418994&mysig=sig-result")
-    Observable<RegisterResponseEntity> registerUser(@Body RegisterBodyEntity entity);
+    Observable<RegisterOrLoginResponseEntity> registerUser(@Body RegisterBodyEntity entity);
 }

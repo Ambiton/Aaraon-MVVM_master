@@ -4,6 +4,7 @@ import android.Manifest;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.pm.ActivityInfo;
+import android.databinding.Observable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,7 +16,10 @@ import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.app.AppApplication;
 import com.goldze.mvvmhabit.app.AppViewModelFactory;
 import com.goldze.mvvmhabit.databinding.ActivityDevicelistBinding;
+import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseDataEntity;
+import com.goldze.mvvmhabit.ui.login.LoginActivity;
 import com.goldze.mvvmhabit.ui.viewpager.adapter.DeviceListBindingAdapter;
+import com.goldze.mvvmhabit.utils.AppTools;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import io.reactivex.functions.Consumer;
@@ -62,9 +66,9 @@ public class DeviceListActivity extends BaseActivity<ActivityDevicelistBinding, 
         viewModel.setContext(this);
         binding.setAdapter(new DeviceListBindingAdapter());
         viewModel.initToolbar();
+        viewModel.checkVersion();
         requestBlutoothScanPermissions();
     }
-
 
     /**
      * 请求扫描蓝牙设备需要的权限
@@ -128,6 +132,34 @@ public class DeviceListActivity extends BaseActivity<ActivityDevicelistBinding, 
                         viewModel.deleteItem(deviceListItemViewModel);
                     }
                 }).show();
+            }
+        });
+
+        viewModel.versionEvent.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                if(viewModel.versionEvent.get()!=null&&viewModel.versionEvent.get().getResponseDataEntityArray()!=null
+                        &&viewModel.versionEvent.get().getResponseDataEntityArray().length>=3){
+                    for(CheckUpdateResponseDataEntity checkUpdateResponseDataEntity:viewModel.versionEvent.get().getResponseDataEntityArray()){
+                        if(CheckUpdateResponseDataEntity.TYPE_APP.equals(checkUpdateResponseDataEntity.getType())){
+                            final CheckUpdateResponseDataEntity appCheckUpdateResponseDataEntity=checkUpdateResponseDataEntity;
+                            if(AppTools.isNeedUpdate(DeviceListActivity.this,appCheckUpdateResponseDataEntity.getNewestVerno())){
+                                MaterialDialog.Builder builder=MaterialDialogUtils.showUpdateDialog(DeviceListActivity.this,appCheckUpdateResponseDataEntity.getDesc(),CheckUpdateResponseDataEntity.FORCE_UPGRADE.equals(appCheckUpdateResponseDataEntity));
+                                builder.onPositive(new MaterialDialog.SingleButtonCallback() {
+                                    @Override
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                        dialog.dismiss();
+                                        AppTools.downFile(DeviceListActivity.this,appCheckUpdateResponseDataEntity.getPackSavepath());
+                                    }
+                                }).show();
+                            }
+                            break;
+                        }
+                    }
+
+
+                }
+
             }
         });
     }

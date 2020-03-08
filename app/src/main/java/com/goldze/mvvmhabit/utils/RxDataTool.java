@@ -617,6 +617,17 @@ public class RxDataTool {
             throw new IllegalArgumentException();
         }
     }
+    public static byte getHeight4(byte data){//获取高四位
+        byte height;
+        height = (byte)((data & 0xf0) >> 4);
+        return height;
+    }
+
+    public static byte getLow4(byte data){//获取低四位
+        byte low;
+        low = (byte)(data & 0x0f);
+        return low;
+    }
 
     /**
      * charArr转byteArr

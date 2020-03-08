@@ -70,7 +70,7 @@ public class UserHeightViewModel extends BaseViewModel {
         @Override
         public void call() {
             //跳转到设备列表
-            startContainerActivity(DeviceListActivity.class.getCanonicalName());
+            startActivity(DeviceListActivity.class);
         }
     });
 
