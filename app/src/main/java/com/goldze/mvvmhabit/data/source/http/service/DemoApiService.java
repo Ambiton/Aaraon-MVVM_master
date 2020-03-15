@@ -1,6 +1,8 @@
 package com.goldze.mvvmhabit.data.source.http.service;
 
 import com.goldze.mvvmhabit.entity.DemoEntity;
+import com.goldze.mvvmhabit.entity.BlutoothDeviceInfoEntity;
+import com.goldze.mvvmhabit.entity.http.ResponseNetDeviceInfoEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.entity.http.login.LoginBodyEntity;
@@ -19,7 +21,6 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 
 /**
@@ -39,6 +40,9 @@ public interface DemoApiService {
 
     @POST("v1/resources/new")
     Observable<CheckUpdateResponseEntity> checkUpdate(@QueryMap Map<String, String> map, @Body CheckUpdateBodyEntity entity);
+
+    @GET("v1/units/{seriNo}/info")
+    Observable<ResponseNetDeviceInfoEntity> getDeviceInfo(@Path("seriNo") String seriNo, @QueryMap Map<String, String> map);
 
     @POST("v1/login?appKey=1uMqYWpHo3MoLH&callId=1276418994&mysig=sig-result")
     Observable<RegisterOrLoginResponseEntity> login(@Body LoginBodyEntity entity);

@@ -26,7 +26,7 @@
             <ImageView
                 android:layout_width="@dimen/iv_logo_width"
                 android:layout_height="@dimen/iv_logo_height"
-                android:src="@mipmap/applauncher" />
+                android:src="@mipmap/roundlogo" />
 
             <LinearLayout
                 android:layout_width="match_parent"

@@ -66,8 +66,9 @@
                         android:padding="@dimen/margin_min"
                         android:gravity="center"
                         android:textSize="@dimen/text_max"
-                        android:background="@color/gray33_color"
-                        android:text="@{viewModel.bindListStr}" />
+                        android:background="@drawable/white_grayside_round_normal"
+                        android:layout_margin="@dimen/margin_med"
+                        android:text="@={viewModel.bindListStr}" />
 
                     <com.goldze.mvvmhabit.utils.view.DefineHeightRecycleListView
 
@@ -92,9 +93,10 @@
                         android:textColor="@color/text_color_gray"
                         android:padding="@dimen/margin_min"
                         android:gravity="center"
+                        android:background="@drawable/white_grayside_round_normal"
+                        android:layout_margin="@dimen/margin_med"
                         android:textSize="@dimen/text_max"
-                        android:background="@color/gray33_color"
-                        android:text="@{viewModel.canUseListStr}" />
+                        android:text="@={viewModel.canUseListStr}" />
 
                     <com.goldze.mvvmhabit.utils.view.DefineHeightRecycleListView
 
@@ -116,7 +118,7 @@
                 android:id="@+id/btn_scan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/blueRoundButton"
+                style="@style/buttonOfBottom"
                 binding:onClickCommand="@{viewModel.onRefreshCommand}"
                 android:text="重新扫描" />
 

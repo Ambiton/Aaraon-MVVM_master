@@ -1,9 +1,9 @@
 package com.goldze.mvvmhabit.entity;
 
-import android.databinding.BaseObservable;
+import androidx.databinding.BaseObservable;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.goldze.mvvmhabit.utils.RxDataTool;
 

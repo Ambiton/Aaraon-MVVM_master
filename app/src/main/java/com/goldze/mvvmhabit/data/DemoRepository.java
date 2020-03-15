@@ -1,11 +1,12 @@
 package com.goldze.mvvmhabit.data;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 
 import com.goldze.mvvmhabit.data.source.HttpDataSource;
 import com.goldze.mvvmhabit.data.source.LocalDataSource;
 import com.goldze.mvvmhabit.entity.DemoEntity;
+import com.goldze.mvvmhabit.entity.http.ResponseNetDeviceInfoEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.entity.http.login.LoginBodyEntity;
@@ -77,6 +78,16 @@ public class DemoRepository extends BaseModel implements HttpDataSource, LocalDa
     }
 
     @Override
+    public Observable<ResponseNetDeviceInfoEntity> getDeviceInfo(String serioNum, String appid, String sign, String token, String callId) {
+        Map<String, String> map=new HashMap<>();
+        map.put("appKey",appid);
+        map.put("mysig",sign);
+        map.put("token",token);
+        map.put("callId",callId);
+        return mHttpDataSource.getDeviceInfo(serioNum,appid, sign, token,callId);
+    }
+
+    @Override
     public Observable<RegisterOrLoginResponseEntity> loginUser(LoginBodyEntity entity) {
         return mHttpDataSource.loginUser(entity);
     }
@@ -119,6 +130,46 @@ public class DemoRepository extends BaseModel implements HttpDataSource, LocalDa
     @Override
     public void savePassword(String password) {
         mLocalDataSource.savePassword(password);
+    }
+
+    @Override
+    public void saveBannerVersion(String version) {
+        mLocalDataSource.saveBannerVersion(version);
+    }
+
+    @Override
+    public void saveLoadingVersion(String version) {
+        mLocalDataSource.saveLoadingVersion(version);
+    }
+
+    @Override
+    public void saveBannerPlayMode(String bannerPlayMode) {
+        mLocalDataSource.saveBannerPlayMode(bannerPlayMode);
+    }
+
+    @Override
+    public void saveBannerPlayIndex(int bannerPlayIndex) {
+        mLocalDataSource.saveBannerPlayIndex(bannerPlayIndex);
+    }
+
+    @Override
+    public int getBannerPlayIndex() {
+        return mLocalDataSource.getBannerPlayIndex();
+    }
+
+    @Override
+    public String getBannerPlayMode() {
+        return mLocalDataSource.getBannerPlayMode();
+    }
+
+    @Override
+    public String getLoadingVersion() {
+        return mLocalDataSource.getLoadingVersion();
+    }
+
+    @Override
+    public String getBannerVersion() {
+        return mLocalDataSource.getBannerVersion();
     }
 
     @Override

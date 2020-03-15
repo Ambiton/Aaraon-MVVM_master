@@ -1,18 +1,21 @@
 package com.goldze.mvvmhabit.ui.main;
 
 import android.app.Application;
-import android.databinding.ObservableArrayList;
-import android.databinding.ObservableField;
-import android.databinding.ObservableList;
-import android.support.annotation.NonNull;
+import androidx.databinding.ObservableArrayList;
+import androidx.databinding.ObservableField;
+import androidx.databinding.ObservableList;
+import androidx.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 
 import com.goldze.mvvmhabit.BR;
 import com.goldze.mvvmhabit.R;
+import com.goldze.mvvmhabit.app.AppApplication;
 import com.goldze.mvvmhabit.data.DemoRepository;
 import com.goldze.mvvmhabit.entity.DeviceStatusInfoEntity;
+import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseDataEntity;
 import com.goldze.mvvmhabit.ui.base.viewmodel.ToolbarViewModel;
+import com.goldze.mvvmhabit.utils.AppTools;
 import com.goldze.mvvmhabit.utils.BleOption;
 import com.goldze.mvvmhabit.utils.RxDataTool;
 import com.inuker.bluetooth.library.Code;
@@ -24,7 +27,6 @@ import java.util.UUID;
 
 import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
-import me.goldze.mvvmhabit.binding.command.BindingConsumer;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 import me.tatarka.bindingcollectionadapter2.ItemBinding;
@@ -133,6 +135,27 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
         //BleOption.getInstance().startGetDeviceInfo(DeviceControlViewModel.this);
     }
 
+    public void addPlayIndex(){
+        if(model.getBannerPlayMode().equals(CheckUpdateResponseDataEntity.PLAYMODE_ONCE)){
+            int index=model.getBannerPlayIndex()+1;
+            if(AppTools.getBannerUnZipFiles(getApplication()).size()<index){
+                index=0;
+            }
+            model.saveBannerPlayIndex(index);
+        }
+    }
+
+    public int getBannerPlayIndex(){
+        return model.getBannerPlayIndex();
+    }
+
+    public String getBannerPlayMode(){
+        return model.getBannerPlayMode();
+    }
+
+    public void saveBannerPlayIndex(int playIndex){
+        model.saveBannerPlayIndex(playIndex);
+    }
     @Override
     public void rightTextOnClick() {
         ToastUtils.showShort("更多");
@@ -329,5 +352,6 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
     public void onDestroy() {
         super.onDestroy();
         BleOption.getInstance().stopGetDeviceInfo();
+        AppApplication.getBluetoothClient(this.getApplication()).disconnect(BleOption.getInstance().getMac());
     }
 }

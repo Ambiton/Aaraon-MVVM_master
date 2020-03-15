@@ -9,7 +9,7 @@
             type="com.goldze.mvvmhabit.ui.base.viewmodel.ToolbarViewModel" />
     </data>
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -22,13 +22,13 @@
 
             <ImageView
                 android:id="@+id/iv_back"
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:background="?selectableItemBackground"
                 android:padding="12dp"
-                android:src="@mipmap/back"
+                android:src="@drawable/back_nor"
                 binding:onClickCommand="@{toolbarViewModel.backOnClick}" />
 
             <TextView
@@ -62,21 +62,22 @@
 
             <ImageView
                 android:id="@+id/iv_right_icon"
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:background="?selectableItemBackground"
                 android:gravity="center"
                 android:padding="12dp"
-                android:src="@{toolbarViewModel.rightIcon}"
-                android:visibility="@{toolbarViewModel.rightIconVisibleObservable}"
+                android:src="@mipmap/roundlogo"
+                android:scaleType="fitXY"
+                android:visibility="invisible"
                 binding:onClickCommand="@{toolbarViewModel.rightIconOnClick}" />
 
             <View
                 style="@style/ViewLineStyle"
                 android:layout_alignParentBottom="true" />
         </RelativeLayout>
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 </layout>
 

@@ -1,8 +1,8 @@
 package com.goldze.mvvmhabit.ui.main;
 
 import android.app.Application;
-import android.databinding.ObservableBoolean;
-import android.support.annotation.NonNull;
+import androidx.databinding.ObservableBoolean;
+import androidx.annotation.NonNull;
 import android.view.View;
 
 import com.goldze.mvvmhabit.R;

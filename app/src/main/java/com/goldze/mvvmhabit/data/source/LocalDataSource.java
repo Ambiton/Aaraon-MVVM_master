@@ -27,8 +27,46 @@ public interface LocalDataSource {
     /**
      * 保存用户密码
      */
-
     void savePassword(String password);
+
+    /**
+     * 保存Banner版本
+     */
+    void saveBannerVersion(String version);
+
+    /**
+     * 保存Loading版本
+     */
+    void saveLoadingVersion(String version);
+
+    /**
+     * 保存BannerPlayMode
+     */
+    void saveBannerPlayMode(String bannerPlayMode);
+
+    /**
+     * 保存bannerPlayIndex
+     */
+    void saveBannerPlayIndex(int bannerPlayIndex);
+
+    /**
+     * 获取BannerPlayMode
+     */
+    int getBannerPlayIndex();
+
+    /**
+     * 获取BannerPlayMode
+     */
+    String getBannerPlayMode();
+    /**
+     * 获取Loading版本
+     */
+    String getLoadingVersion();
+
+    /**
+     * 获取Banner版本
+     */
+    String getBannerVersion();
 
     /**
      * 获取用户名

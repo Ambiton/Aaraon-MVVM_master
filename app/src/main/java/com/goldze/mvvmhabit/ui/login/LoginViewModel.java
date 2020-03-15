@@ -1,9 +1,11 @@
 package com.goldze.mvvmhabit.ui.login;
 
 import android.app.Application;
-import android.databinding.ObservableField;
-import android.databinding.ObservableInt;
-import android.support.annotation.NonNull;
+
+import androidx.databinding.ObservableBoolean;
+import androidx.databinding.ObservableField;
+import androidx.databinding.ObservableInt;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -17,7 +19,6 @@ import com.goldze.mvvmhabit.ui.main.AgreementFragment;
 import com.goldze.mvvmhabit.ui.main.DeviceListActivity;
 import com.goldze.mvvmhabit.ui.main.RegisterActivity;
 import com.goldze.mvvmhabit.utils.HttpStatus;
-import com.goldze.mvvmhabit.utils.HttpsUtils;
 import com.goldze.mvvmhabit.utils.RxRegTool;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -49,7 +50,8 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> {
     public ObservableField<String> userName = new ObservableField<>("");
     //密码的绑定
     public ObservableField<String> password = new ObservableField<>("");
-
+    //密码的焦点
+    public ObservableField<Boolean> passwordFocus = new ObservableField<>(false);
     //发送验证码按钮绑定
     public ObservableField<String> verfyCodeText = new ObservableField<>("");
     //用户名清除按钮的显示隐藏绑定
@@ -84,7 +86,6 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> {
             public void run() {
                 verfyCodeText.set(timeLeft+STR_SENDVERIFY_DURATION);
                 timeLeft--;
-
                 if(timeLeft<=0){
                     verfyCodeText.set(STR_SENDVERIFY);
                     stopVerifyTimer();
@@ -124,6 +125,8 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> {
                 return;
             }
             if(verfyCodeText.get().equals(STR_SENDVERIFY)){
+                passwordFocus.set(true);
+                passwordFocus.notifyChange();
                 getVersionCode();
             }
         }

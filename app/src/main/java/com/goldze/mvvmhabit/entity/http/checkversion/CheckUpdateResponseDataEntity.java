@@ -7,46 +7,73 @@ import android.os.Parcelable;
  * @author Areo
  * @description:
  * @date : 2020/1/1 22:13
- *  {
- *  *       "type": "1",
- *  *       "appKey": "",
- *  *       "newestVerno": "01.00",
- *  *       "forceUpgrade": "0",
- *  *       "desc": "1.0版初始版本",
- *  *       "verName": "开机广告1.0版",
- *  *       "verType": "init",
- *  *       "fileName": "test1.zip",
- *  *       "packSavepath": "http://www.baidu.com/test1.zip"
- *  *     }
- *        或
- *  *     {
- *  *       "type": "2",
- *  *       "appKey": "",
- *  *       "newestVerno": "01.00",
- *  *       "forceUpgrade": "0",
- *  *       "desc": "1.0版初始版",
- *  *       "verName": "内部广告1.0版",
- *  *       "verType": "init",
- *  *       "fileName": "test.zip",
- *  *       "packSavepath": "http://www.larkiv.com/upload/upgrade/Larksmarl0002.zip"
- *  *     }
- *        或
- *  *     {
- *  *       "type": "3",
- *  *       "appKey": "1uMqYWpHo3MoLH",
- *  *       "newestVerno": "01.00",
- *  *       "forceUpgrade": "0",
- *  *       "desc": "1.0版初始版",
- *  *       "verName": "安卓app第一版",
- *  *       "verType": "init",
- *  *       "fileName": "Firmware-7618-code2368_000100_10101010.bin",
- *  *       "packSavepath": "http://www.larkiv.com/upload/upgrade/v1/Firmware-7618-code2368_000100_10101010.bin"
- *  *     }
+无需升级资源
+即app端的资源都是最新的
+{
+"status": 200,
+"data": []
+}
+需要升级资源
+{
+"status": 200,
+"data": [
+{
+"type": "1",
+"appKey": "",
+"newestVerno": "01.01",
+"forceUpgrade": "1",
+"playMode": "1",
+"fileLength": 145089,
+"desc": "01.01升级版",
+"verName": "开机广告01.01版",
+"verType": "upgrade",
+"fileName": "bootad20200311.zip",
+"packSavepath": "http://res.myzr.com.cn/myzrcloud/bootad/bootad20200311.zip"
+},
+{
+"type": "2",
+"appKey": "",
+"newestVerno": "01.01",
+"forceUpgrade": "1",
+"playMode": "1",
+"fileLength": 373129,
+"desc": "01.01升级版",
+"verName": "内部广告01.01版",
+"verType": "upgrade",
+"fileName": "banner20200311.zip",
+"packSavepath": "http://res.myzr.com.cn/myzrcloud/banner/banner20200311.zip"
+},
+{
+"type": "3",
+"appKey": "1uMqYWpHo3MoLH",
+"newestVerno": "01.01",
+"forceUpgrade": "1",
+"playMode": "1",
+"fileLength": 21581824,
+"desc": "01.01升级版",
+"verName": "安卓app第01.01版",
+"verType": "upgrade",
+"fileName": "MYZR_200307_1812.apk",
+"packSavepath": "http://res.myzr.com.cn/myzrcloud/app/MYZR_200307_1812.apk"
+}
+]
+}
+
  */
 public class CheckUpdateResponseDataEntity implements Parcelable{
 
     public static final String FORCE_UPGRADE="1";
+    public static final String NOTFORCE_UPGRADE="0";
+    public static final String TYPE_LOAD_RES="1";
+    public static final String TYPE_BANNER="2";
     public static final String TYPE_APP="3";
+    /**
+     * playMode	1=每进去一次换一张
+     * 2=进去以后一直循环播放广告图片
+     */
+    public static final String PLAYMODE_ONCE="1";
+    public static final String PLAYMODE_AUTO="2";
+
     private String type;
     private String appKey;
     private String newestVerno;
@@ -56,6 +83,24 @@ public class CheckUpdateResponseDataEntity implements Parcelable{
     private String verType;
     private String fileName;
     private String packSavepath;
+    private String playMode;
+    private long fileLength;
+
+    public String getPlayMode() {
+        return playMode;
+    }
+
+    public void setPlayMode(String playMode) {
+        this.playMode = playMode;
+    }
+
+    public long getFileLength() {
+        return fileLength;
+    }
+
+    public void setFileLength(long fileLength) {
+        this.fileLength = fileLength;
+    }
 
     public CheckUpdateResponseDataEntity(Parcel in) {
         this.type=in.readString();
@@ -67,6 +112,8 @@ public class CheckUpdateResponseDataEntity implements Parcelable{
         this.verType=in.readString();
         this.fileName=in.readString();
         this.packSavepath=in.readString();
+        this.playMode=in.readString();
+        this.fileLength=in.readLong();
     }
 
     public String getType() {
@@ -168,5 +215,7 @@ public class CheckUpdateResponseDataEntity implements Parcelable{
         dest.writeString(this.verType);
         dest.writeString(this.fileName);
         dest.writeString(this.packSavepath);
+        dest.writeString(this.playMode);
+        dest.writeLong(this.fileLength);
     }
 }

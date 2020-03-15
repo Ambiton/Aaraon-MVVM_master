@@ -1,9 +1,9 @@
 package com.goldze.mvvmhabit.ui.tab_bar.activity;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
 
 import com.goldze.mvvmhabit.BR;
 import com.goldze.mvvmhabit.R;

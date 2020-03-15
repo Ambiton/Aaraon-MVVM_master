@@ -1,58 +1,45 @@
 package com.goldze.mvvmhabit.ui.main;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
-import android.databinding.ObservableField;
+import androidx.databinding.ObservableField;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.app.AppApplication;
-import com.goldze.mvvmhabit.entity.DeviceInfoEntity;
+import com.goldze.mvvmhabit.entity.BlutoothDeviceInfoEntity;
+import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
+import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.utils.BleOption;
-import com.goldze.mvvmhabit.utils.HexUtil;
-import com.goldze.mvvmhabit.utils.RxDataTool;
-import com.goldze.mvvmhabit.utils.heatbeat.HeatBleOption;
-import com.inuker.bluetooth.library.connect.options.BleConnectOptions;
+import com.goldze.mvvmhabit.utils.HttpsUtils;
 import com.inuker.bluetooth.library.connect.response.BleConnectResponse;
-import com.inuker.bluetooth.library.connect.response.BleNotifyResponse;
-import com.inuker.bluetooth.library.connect.response.BleReadResponse;
-import com.inuker.bluetooth.library.connect.response.BleReadRssiResponse;
-import com.inuker.bluetooth.library.connect.response.BleWriteResponse;
-import com.inuker.bluetooth.library.model.BleGattCharacter;
 import com.inuker.bluetooth.library.model.BleGattProfile;
-import com.inuker.bluetooth.library.model.BleGattService;
-import com.inuker.bluetooth.library.utils.BluetoothUtils;
-import com.inuker.bluetooth.library.utils.ByteUtils;
-import com.lcodecore.tkrefreshlayout.utils.LogUtil;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.List;
 import java.util.UUID;
 
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.base.ItemViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
+import me.goldze.mvvmhabit.deviceinterface.OnDeviceInfoListener;
 import me.goldze.mvvmhabit.utils.MaterialDialogUtils;
-import me.goldze.mvvmhabit.utils.StringUtils;
+import me.goldze.mvvmhabit.utils.RxUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
 import static com.inuker.bluetooth.library.Constants.REQUEST_SUCCESS;
+import static com.inuker.bluetooth.library.Constants.SERVICE_UNREADY;
 
 /**
  * Created by goldze on 2017/7/17.
  */
 
-public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> implements BleConnectResponse {
-    public ObservableField<DeviceInfoEntity> entity = new ObservableField<>();
+public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> implements BleConnectResponse, OnDeviceInfoListener {
+    private static final String CUREENT_SERIONUM="123456";
+    public ObservableField<BlutoothDeviceInfoEntity> entity = new ObservableField<>();
     public Drawable drawableImg;
     MaterialDialog  dialog;
     private final String SPP_UUID = "00001101-0000-1000-8000-00805F9B34FB";
@@ -66,11 +53,13 @@ public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> 
             = UUID.fromString("6e400003-b5a3-f393-e0a9-e50e24dcca9e");
 
 
-    public DeviceListItemViewModel(@NonNull DeviceListViewModel viewModel, DeviceInfoEntity entity) {
+    private DeviceListViewModel  deviceListViewModel;
+    public DeviceListItemViewModel(@NonNull DeviceListViewModel viewModel, BlutoothDeviceInfoEntity entity) {
         super(viewModel);
         this.entity.set(entity);
+        deviceListViewModel=viewModel;
         //ImageView的占位图片，可以解决RecyclerView中图片错误问题
-        drawableImg = ContextCompat.getDrawable(viewModel.getApplication(), R.mipmap.ic_launcher);
+        drawableImg = ContextCompat.getDrawable(viewModel.getApplication(), R.mipmap.massagechair);
         dialog=MaterialDialogUtils.showIndeterminateProgressDialog(viewModel.getContext(),"正在连接设备，请稍后..."+this.entity.get().getMacAddress(),false).build();
     }
 
@@ -88,9 +77,7 @@ public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> 
         @Override
         public void call() {
             //这里可以通过一个标识,做出判断，已达到跳入不同界面的逻辑
-            dialog.show();
-            AppApplication.getBluetoothClient(viewModel.getApplication()).stopSearch();
-            BleOption.getInstance().connectDevice(entity.get().getMacAddress(),DeviceListItemViewModel.this);
+            viewModel.checkDeviceInfo(CUREENT_SERIONUM, DeviceListItemViewModel.this);
 //            AppApplication.getBluetoothClient(viewModel.getContext()).connect(BluetoothUtils.getRemoteDevice(entity.get().getMacAddress()).getAddress(), new BleConnectResponse() {
 //                @Override
 //                public void onResponse(int code, BleGattProfile data) {
@@ -177,9 +164,21 @@ public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> 
         dialog.dismiss();
         if (code == REQUEST_SUCCESS) {
             ToastUtils.showLong(viewModel.getContext().getString(R.string.toast_title_hasconnected)+";connect statu is "+AppApplication.getBluetoothClient(AppApplication.getInstance()).getConnectStatus(BleOption.getInstance().getMac()));
+
             viewModel.startContainerActivity(DeviceControlFragment.class.getCanonicalName());
         }else{
             ToastUtils.showLong(viewModel.getContext().getString(R.string.toast_title_connect_error));
+        }
+    }
+
+    @Override
+    public void onDeviceCanUseResult(boolean isCanUse) {
+        if(isCanUse){
+            dialog.show();
+            AppApplication.getBluetoothClient(viewModel.getApplication()).stopSearch();
+            BleOption.getInstance().connectDevice(entity.get().getMacAddress(),DeviceListItemViewModel.this);
+        }else{
+            MaterialDialogUtils.showBasicDialog(viewModel.getContext(),"连接失败","非法的设备串号");
         }
     }
 //    /**

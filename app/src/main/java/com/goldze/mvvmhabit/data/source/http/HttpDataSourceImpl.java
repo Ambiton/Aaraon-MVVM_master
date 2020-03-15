@@ -3,6 +3,7 @@ package com.goldze.mvvmhabit.data.source.http;
 import com.goldze.mvvmhabit.data.source.HttpDataSource;
 import com.goldze.mvvmhabit.data.source.http.service.DemoApiService;
 import com.goldze.mvvmhabit.entity.DemoEntity;
+import com.goldze.mvvmhabit.entity.http.ResponseNetDeviceInfoEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.entity.http.login.LoginBodyEntity;
@@ -75,6 +76,16 @@ public class HttpDataSourceImpl implements HttpDataSource {
         map.put("token",token);
         map.put("callId",callId);
         return apiService.checkUpdate(map,entity);
+    }
+
+    @Override
+    public Observable<ResponseNetDeviceInfoEntity> getDeviceInfo(String serioNum, String appid, String sign, String token, String callId) {
+        Map<String, String> map=new HashMap<>();
+        map.put("appKey",appid);
+        map.put("mysig",sign);
+        map.put("token",token);
+        map.put("callId",callId);
+        return apiService.getDeviceInfo(serioNum,map);
     }
 
 

@@ -27,7 +27,8 @@
             android:theme="@style/AppTheme">
 
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            tools:replace="android:authorities"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
@@ -42,17 +43,29 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.login.LoginActivity"></activity>
-        <activity android:name=".ui.main.RegisterActivity"></activity>
-        <activity android:name=".ui.main.DeviceListActivity"></activity>
-        <activity android:name=".ui.register.UserNickNameActivity"></activity>
-        <activity android:name=".ui.register.SexChooseActivity"></activity>
-        <activity android:name=".ui.register.BirthdayChooseActivity"></activity>
-        <activity android:name=".ui.register.UserWeightActivity"></activity>
-        <activity android:name=".ui.register.UserHeightActivity"></activity>
-        <activity android:name=".ui.main.DemoActivity"></activity>
-        <activity android:name=".ui.tab_bar.activity.TabBarActivity"></activity>
-        <activity android:name=".ui.viewpager.activity.ViewPagerActivity"></activity>
+        <activity android:name=".ui.login.LoginActivity"
+            android:launchMode="singleTask"></activity>
+        <activity android:name=".ui.main.RegisterActivity"
+            android:launchMode="singleTask"></activity>
+        <activity android:name=".ui.main.DeviceListActivity"
+            android:launchMode="singleTask"></activity>
+        <activity android:name=".ui.register.UserNickNameActivity"
+            android:launchMode="singleTask"
+            ></activity>
+        <activity android:name=".ui.register.SexChooseActivity"
+            android:launchMode="singleTask"></activity>
+        <activity android:name=".ui.register.BirthdayChooseActivity"
+            android:launchMode="singleTask"></activity>
+        <activity android:name=".ui.register.UserWeightActivity"
+            android:launchMode="singleTask"></activity>
+        <activity android:name=".ui.register.UserHeightActivity"
+            android:launchMode="singleTask"></activity>
+        <activity android:name=".ui.main.DemoActivity"
+            android:launchMode="singleTask"></activity>
+        <activity android:name=".ui.tab_bar.activity.TabBarActivity"
+            android:launchMode="singleTask"></activity>
+        <activity android:name=".ui.viewpager.activity.ViewPagerActivity"
+            android:launchMode="singleTask"></activity>
     </application>
 
 </manifest>

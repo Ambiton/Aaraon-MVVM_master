@@ -54,7 +54,7 @@
         <item name="android:layout_marginRight">16dip</item>
         <item name="android:layout_marginBottom">@dimen/margin_screenBottom</item>
         <item name="android:layout_marginTop">2dip</item>
-        <item name="android:background">@drawable/white_redside_round_selector</item>
+        <item name="android:background">@drawable/white_round_selector</item>
     </style>
 
     <style name="whiteButton">
@@ -163,6 +163,17 @@
         <item name="android:textColor">@color/radio_selector</item>
     </style>
 
+    <style name="controlText_larger_Selector">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:textColor">@color/whiteColor88</item>
+        <item name="android:background">@drawable/highlight_yellow_selector</item>
+    </style>
+
     <style name="EditText_Style">
         <item name="android:layout_width">250dp</item>
         <item name="android:layout_height">40dp</item>
@@ -174,6 +185,14 @@
         <item name="android:textColor">@color/gray99_color</item>
         <item name="android:textSize">16sp</item>
         <item name="android:background">@drawable/white_grayside_round_normal</item>
+    </style>
+
+    <style name="SwitchStyle">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/whiteColor88</item>
+        <item name="android:thumb">@drawable/switch_thumb</item>
+        <item name="android:switchPadding">@dimen/margin_med</item>
+        <item name="android:track">@drawable/switch_track</item>
     </style>
 
     <style name="SingleLineEditTextStyle">

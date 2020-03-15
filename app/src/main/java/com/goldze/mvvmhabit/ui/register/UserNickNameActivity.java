@@ -1,10 +1,9 @@
 package com.goldze.mvvmhabit.ui.register;
 
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import com.goldze.mvvmhabit.BR;
 import com.goldze.mvvmhabit.R;
-import com.goldze.mvvmhabit.app.AppViewModelFactory;
 import com.goldze.mvvmhabit.databinding.ActivityUsernicknameEditBinding;
 
 import me.goldze.mvvmhabit.base.BaseActivity;

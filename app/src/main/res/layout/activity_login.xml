@@ -27,7 +27,7 @@
             <ImageView
                 android:layout_width="@dimen/iv_logo_width"
                 android:layout_height="@dimen/iv_logo_height"
-                android:src="@mipmap/applauncher" />
+                android:src="@mipmap/roundlogo" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -99,9 +99,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@null"
-                    android:hint="请输入密码"
+                    android:hint="请输入验证码"
                     android:inputType="number"
                     android:text="@={viewModel.password}"
+                    binding:requestFocus="@{viewModel.passwordFocus}"
                     android:textColor="@color/textColor"
                     android:textColorHint="@color/textColorHint"
                     android:textSize="16sp" />

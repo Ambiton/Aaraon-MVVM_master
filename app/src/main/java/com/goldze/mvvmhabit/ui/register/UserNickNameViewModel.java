@@ -1,27 +1,13 @@
 package com.goldze.mvvmhabit.ui.register;
 
 import android.app.Application;
-import android.databinding.ObservableField;
-import android.databinding.ObservableInt;
-import android.support.annotation.NonNull;
-import android.text.TextUtils;
-import android.view.View;
+import androidx.databinding.ObservableField;
+import androidx.databinding.ObservableInt;
+import androidx.annotation.NonNull;
 
-import com.goldze.mvvmhabit.data.DemoRepository;
-import com.goldze.mvvmhabit.entity.User;
-import com.goldze.mvvmhabit.entity.UserDao;
-import com.goldze.mvvmhabit.ui.main.DemoActivity;
-
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import me.goldze.mvvmhabit.base.BaseModel;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
-import me.goldze.mvvmhabit.binding.command.BindingConsumer;
-import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
-import me.goldze.mvvmhabit.utils.RxUtils;
-import me.goldze.mvvmhabit.utils.ToastUtils;
 
 /**
  * @author Areo

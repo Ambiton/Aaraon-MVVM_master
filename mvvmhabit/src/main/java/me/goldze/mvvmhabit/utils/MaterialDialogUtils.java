@@ -3,17 +3,15 @@ package me.goldze.mvvmhabit.utils;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.StackingBehavior;
 import com.afollestad.materialdialogs.Theme;
 
 import java.util.List;
@@ -85,6 +83,34 @@ public class MaterialDialogUtils {
     public static MaterialDialog.Builder showIndeterminateProgressDialog(Context context, String content, boolean horizontal) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(context)
                 .title(content)
+                .progress(true, 0)
+                .progressIndeterminateStyle(horizontal)
+                .canceledOnTouchOutside(false)
+                .backgroundColorRes(R.color.white)
+                .keyListener(new DialogInterface.OnKeyListener() {
+                    @Override
+                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                        if (event.getAction() == KeyEvent.ACTION_DOWN) {//如果是按下，则响应，否则，一次按下会响应两次
+                            if (keyCode == KeyEvent.KEYCODE_BACK) {
+                                //activity.onBackPressed();
+
+                            }
+                        }
+                        return false;//false允许按返回键取消对话框，true除了调用取消，其他情况下不会取消
+                    }
+                });
+        return builder;
+    }
+
+    /***
+     * 获取一个资源更新等待对话框
+     *
+     * @param horizontal
+     * @return MaterialDialog.Builder
+     */
+    public static MaterialDialog.Builder showUpdateResProgressDialog(Context context,boolean horizontal) {
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(context)
+                .title("资源更新中，请稍后")
                 .progress(true, 0)
                 .progressIndeterminateStyle(horizontal)
                 .canceledOnTouchOutside(false)

@@ -4,10 +4,10 @@ import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
-import android.databinding.ObservableArrayList;
-import android.databinding.ObservableField;
-import android.databinding.ObservableList;
-import android.support.annotation.NonNull;
+import androidx.databinding.ObservableArrayList;
+import androidx.databinding.ObservableField;
+import androidx.databinding.ObservableList;
+import androidx.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 
@@ -15,11 +15,13 @@ import com.goldze.mvvmhabit.BR;
 import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.app.AppApplication;
 import com.goldze.mvvmhabit.data.DemoRepository;
-import com.goldze.mvvmhabit.entity.DeviceInfoEntity;
+import com.goldze.mvvmhabit.entity.BlutoothDeviceInfoEntity;
+import com.goldze.mvvmhabit.entity.http.ResponseNetDeviceInfoEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.ui.base.viewmodel.ToolbarViewModel;
 import com.goldze.mvvmhabit.utils.BleOption;
+import com.goldze.mvvmhabit.utils.HttpStatus;
 import com.goldze.mvvmhabit.utils.HttpsUtils;
 import com.inuker.bluetooth.library.search.SearchRequest;
 import com.inuker.bluetooth.library.search.SearchResult;
@@ -33,6 +35,7 @@ import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
+import me.goldze.mvvmhabit.deviceinterface.OnDeviceInfoListener;
 import me.goldze.mvvmhabit.utils.RxUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 import me.tatarka.bindingcollectionadapter2.ItemBinding;
@@ -54,6 +57,7 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
     //版本检测观察者
     public ObservableField<CheckUpdateResponseEntity> versionEvent = new ObservableField<>();
     private Context contex;
+
 
     public void setContext(Context context) {
         this.contex = context;
@@ -79,9 +83,9 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
      */
     public void initToolbar() {
         //初始化标题栏
-        setRightIcon(R.mipmap.applauncher);
-        setRightIconVisible(View.VISIBLE);
-        // setRightTextVisible(View.GONE);
+        //setRightIcon(R.mipmap.roundlogo);
+        //setRightIconVisible(View.VISIBLE);
+        //setRightTextVisible(View.GONE);
         setTitleText(getApplication().getString(R.string.devicelist_title_devicelist));
     }
 
@@ -136,6 +140,28 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
                     }
                 }));
     }
+
+    public void checkDeviceInfo(String serioNum, final OnDeviceInfoListener onDeviceInfoListener){
+        //RaJava检测更新
+        addSubscribe(model.getDeviceInfo(serioNum,"1uMqYWpHo3MoLH","sig-result",model.getToken(), HttpsUtils.getCurrentMills())
+                .compose(RxUtils.schedulersTransformer()) //线程调度
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                        showDialog();
+                    }
+                })
+                .subscribe(new Consumer<ResponseNetDeviceInfoEntity>() {
+                    @Override
+                    public void accept(ResponseNetDeviceInfoEntity entity) throws Exception {
+                        dismissDialog();
+                        Log.e(TAG,"getStatus is:; "+entity.getStatus());
+                        boolean isCanUse=entity.getStatus()== HttpStatus.STATUS_CODE_SUCESS;
+                        onDeviceInfoListener.onDeviceCanUseResult(isCanUse);
+
+                    }
+                }));
+    }
     /**
      * 停止扫描
      */
@@ -170,7 +196,7 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
 
             @Override
             public void onDeviceFounded(SearchResult device) {
-                DeviceInfoEntity entity = new DeviceInfoEntity(R.mipmap.applauncher, device.rssi, device.getName(), device.getAddress());
+                BlutoothDeviceInfoEntity entity = new BlutoothDeviceInfoEntity(R.mipmap.applauncher, device.rssi, device.getName(), device.getAddress());
                 BluetoothLog.e("device  is " + device.getName()+";device.getAddress() is "+device.getAddress());
                 if (AppApplication.getBluetoothClient(getApplication()).getBondState(device.getAddress()) == BluetoothDevice.BOND_BONDED) {
                     if (BleOption.getInstance().isDeviceBluetooth(device.getName()) && bindeduseList.add(device.getAddress())) {

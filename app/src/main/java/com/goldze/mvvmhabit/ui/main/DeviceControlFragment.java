@@ -1,13 +1,14 @@
 package com.goldze.mvvmhabit.ui.main;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.pm.ActivityInfo;
-import android.databinding.Observable;
+import androidx.databinding.Observable;
+
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
+import androidx.annotation.Nullable;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,12 +16,11 @@ import android.view.ViewGroup;
 
 import com.goldze.mvvmhabit.BR;
 import com.goldze.mvvmhabit.R;
-import com.goldze.mvvmhabit.app.AppApplication;
 import com.goldze.mvvmhabit.app.AppViewModelFactory;
 import com.goldze.mvvmhabit.databinding.FragmentDevicecontrolBinding;
-import com.goldze.mvvmhabit.entity.DeviceInfoEntity;
 import com.goldze.mvvmhabit.entity.DeviceStatusInfoEntity;
 import com.goldze.mvvmhabit.ui.banner.DataBean;
+import com.goldze.mvvmhabit.utils.AppTools;
 import com.goldze.mvvmhabit.utils.GlideImageLoader;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
@@ -29,7 +29,6 @@ import com.youth.banner.listener.OnBannerListener;
 
 
 import java.util.ArrayList;
-import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.utils.ToastUtils;
@@ -70,33 +69,57 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
         //给RecyclerView添加Adpter，请使用自定义的Adapter继承BindingRecyclerViewAdapter，重写onBindBinding方法，里面有你要的Item对应的binding对象。
         // Adapter属于View层的东西, 不建议定义到ViewModel中绑定，以免内存泄漏
         //请求设备信息数据
+        viewModel.addPlayIndex();
         viewModel.initBleEvent();
         viewModel.requestDeviceInfo();
         viewModel.initToolbar();
-
         startBanner();
         //binding.ivDevicecontrolGif.setBackgroundResource("asset:inner_high_hot");
     }
 
+    private ArrayList<Object> getBannerPlayList(ArrayList<Object> allDatas){
+        ArrayList<Object> list_path = new ArrayList<>();
+        if(AppTools.isAutoPlayMode(viewModel.getBannerPlayMode())){
+            list_path=allDatas;
+        }else{
+            if(viewModel.getBannerPlayIndex()>allDatas.size()-1){
+                viewModel.saveBannerPlayIndex(0);
+            }
+            list_path.add(allDatas.get(viewModel.getBannerPlayIndex()));
+        }
+        return list_path;
+    }
     private void startBanner() {
         Banner banner=binding.bannerControl;
         //放标题的集合
         ArrayList<String> list_title = new ArrayList<>();
-        ArrayList<String> list_path = new ArrayList<>();
-        list_path.add("http://ww4.sinaimg.cn/large/006uZZy8jw1faic21363tj30ci08ct96.jpg");
-        list_path.add("http://ww4.sinaimg.cn/large/006uZZy8jw1faic259ohaj30ci08c74r.jpg");
-        list_path.add("http://ww4.sinaimg.cn/large/006uZZy8jw1faic2b16zuj30ci08cwf4.jpg");
-        list_path.add("http://ww4.sinaimg.cn/large/006uZZy8jw1faic2e7vsaj30ci08cglz.jpg");
-        list_title.add("好好学习");
-        list_title.add("天天向上");
-        list_title.add("热爱劳动");
-        list_title.add("美好愿景");
+        ArrayList<Object> list_path = getBannerPlayList(AppTools.getBannerUnZipFiles(this.getActivity()));
+
+//        list_path.add("http://ww4.sinaimg.cn/large/006uZZy8jw1faic21363tj30ci08ct96.jpg");
+//        list_path.add("http://ww4.sinaimg.cn/large/006uZZy8jw1faic259ohaj30ci08c74r.jpg");
+//        list_path.add("http://ww4.sinaimg.cn/large/006uZZy8jw1faic2b16zuj30ci08cwf4.jpg");
+//        list_path.add("http://ww4.sinaimg.cn/large/006uZZy8jw1faic2e7vsaj30ci08cglz.jpg");
+//        list_path.add(Uri.fromFile());
+//        list_path.add("http://ww4.sinaimg.cn/large/006uZZy8jw1faic259ohaj30ci08c74r.jpg");
+//        list_path.add("http://ww4.sinaimg.cn/large/006uZZy8jw1faic2b16zuj30ci08cwf4.jpg");
+//        list_path.add("http://ww4.sinaimg.cn/large/006uZZy8jw1faic2e7vsaj30ci08cglz.jpg");
+
+//        list_title.add("天天向上");
+//        list_title.add("热爱劳动");
+//        list_title.add("美好愿景");
         //设置内置样式，共有六种可以点入方法内逐一体验使用。
-        banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE_INSIDE);
+        if(list_path.size()>1){
+            banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR);
+        }else{
+            banner.setBannerStyle(BannerConfig.CENTER);
+        }
+
         banner.setImages(list_path);
 
+        for(int i=0;i<list_path.size();i++){
+            list_title.add("");
+        }
         banner.setBannerTitles(list_title);
-
         //设置图片加载器
         banner.setImageLoader(new GlideImageLoader());
         //设置图片集合

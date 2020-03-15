@@ -1,6 +1,8 @@
 package com.goldze.mvvmhabit.data.source.local;
 
 import com.goldze.mvvmhabit.data.source.LocalDataSource;
+import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseDataEntity;
+import com.goldze.mvvmhabit.utils.VersionControlUtil;
 
 import me.goldze.mvvmhabit.utils.SPUtils;
 
@@ -13,9 +15,12 @@ public class LocalDataSourceImpl implements LocalDataSource {
     private static final String KEY_USERNAME = "UserName";
     private static final String KEY_PASSWORD = "password";
     private static final String KEY_TOKEN = "Token";
-    private static final String KEY_USERID ="userid";
-    private static final String KEY_SMSTOKEN ="smstoken";
-
+    private static final String KEY_USERID = "userid";
+    private static final String KEY_SMSTOKEN = "smstoken";
+    private static final String KEY_VERSION_BANNER = "bannerversion";
+    private static final String KEY_VERSION_LOADING = "loadversion";
+    private static final String KEY_PLAY_MODE_BANNER = "bannerplaymode";
+    private static final String KEY_PLAY_INDEX_BANNER = "bannerplayindex";
     public static LocalDataSourceImpl getInstance() {
         if (INSTANCE == null) {
             synchronized (LocalDataSourceImpl.class) {
@@ -37,7 +42,7 @@ public class LocalDataSourceImpl implements LocalDataSource {
 
     @Override
     public void saveSmsToken(String token) {
-        SPUtils.getInstance().put(KEY_SMSTOKEN,token);
+        SPUtils.getInstance().put(KEY_SMSTOKEN, token);
     }
 
     @Override
@@ -47,7 +52,7 @@ public class LocalDataSourceImpl implements LocalDataSource {
 
     @Override
     public void saveUserID(int userId) {
-        SPUtils.getInstance().put(KEY_USERID,userId);
+        SPUtils.getInstance().put(KEY_USERID, userId);
     }
 
     @Override
@@ -58,6 +63,46 @@ public class LocalDataSourceImpl implements LocalDataSource {
     @Override
     public void savePassword(String password) {
         SPUtils.getInstance().put(KEY_PASSWORD, password);
+    }
+
+    @Override
+    public void saveBannerVersion(String version) {
+        SPUtils.getInstance().put(KEY_VERSION_BANNER, version);
+    }
+
+    @Override
+    public void saveLoadingVersion(String version) {
+        SPUtils.getInstance().put(KEY_VERSION_LOADING, version);
+    }
+
+    @Override
+    public void saveBannerPlayMode(String bannerPlayMode) {
+        SPUtils.getInstance().put(KEY_PLAY_MODE_BANNER, bannerPlayMode);
+    }
+
+    @Override
+    public void saveBannerPlayIndex(int bannerPlayIndex) {
+        SPUtils.getInstance().put(KEY_PLAY_INDEX_BANNER, bannerPlayIndex);
+    }
+
+    @Override
+    public int getBannerPlayIndex() {
+        return SPUtils.getInstance().getInt(KEY_PLAY_INDEX_BANNER,0);
+    }
+
+    @Override
+    public String getBannerPlayMode() {
+        return   SPUtils.getInstance().getString(KEY_PLAY_MODE_BANNER, CheckUpdateResponseDataEntity.PLAYMODE_ONCE);
+    }
+
+    @Override
+    public String getLoadingVersion() {
+        return SPUtils.getInstance().getString(KEY_VERSION_LOADING, VersionControlUtil.VERSION_LOADING);
+    }
+
+    @Override
+    public String getBannerVersion() {
+        return SPUtils.getInstance().getString(KEY_VERSION_BANNER, VersionControlUtil.VERSION_BANNER);
     }
 
     @Override

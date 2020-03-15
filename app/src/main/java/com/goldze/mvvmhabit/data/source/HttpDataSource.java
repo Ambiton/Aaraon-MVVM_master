@@ -1,6 +1,7 @@
 package com.goldze.mvvmhabit.data.source;
 
 import com.goldze.mvvmhabit.entity.DemoEntity;
+import com.goldze.mvvmhabit.entity.http.ResponseNetDeviceInfoEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.entity.http.login.LoginBodyEntity;
@@ -31,6 +32,13 @@ public interface HttpDataSource {
      * @return
      */
     Observable<CheckUpdateResponseEntity> checkUpdate(String appid, String sign,String token,String callId,CheckUpdateBodyEntity entity);
+
+    /**
+     * 返回设备信息
+     *
+     * @return
+     */
+    Observable<ResponseNetDeviceInfoEntity> getDeviceInfo(String serioNum,String appid, String sign, String token, String callId);
 
     /**
      * 登录

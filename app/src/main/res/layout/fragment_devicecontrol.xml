@@ -19,7 +19,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@mipmap/otherbackup"
+        android:background="@mipmap/mainbackground"
         android:fitsSystemWindows="true"
         android:orientation="vertical">
         <include
@@ -30,7 +30,6 @@
             android:id="@+id/twinklingRefreshLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/gray66_color"
             binding:onLoadMoreCommand="@{viewModel.onLoadMoreCommand}"
             binding:onRefreshCommand="@{viewModel.onRefreshCommand}"
             binding:tr_head_height="80dp"
@@ -44,13 +43,13 @@
                 <com.youth.banner.Banner
                     android:id="@+id/banner_control"
                     android:layout_width="match_parent"
-                    android:layout_height="160dp" />
+                    android:layout_height="180dp" />
 
                 <ImageView
                     android:id="@+id/iv_devicecontrol_bg"
                     android:layout_width="252dp"
                     android:layout_height="180dp"
-                    android:layout_marginTop="182dp"
+                    android:layout_marginTop="202dp"
                     android:layout_centerHorizontal="true"
                     android:src="@drawable/stop"
                     />
@@ -58,7 +57,7 @@
                     android:id="@+id/iv_devicecontrol_gif"
                     android:layout_width="180dp"
                     android:layout_height="100.8dp"
-                    android:layout_marginTop="219.8dp"
+                    android:layout_marginTop="239.8dp"
                     android:visibility="invisible"
                     android:layout_centerHorizontal="true"
                     android:src="@drawable/inner_high_hot"
@@ -68,28 +67,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/ll_devicecontrol_rotation_mode"
-                    android:layout_marginBottom="@dimen/margin_max"
+                    android:layout_marginBottom="@dimen/margin_large"
                     android:gravity="center"
                     android:orientation="horizontal">
                 <Switch
                     android:id="@+id/switch_open"
-                    android:layout_width="100dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:layout_marginStart="@dimen/margin_large"
                     android:layout_marginEnd="@dimen/margin_large_more"
                     android:checked="false"
                     binding:onClickCommand="@{viewModel.onPowSwitchChangeCommand}"
-                    style="@style/grayTextView_large"
+                    style="@style/SwitchStyle"
                     android:text="@string/devicecontrol_switch_open" />
                     <Switch
                         android:id="@+id/switch_warm"
-                        android:layout_width="100dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="50dp"
-
                         android:layout_marginEnd="@dimen/margin_large"
                         android:checked="false"
                         binding:onClickCommand="@{viewModel.onWarmSwitchChangeCommand}"
-                        style="@style/grayTextView_large"
+                        style="@style/SwitchStyle"
                         android:text="@string/devicecontrol_switch_warm" />
                 </LinearLayout>
                 <LinearLayout
@@ -97,7 +95,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    android:layout_margin="@dimen/margin_min"
+                    android:layout_margin="@dimen/margin_med"
                     android:background="@drawable/white_grayside_round_normal"
                     android:orientation="horizontal">
                     <TextView
@@ -150,8 +148,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@+id/iv_devicecontrol_bg"
                     android:layout_toStartOf="@+id/iv_devicecontrol_gif"
+                    android:layout_marginEnd="@dimen/margin_med"
                     binding:onClickCommand="@{viewModel.onHighSpeeSwitchChangeCommand}"
-                    style="@style/grayTextView_larger_Selector"
+                    style="@style/controlText_larger_Selector"
                     android:text="@string/devicecontrol_rotation_speed_high" />
                 <ImageView
                     android:id="@+id/imageViewLeftTop"
@@ -169,7 +168,7 @@
                     android:layout_toStartOf="@+id/iv_devicecontrol_gif"
                     android:layout_marginTop="90dp"
                     android:layout_marginEnd="25dp"
-                    style="@style/grayTextView_larger_Selector"
+                    style="@style/controlText_larger_Selector"
                     binding:onClickCommand="@{viewModel.onMidSpeeSwitchChangeCommand}"
                     android:text="@string/devicecontrol_rotation_speed_middle" />
 <!--                    android:text="@string/devicecontrol_rotation_speed_middle" -->
@@ -188,7 +187,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/imageViewleftBottom"
                     android:layout_toStartOf="@+id/iv_devicecontrol_gif"
-                    style="@style/grayTextView_larger_Selector"
+                    style="@style/controlText_larger_Selector"
                     binding:onClickCommand="@{viewModel.onLowSpeeSwitchChangeCommand}"
                     android:text="@string/devicecontrol_rotation_speed_low" />
 
@@ -198,7 +197,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@+id/iv_devicecontrol_bg"
                     android:layout_toEndOf="@+id/iv_devicecontrol_gif"
-                    style="@style/grayTextView_larger_Selector"
+                    android:layout_marginStart="@dimen/margin_med"
+                    style="@style/controlText_larger_Selector"
                     binding:onClickCommand="@{viewModel.onHighVolSwitchChangeCommand}"
                     android:text="@string/devicecontrol_volume_high" />
                 <ImageView
@@ -207,7 +207,7 @@
                     android:layout_height="30dp"
                     android:layout_below="@+id/tv_volume_high"
                     android:layout_toEndOf="@+id/iv_devicecontrol_gif"
-                    android:layout_marginStart="18dp"
+                    android:layout_marginStart="25dp"
                     binding:srcCompat="@mipmap/right_topline" />
                 <CheckedTextView
                     android:id="@+id/tv_volume_middle"
@@ -215,8 +215,8 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/imageViewRightTop"
                     android:layout_toEndOf="@+id/iv_devicecontrol_gif"
-                    android:layout_marginStart="30dp"
-                    style="@style/grayTextView_larger_Selector"
+                    android:layout_marginStart="35dp"
+                    style="@style/controlText_larger_Selector"
                     binding:onClickCommand="@{viewModel.onMidVolSwitchChangeCommand}"
                     android:text="@string/devicecontrol_volume_middle" />
                 <ImageView
@@ -225,7 +225,7 @@
                     android:layout_height="20dp"
                     android:layout_below="@+id/tv_volume_middle"
                     android:layout_toEndOf="@+id/iv_devicecontrol_gif"
-                    android:layout_marginStart="30dp"
+                    android:layout_marginStart="35dp"
                     binding:srcCompat="@mipmap/right_midline" />
                 <CheckedTextView
                     android:id="@+id/tv_volume_low"
@@ -233,26 +233,28 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/imageViewRightMiddle"
                     android:layout_toEndOf="@+id/iv_devicecontrol_gif"
-                    android:layout_marginStart="25dp"
-                    style="@style/grayTextView_larger_Selector"
+                    android:layout_marginStart="30dp"
+                    style="@style/controlText_larger_Selector"
                     binding:onClickCommand="@{viewModel.onLowVolSwitchChangeCommand}"
                     android:text="@string/devicecontrol_volume_low" />
                 <ImageView
                     android:id="@+id/imageViewRightBotoom"
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
-                    android:layout_above="@+id/tv_volume_silent"
+                    android:layout_below="@+id/tv_volume_low"
                     android:layout_toEndOf="@+id/iv_devicecontrol_gif"
-                    android:layout_marginStart="15dp"
+                    android:layout_marginStart="20dp"
                     binding:srcCompat="@mipmap/right_bottomline" />
 
                 <CheckedTextView
                     android:id="@+id/tv_volume_silent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/iv_devicecontrol_bg"
+                    android:layout_below="@+id/imageViewRightBotoom"
                     android:layout_toEndOf="@+id/iv_devicecontrol_gif"
-                    style="@style/grayTextView_larger_Selector"
+                    android:layout_marginTop="@dimen/margin_min"
+                    style="@style/controlText_larger_Selector"
+                    android:checked="true"
                     binding:onClickCommand="@{viewModel.onMuteVolSwitchChangeCommand}"
                     android:text="@string/devicecontrol_volume_mute" />
 

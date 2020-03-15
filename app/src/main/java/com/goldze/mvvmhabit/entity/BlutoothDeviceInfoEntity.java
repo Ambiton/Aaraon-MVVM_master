@@ -5,13 +5,13 @@ package com.goldze.mvvmhabit.entity;
  * @description:蓝牙设备信息
  * @date : 2019/12/23 21:56
  */
-public class DeviceInfoEntity {
+public class BlutoothDeviceInfoEntity {
     private int drawableId;
     private int rssi;
     private String deviceName;
     private String macAddress;
 
-    public DeviceInfoEntity(int drawableId, int rssi, String deviceName, String macAddress) {
+    public BlutoothDeviceInfoEntity(int drawableId, int rssi, String deviceName, String macAddress) {
         this.drawableId = drawableId;
         this.rssi = rssi;
         this.deviceName = deviceName;

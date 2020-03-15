@@ -1,23 +1,23 @@
 package com.goldze.mvvmhabit.ui.main;
 
 import android.Manifest;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import android.content.pm.ActivityInfo;
-import android.databinding.Observable;
+import androidx.databinding.Observable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.goldze.mvvmhabit.BR;
 import com.goldze.mvvmhabit.R;
-import com.goldze.mvvmhabit.app.AppApplication;
 import com.goldze.mvvmhabit.app.AppViewModelFactory;
 import com.goldze.mvvmhabit.databinding.ActivityDevicelistBinding;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseDataEntity;
-import com.goldze.mvvmhabit.ui.login.LoginActivity;
 import com.goldze.mvvmhabit.ui.viewpager.adapter.DeviceListBindingAdapter;
 import com.goldze.mvvmhabit.utils.AppTools;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -26,7 +26,6 @@ import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.MaterialDialogUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
-import me.tatarka.bindingcollectionadapter2.BindingRecyclerViewAdapter;
 
 /**
  * Created by goldze on 2017/7/17.
@@ -65,8 +64,15 @@ public class DeviceListActivity extends BaseActivity<ActivityDevicelistBinding, 
         // Adapter属于View层的东西, 不建议定义到ViewModel中绑定，以免内存泄漏
         viewModel.setContext(this);
         binding.setAdapter(new DeviceListBindingAdapter());
+        binding.include.ivRightIcon.setImageResource(R.mipmap.roundlogo);
+        binding.include.ivRightIcon.setVisibility(View.VISIBLE);
         viewModel.initToolbar();
         viewModel.checkVersion();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         requestBlutoothScanPermissions();
     }
 
@@ -81,7 +87,7 @@ public class DeviceListActivity extends BaseActivity<ActivityDevicelistBinding, 
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
                         if (aBoolean) {
-                            ToastUtils.showShort("设备扫描限已经打开");
+                            //ToastUtils.showShort("设备扫描限已经打开");
                             //扫描蓝牙设备数据
                             viewModel.requestDeviceList();
                         } else {
@@ -149,7 +155,7 @@ public class DeviceListActivity extends BaseActivity<ActivityDevicelistBinding, 
                                     @Override
                                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                         dialog.dismiss();
-                                        AppTools.downFile(DeviceListActivity.this,appCheckUpdateResponseDataEntity.getPackSavepath());
+                                        AppTools.downFile(DeviceListActivity.this,appCheckUpdateResponseDataEntity.getPackSavepath(),null);
                                     }
                                 }).show();
                             }

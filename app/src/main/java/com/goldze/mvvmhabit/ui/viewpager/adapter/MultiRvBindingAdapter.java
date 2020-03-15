@@ -1,9 +1,6 @@
 package com.goldze.mvvmhabit.ui.viewpager.adapter;
 
-import android.databinding.ViewDataBinding;
-
-import com.goldze.mvvmhabit.databinding.ItemViewpagerBinding;
-import com.goldze.mvvmhabit.ui.main.DeviceListItemViewModel;
+import androidx.databinding.ViewDataBinding;
 
 import me.goldze.mvvmhabit.base.MultiItemViewModel;
 import me.tatarka.bindingcollectionadapter2.BindingRecyclerViewAdapter;
