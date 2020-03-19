@@ -1,5 +1,6 @@
 package com.goldze.mvvmhabit.ui.main;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import android.content.pm.ActivityInfo;
@@ -14,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.goldze.mvvmhabit.BR;
 import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.app.AppViewModelFactory;
@@ -21,7 +24,9 @@ import com.goldze.mvvmhabit.databinding.FragmentDevicecontrolBinding;
 import com.goldze.mvvmhabit.entity.DeviceStatusInfoEntity;
 import com.goldze.mvvmhabit.ui.banner.DataBean;
 import com.goldze.mvvmhabit.utils.AppTools;
+import com.goldze.mvvmhabit.utils.BleOption;
 import com.goldze.mvvmhabit.utils.GlideImageLoader;
+import com.inuker.bluetooth.library.connect.listener.BleConnectStatusListener;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
@@ -31,7 +36,11 @@ import com.youth.banner.listener.OnBannerListener;
 import java.util.ArrayList;
 
 import me.goldze.mvvmhabit.base.BaseFragment;
+import me.goldze.mvvmhabit.utils.MaterialDialogUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
+
+import static com.inuker.bluetooth.library.Constants.STATUS_CONNECTED;
+import static com.inuker.bluetooth.library.Constants.STATUS_DISCONNECTED;
 
 /**
  * Created by goldze on 2017/7/17.
@@ -40,11 +49,17 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
 
 public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBinding, DeviceControlViewModel> implements OnBannerListener {
     private static final String TAG = "DeviceControlFragment";
-
+    private  MaterialDialog.Builder builderBle;
     @Override
     public void initParam() {
         super.initParam();
         getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        BleOption.getInstance().unregisterConnectStatusListener(mBleConnectStatusListener);
     }
 
     @Override
@@ -67,7 +82,16 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
     @Override
     public void initData() {
         //给RecyclerView添加Adpter，请使用自定义的Adapter继承BindingRecyclerViewAdapter，重写onBindBinding方法，里面有你要的Item对应的binding对象。
+
+        builderBle=MaterialDialogUtils.showBasicDialogNoCancel(this.getActivity(),"温馨提示",getResources().getString(R.string.dialog_title_connect_failed));
+        builderBle.onPositive(new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                DeviceControlFragment.this.getActivity().finish();
+            }
+        });
         // Adapter属于View层的东西, 不建议定义到ViewModel中绑定，以免内存泄漏
+        BleOption.getInstance().registerConnectListener(mBleConnectStatusListener);
         //请求设备信息数据
         viewModel.addPlayIndex();
         viewModel.initBleEvent();
@@ -97,16 +121,8 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
 
 //        list_path.add("http://ww4.sinaimg.cn/large/006uZZy8jw1faic21363tj30ci08ct96.jpg");
 //        list_path.add("http://ww4.sinaimg.cn/large/006uZZy8jw1faic259ohaj30ci08c74r.jpg");
-//        list_path.add("http://ww4.sinaimg.cn/large/006uZZy8jw1faic2b16zuj30ci08cwf4.jpg");
-//        list_path.add("http://ww4.sinaimg.cn/large/006uZZy8jw1faic2e7vsaj30ci08cglz.jpg");
 //        list_path.add(Uri.fromFile());
-//        list_path.add("http://ww4.sinaimg.cn/large/006uZZy8jw1faic259ohaj30ci08c74r.jpg");
-//        list_path.add("http://ww4.sinaimg.cn/large/006uZZy8jw1faic2b16zuj30ci08cwf4.jpg");
-//        list_path.add("http://ww4.sinaimg.cn/large/006uZZy8jw1faic2e7vsaj30ci08cglz.jpg");
-
 //        list_title.add("天天向上");
-//        list_title.add("热爱劳动");
-//        list_title.add("美好愿景");
         //设置内置样式，共有六种可以点入方法内逐一体验使用。
         if(list_path.size()>1){
             banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR);
@@ -236,6 +252,19 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
         binding.tvVolumeLow.setEnabled(isEnable);
         binding.tvVolumeSilent.setEnabled(isEnable);
     }
+
+    private final BleConnectStatusListener mBleConnectStatusListener = new BleConnectStatusListener() {
+
+        @Override
+        public void onConnectStatusChanged(String mac, int status) {
+            if (status == STATUS_CONNECTED) {
+                builderBle.build().dismiss();
+            } else if (status == STATUS_DISCONNECTED) {
+                builderBle.show();
+            }
+        }
+    };
+
     @Override
     public void initViewObservable() {
         viewModel.statusInfoChageObeserver.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
@@ -278,182 +307,6 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
 
             }
         });
-//        //监听下拉刷新完成
-//        viewModel.uc.finishRefreshing.observe(this, new Observer() {
-//            @Override
-//            public void onChanged(@Nullable Object o) {
-//                //结束刷新
-//                binding.twinklingRefreshLayout.finishRefreshing();
-//            }
-//        });
-//        //监听上拉加载完成
-//        viewModel.uc.finishLoadmore.observe(this, new Observer() {
-//            @Override
-//            public void onChanged(@Nullable Object o) {
-//                //结束刷新
-//               binding.twinklingRefreshLayout.finishLoadmore();
-//            }
-//        });
-//
-//        viewModel.uc.powerSwitch.observe(this, new Observer<Boolean>() {
-//            @Override
-//            public void onChanged(@Nullable Boolean aBoolean) {
-//                if (viewModel.uc.powerSwitch.getValue()!=null&&viewModel.uc.powerSwitch.getValue()) {
-//                    binding.ivDevicecontrolBg.setImageResource(R.drawable.pillow);
-//                    if(viewModel.uc.warmSwitch.getValue()!=null&&viewModel.uc.warmSwitch.getValue()){
-//                        binding.ivDevicecontrolGif.setImageResource(R.drawable.inner_high_hot);
-//                    }else{
-//                        binding.ivDevicecontrolGif.setImageResource(R.drawable.inner_high_normal);
-//                    }
-//                    binding.ivDevicecontrolGif.setVisibility(View.VISIBLE);
-//                } else {
-//                    binding.ivDevicecontrolBg.setImageResource(R.drawable.stop);
-//                    binding.ivDevicecontrolGif.setVisibility(View.INVISIBLE);
-//                }
-//            }
-//        });
-//
-//        viewModel.uc.warmSwitch.observe(this, new Observer<Boolean>() {
-//            @Override
-//            public void onChanged(@Nullable Boolean aBoolean) {
-//                if(viewModel.uc.powerSwitch.getValue()==null||!viewModel.uc.powerSwitch.getValue()){
-//                    binding.ivDevicecontrolBg.setImageResource(R.drawable.stop);
-//                    binding.ivDevicecontrolGif.setVisibility(View.INVISIBLE);
-//                    return;
-//                }
-//                binding.ivDevicecontrolGif.setVisibility(View.VISIBLE);
-//                if (viewModel.uc.warmSwitch.getValue()!=null&&viewModel.uc.warmSwitch.getValue()) {
-//                    //在xml中定义id后,使用binding可以直接拿到这个view的引用,不再需要findViewById去找控件了
-//                    binding.ivDevicecontrolBg.setImageResource(R.drawable.pillow);
-//                    binding.ivDevicecontrolGif.setImageResource(R.drawable.inner_high_hot);
-//                } else {
-//                    //密码不可见
-//                    binding.ivDevicecontrolGif.setImageResource(R.drawable.inner_high_normal);
-//                }
-//            }
-//        });
-//
-//        viewModel.uc.highSpeedSwitch.observe(this, new Observer() {
-//            @Override
-//            public void onChanged(@Nullable Object o) {
-//                if(viewModel.uc.powerSwitch.getValue()==null||!viewModel.uc.powerSwitch.getValue()){
-//                    binding.ivDevicecontrolBg.setImageResource(R.drawable.stop);
-//                    binding.ivDevicecontrolGif.setVisibility(View.INVISIBLE);
-//                    return;
-//                }
-//                binding.tvRotationHigh.setChecked(true);
-//                binding.tvRotationMid.setChecked(false);
-//                binding.tvRotationLow.setChecked(false);
-//                binding.ivDevicecontrolGif.setVisibility(View.VISIBLE);
-//                binding.ivDevicecontrolBg.setImageResource(R.drawable.pillow);
-//                if (viewModel.uc.warmSwitch.getValue()!=null&&viewModel.uc.warmSwitch.getValue()) {
-//                    binding.ivDevicecontrolGif.setImageResource(R.drawable.inner_high_hot);
-//                } else {
-//                    binding.ivDevicecontrolGif.setImageResource(R.drawable.inner_high_normal);
-//                }
-//            }
-//        });
-//
-//        viewModel.uc.midSpeedSwitch.observe(this, new Observer() {
-//            @Override
-//            public void onChanged(@Nullable Object o) {
-//                if(viewModel.uc.powerSwitch.getValue()==null||!viewModel.uc.powerSwitch.getValue()){
-//                    binding.ivDevicecontrolBg.setImageResource(R.drawable.stop);
-//                    binding.ivDevicecontrolGif.setVisibility(View.INVISIBLE);
-//                    return;
-//                }
-//                binding.tvRotationHigh.setChecked(false);
-//                binding.tvRotationMid.setChecked(true);
-//                binding.tvRotationLow.setChecked(false);
-//                binding.ivDevicecontrolGif.setVisibility(View.VISIBLE);
-//                binding.ivDevicecontrolBg.setImageResource(R.drawable.pillow);
-//                if (viewModel.uc.warmSwitch.getValue()!=null&&viewModel.uc.warmSwitch.getValue()) {
-//                    binding.ivDevicecontrolGif.setImageResource(R.drawable.inner_mid_hot);
-//                } else {
-//                    binding.ivDevicecontrolGif.setImageResource(R.drawable.inner_mid_normal);
-//                }
-//            }
-//        });
-//
-//        viewModel.uc.lowSpeedSwitch.observe(this, new Observer() {
-//            @Override
-//            public void onChanged(@Nullable Object o) {
-//                if(viewModel.uc.powerSwitch.getValue()==null||!viewModel.uc.powerSwitch.getValue()){
-//                    binding.ivDevicecontrolBg.setImageResource(R.drawable.stop);
-//                    binding.ivDevicecontrolGif.setVisibility(View.INVISIBLE);
-//                    return;
-//                }
-//                binding.tvRotationHigh.setChecked(false);
-//                binding.tvRotationMid.setChecked(false);
-//                binding.tvRotationLow.setChecked(true);
-//                binding.ivDevicecontrolGif.setVisibility(View.VISIBLE);
-//                binding.ivDevicecontrolBg.setImageResource(R.drawable.pillow);
-//                if (viewModel.uc.warmSwitch.getValue()!=null&&viewModel.uc.warmSwitch.getValue()) {
-//                    binding.ivDevicecontrolGif.setImageResource(R.drawable.inner_low_hot);
-//                } else {
-//                    binding.ivDevicecontrolGif.setImageResource(R.drawable.inner_low_normal);
-//                }
-//            }
-//        });
-//
-//        viewModel.uc.highVolSwitch.observe(this, new Observer() {
-//            @Override
-//            public void onChanged(@Nullable Object o) {
-//                if(viewModel.uc.powerSwitch.getValue()==null||!viewModel.uc.powerSwitch.getValue()){
-//                    binding.ivDevicecontrolBg.setImageResource(R.drawable.stop);
-//                    binding.ivDevicecontrolGif.setVisibility(View.INVISIBLE);
-//                    return;
-//                }
-//                binding.tvVolumeHigh.setChecked(true);
-//                binding.tvVolumeMiddle.setChecked(false);
-//                binding.tvVolumeLow.setChecked(false);
-//                binding.tvVolumeSilent.setChecked(false);
-//            }
-//        });
-//        viewModel.uc.midVolSwitch.observe(this, new Observer() {
-//            @Override
-//            public void onChanged(@Nullable Object o) {
-//                if(viewModel.uc.powerSwitch.getValue()==null||!viewModel.uc.powerSwitch.getValue()){
-//                    binding.ivDevicecontrolBg.setImageResource(R.drawable.stop);
-//                    binding.ivDevicecontrolGif.setVisibility(View.INVISIBLE);
-//                    return;
-//                }
-//                binding.tvVolumeHigh.setChecked(false);
-//                binding.tvVolumeMiddle.setChecked(true);
-//                binding.tvVolumeLow.setChecked(false);
-//                binding.tvVolumeSilent.setChecked(false);
-//            }
-//        });
-//
-//        viewModel.uc.lowVolSwitch.observe(this, new Observer() {
-//            @Override
-//            public void onChanged(@Nullable Object o) {
-//                if(viewModel.uc.powerSwitch.getValue()==null||!viewModel.uc.powerSwitch.getValue()){
-//                    binding.ivDevicecontrolBg.setImageResource(R.drawable.stop);
-//                    binding.ivDevicecontrolGif.setVisibility(View.INVISIBLE);
-//                    return;
-//                }
-//                binding.tvVolumeHigh.setChecked(false);
-//                binding.tvVolumeMiddle.setChecked(false);
-//                binding.tvVolumeLow.setChecked(true);
-//                binding.tvVolumeSilent.setChecked(false);
-//            }
-//        });
-//
-//        viewModel.uc.muteVolSwitch.observe(this, new Observer() {
-//            @Override
-//            public void onChanged(@Nullable Object o) {
-//                if(viewModel.uc.powerSwitch.getValue()==null||!viewModel.uc.powerSwitch.getValue()){
-//                    binding.ivDevicecontrolBg.setImageResource(R.drawable.stop);
-//                    binding.ivDevicecontrolGif.setVisibility(View.INVISIBLE);
-//                    return;
-//                }
-//                binding.tvVolumeHigh.setChecked(false);
-//                binding.tvVolumeMiddle.setChecked(false);
-//                binding.tvVolumeLow.setChecked(false);
-//                binding.tvVolumeSilent.setChecked(true);
-//            }
-//        });
     }
 
     @Override

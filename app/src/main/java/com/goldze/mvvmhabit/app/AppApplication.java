@@ -100,6 +100,15 @@ public class AppApplication extends BaseApplication {
         },1000,TIME_PERIOD_OBSERVER);
     }
 
+    @Override
+    public void exitApp() {
+        super.exitApp();
+        RxLogTool.d(TAG, "exit app... ");
+        stopObserverTimer();
+        mClient.disconnect(BleOption.getInstance().getMac());
+        android.os.Process.killProcess(android.os.Process.myPid());
+
+    }
     private void stopObserverTimer(){
         if(observerTimer!=null){
             observerTimer.cancel();

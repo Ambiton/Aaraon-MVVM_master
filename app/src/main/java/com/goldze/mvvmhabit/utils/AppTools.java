@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import androidx.core.content.FileProvider;
@@ -63,6 +64,14 @@ public class AppTools {
         }
         return true;
     }
+
+    public static boolean checkGpsIsOpen(Context context) {
+        boolean isOpen;
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        isOpen = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        return isOpen;
+    }
+
 
     public static Uri getPathUri(Context context, String filePath) {
         Uri uri;

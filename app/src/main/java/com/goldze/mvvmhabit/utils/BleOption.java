@@ -5,6 +5,7 @@ import android.util.Log;
 import com.goldze.mvvmhabit.app.AppApplication;
 import com.inuker.bluetooth.library.Code;
 import com.inuker.bluetooth.library.Constants;
+import com.inuker.bluetooth.library.connect.listener.BleConnectStatusListener;
 import com.inuker.bluetooth.library.connect.response.BleConnectResponse;
 import com.inuker.bluetooth.library.connect.response.BleNotifyResponse;
 import com.inuker.bluetooth.library.connect.response.BleReadResponse;
@@ -342,5 +343,13 @@ public class BleOption {
         }
         Log.e(TAG, "write date is  " + RxDataTool.bytes2HexString(datas));
         AppApplication.getBluetoothClient(AppApplication.getInstance()).write(this.curDeviceMac, UUID_SERVICE_CHANNEL, UUID_CHARACTERISTIC_CHANNEL_WRITE_READ, datas, bleWriteResponse);
+    }
+
+    public void registerConnectListener(BleConnectStatusListener mBleConnectStatusListener){
+        AppApplication.getBluetoothClient(AppApplication.getInstance()).registerConnectStatusListener(this.curDeviceMac, mBleConnectStatusListener);
+    }
+
+    public void unregisterConnectStatusListener(BleConnectStatusListener mBleConnectStatusListener){
+        AppApplication.getBluetoothClient(AppApplication.getInstance()).unregisterConnectStatusListener(this.curDeviceMac, mBleConnectStatusListener);
     }
 }

@@ -163,8 +163,7 @@ public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> 
     public void onResponse(int code, BleGattProfile data) {
         dialog.dismiss();
         if (code == REQUEST_SUCCESS) {
-            ToastUtils.showLong(viewModel.getContext().getString(R.string.toast_title_hasconnected)+";connect statu is "+AppApplication.getBluetoothClient(AppApplication.getInstance()).getConnectStatus(BleOption.getInstance().getMac()));
-
+            ToastUtils.showLong(viewModel.getContext().getString(R.string.toast_title_hasconnected));
             viewModel.startContainerActivity(DeviceControlFragment.class.getCanonicalName());
         }else{
             ToastUtils.showLong(viewModel.getContext().getString(R.string.toast_title_connect_error));

@@ -15,7 +15,7 @@ import me.goldze.mvvmhabit.utils.Utils;
  */
 
 public class BaseApplication extends MultiDexApplication {
-    private static Application sInstance;
+    private static BaseApplication sInstance;
 
     @Override
     public void onCreate() {
@@ -29,12 +29,15 @@ public class BaseApplication extends MultiDexApplication {
         MultiDex.install(this);
     }
 
+    public void exitApp(){
+        AppManager.getAppManager().finishAllActivity();
+    }
     /**
      * 当主工程没有继承BaseApplication时，可以使用setApplication方法初始化BaseApplication
      *
      * @param application
      */
-    public static synchronized void setApplication(@NonNull Application application) {
+    public static synchronized void setApplication(@NonNull BaseApplication application) {
         sInstance = application;
         //初始化工具类
         Utils.init(application);
@@ -76,7 +79,7 @@ public class BaseApplication extends MultiDexApplication {
     /**
      * 获得当前app运行的Application
      */
-    public static Application getInstance() {
+    public static BaseApplication getInstance() {
         if (sInstance == null) {
             throw new NullPointerException("please inherit BaseApplication or call setApplication.");
         }

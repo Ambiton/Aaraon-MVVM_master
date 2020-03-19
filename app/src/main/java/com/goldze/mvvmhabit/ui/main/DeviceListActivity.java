@@ -1,12 +1,19 @@
 package com.goldze.mvvmhabit.ui.main;
 
 import android.Manifest;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import androidx.databinding.Observable;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,14 +22,17 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.goldze.mvvmhabit.BR;
 import com.goldze.mvvmhabit.R;
+import com.goldze.mvvmhabit.app.AppApplication;
 import com.goldze.mvvmhabit.app.AppViewModelFactory;
 import com.goldze.mvvmhabit.databinding.ActivityDevicelistBinding;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseDataEntity;
 import com.goldze.mvvmhabit.ui.viewpager.adapter.DeviceListBindingAdapter;
 import com.goldze.mvvmhabit.utils.AppTools;
+import com.tamsiree.rxtool.RxLogTool;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import io.reactivex.functions.Consumer;
+import me.goldze.mvvmhabit.base.AppManager;
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.MaterialDialogUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
@@ -33,7 +43,7 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
  */
 
 public class DeviceListActivity extends BaseActivity<ActivityDevicelistBinding, DeviceListViewModel> {
-
+    private int GPS_REQUEST_CODE = 1;
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_devicelist;
@@ -70,12 +80,49 @@ public class DeviceListActivity extends BaseActivity<ActivityDevicelistBinding, 
         viewModel.checkVersion();
     }
 
+    private void openGPSSEtting() {
+        if (AppTools.checkGpsIsOpen(this)) {
+            viewModel.requestDeviceList();
+        } else {
+            new AlertDialog.Builder(this).setTitle("为了保证扫描设备过程正常，请打开 GPS")
+                    .setMessage("请前往设置打开GPS")
+                    //  取消选项
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Toast.makeText(DeviceListActivity.this, "close", Toast.LENGTH_SHORT).show();
+                            // 关闭dialog
+                            dialogInterface.dismiss();
+                            openGPSSEtting();
+                        }
+                    })
+                    //  确认选项
+                    .setPositiveButton("前往设置", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            //跳转到手机原生设置页面
+                            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivityForResult(intent, GPS_REQUEST_CODE);
+                        }
+                    })
+                    .setCancelable(false)
+                    .show();
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         requestBlutoothScanPermissions();
     }
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == GPS_REQUEST_CODE) {
+            openGPSSEtting();
+        }
+    }
     /**
      * 请求扫描蓝牙设备需要的权限
      */
@@ -89,7 +136,7 @@ public class DeviceListActivity extends BaseActivity<ActivityDevicelistBinding, 
                         if (aBoolean) {
                             //ToastUtils.showShort("设备扫描限已经打开");
                             //扫描蓝牙设备数据
-                            viewModel.requestDeviceList();
+                            openGPSSEtting();
                         } else {
                             finish();
                         }
@@ -100,7 +147,9 @@ public class DeviceListActivity extends BaseActivity<ActivityDevicelistBinding, 
     public void onDestroy() {
         super.onDestroy();
         viewModel.cancelScan();
+        AppApplication.getInstance().exitApp();
     }
+
 
     @Override
     public void initViewObservable() {

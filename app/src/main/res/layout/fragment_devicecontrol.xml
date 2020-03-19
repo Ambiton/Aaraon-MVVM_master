@@ -46,6 +46,14 @@
                     android:layout_height="180dp" />
 
                 <ImageView
+                    android:id="@+id/iv_devicecontrol_all_bg"
+                    android:layout_width="252dp"
+                    android:layout_height="180dp"
+                    android:layout_marginTop="202dp"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/pillow"
+                    />
+                <ImageView
                     android:id="@+id/iv_devicecontrol_bg"
                     android:layout_width="252dp"
                     android:layout_height="180dp"
