@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.goldze.mvvmhabit.utils.RxRegTool;
 import com.vondear.rxtool.RxDataTool;
 
 import org.junit.Test;
@@ -24,7 +25,9 @@ public class ExampleInstrumentedTest {
 //        Context appContext = InstrumentationRegistry.getTargetContext();
 //
 //        assertEquals("com.goldze.mvvmhabit", appContext.getPackageName());
-        float v1=RxDataTool.stringToFloat("01.01");
-        float v2=RxDataTool.stringToFloat("00.98");
+        boolean istrue= RxRegTool.isMobileSimple("16656788765");
+        boolean istrue2= RxRegTool.isMobileExact("16656788765");
+        boolean istrue3= RxRegTool.isMobile("16656788765");
+        int a=0;
     }
 }

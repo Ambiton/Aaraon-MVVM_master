@@ -164,13 +164,23 @@
     </style>
 
     <style name="controlText_larger_Selector">
+        <item name="android:layout_width">42dp</item>
+        <item name="android:layout_height">42dp</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingStart">9dp</item>
+        <item name="android:textColor">@color/whiteColor88</item>
+        <item name="android:background">@drawable/highlight_yellow_selector</item>
+    </style>
+    <style name="roationmodel_Text_larger_Selector">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:gravity">center</item>
         <item name="android:paddingStart">8dp</item>
         <item name="android:paddingEnd">8dp</item>
-        <item name="android:textColor">@color/whiteColor88</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/gray99_color</item>
         <item name="android:background">@drawable/highlight_yellow_selector</item>
     </style>
 
@@ -188,10 +198,10 @@
     </style>
 
     <style name="SwitchStyle">
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/whiteColor88</item>
         <item name="android:thumb">@drawable/switch_thumb</item>
-        <item name="android:switchPadding">@dimen/margin_med</item>
+        <item name="android:switchPadding">@dimen/margin_max</item>
         <item name="android:track">@drawable/switch_track</item>
     </style>
 

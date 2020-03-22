@@ -22,6 +22,7 @@ import com.goldze.mvvmhabit.app.AppViewModelFactory;
 import com.goldze.mvvmhabit.databinding.ActivityLoadingBinding;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseDataEntity;
 import com.goldze.mvvmhabit.ui.login.LoginActivity;
+import com.goldze.mvvmhabit.ui.register.BirthdayChooseActivity;
 import com.goldze.mvvmhabit.utils.AppTools;
 import com.tamsiree.rxtool.RxLogTool;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -167,6 +168,7 @@ public class LoadingActivity extends BaseActivity<ActivityLoadingBinding, Loadin
         new Handler(getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
+//                startActivity(BirthdayChooseActivity.class);
                 if (!viewModel.isNeedLogin(LoadingActivity.this) ) {
                     startActivity(DeviceListActivity.class);
                     finish();

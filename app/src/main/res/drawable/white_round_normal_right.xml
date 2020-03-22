@@ -24,6 +24,6 @@
 		android:centerColor="@color/white"
 		android:endColor="@color/white"
 		android:angle="90" />
-<corners android:topRightRadius="20px"
-	android:bottomRightRadius="20px"/>
+	<corners android:topRightRadius="20px"
+		android:bottomRightRadius="20px"/>
 </shape>

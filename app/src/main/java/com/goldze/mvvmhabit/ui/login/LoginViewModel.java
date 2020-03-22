@@ -120,7 +120,7 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> {
     public BindingCommand verifyCodeSwitchOnClickCommand = new BindingCommand(new BindingAction() {
         @Override
         public void call() {
-            if (TextUtils.isEmpty(userName.get())|| !RxRegTool.isMobileExact(userName.get())) {
+            if (TextUtils.isEmpty(userName.get())|| !RxRegTool.isMobileSimple(userName.get())) {
                 ToastUtils.showShort("请输入正确的手机号！");
                 return;
             }
@@ -167,7 +167,7 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> {
     });
 
     private void getVersionCode(){
-        if (TextUtils.isEmpty(userName.get())|| !RxRegTool.isMobileExact(userName.get())) {
+        if (TextUtils.isEmpty(userName.get())|| !RxRegTool.isMobileSimple(userName.get())) {
             ToastUtils.showShort("请输入正确的手机号！");
             return;
         }
@@ -195,7 +195,7 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> {
      * 网络登陆操作
      **/
     private void login() {
-        if (TextUtils.isEmpty(userName.get())||!RxRegTool.isMobileExact(userName.get())) {
+        if (TextUtils.isEmpty(userName.get())||!RxRegTool.isMobileSimple(userName.get())) {
             ToastUtils.showShort("请输入正确的手机号！");
             return;
         }

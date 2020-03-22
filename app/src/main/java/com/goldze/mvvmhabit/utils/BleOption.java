@@ -65,6 +65,7 @@ public class BleOption {
     private String curDeviceMac;
     private volatile boolean isDeviceConnected;
     private Timer deviceInfoTimer;
+    private Timer getOnceDeviceInfoTimer;
 
     public static synchronized BleOption getInstance() {
         if (instance == null) {
@@ -112,20 +113,45 @@ public class BleOption {
      * 开启获取设备信息的定时器，每2秒获取一次
      *
      * @param bleWriteResponse
+     * @param onceTimer 是否是只查询一次，是：200ms后查询，否：200ms后每3秒查询一次
      */
-    public synchronized void startGetDeviceInfo(final BleWriteResponse bleWriteResponse) {
-        if (deviceInfoTimer != null) {
-            deviceInfoTimer.cancel();
-            deviceInfoTimer = null;
-        }
-        deviceInfoTimer = new Timer();
-        deviceInfoTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                writeDate(new byte[]{OPTION_GET_DEVICEINFO}, bleWriteResponse);
+    public void startTimerGetDeviceInfo(final BleWriteResponse bleWriteResponse, boolean onceTimer) {
+        if(onceTimer){
+            if (getOnceDeviceInfoTimer != null) {
+                getOnceDeviceInfoTimer.cancel();
+                getOnceDeviceInfoTimer = null;
             }
-        }, 500, 5 * 1000);
+            getOnceDeviceInfoTimer = new Timer();
+            getOnceDeviceInfoTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    getDeviceInfo(bleWriteResponse);
+                }
+            }, 200);
+        }else{
+            if (deviceInfoTimer != null) {
+                deviceInfoTimer.cancel();
+                deviceInfoTimer = null;
+            }
+            deviceInfoTimer = new Timer();
+            deviceInfoTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    getDeviceInfo(bleWriteResponse);
+                }
+            }, 200, 3 * 1000);
+        }
 
+
+    }
+
+    /**
+     * 获取设备信息
+     *
+     * @param bleWriteResponse
+     */
+    public void getDeviceInfo(BleWriteResponse bleWriteResponse) {
+        writeDate(new byte[]{OPTION_GET_DEVICEINFO}, bleWriteResponse);
     }
 
     /**
@@ -135,6 +161,10 @@ public class BleOption {
         if (deviceInfoTimer != null) {
             deviceInfoTimer.cancel();
             deviceInfoTimer = null;
+        }
+        if (getOnceDeviceInfoTimer != null) {
+            getOnceDeviceInfoTimer.cancel();
+            getOnceDeviceInfoTimer = null;
         }
     }
 

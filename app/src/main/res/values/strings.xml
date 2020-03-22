@@ -26,7 +26,7 @@
     <string name="devicecontrol_rotation_speed_low">低速</string>
     <string name="devicecontrol_rotation_speed_middle">中速</string>
     <string name="devicecontrol_rotation_speed_high">高速</string>
-    <string name="devicecontrol_volume_high">高</string>
+    <string name="devicecontrol_volume_high"> 高 </string>
     <string name="devicecontrol_volume_middle">中</string>
     <string name="devicecontrol_volume_low">低</string>
     <string name="devicecontrol_volume_mute">静音</string>
@@ -34,6 +34,7 @@
     <string name="toast_title_hasconnected">连接成功</string>
     <string name="dialog_title_connect_failed">设备已断开连接，请检查设备是否关闭，并确保手机蓝牙是打开状态！</string>
     <string name="toast_title_connect_error">连接失败，请稍后重试</string>
+    <string name="toast_title_option_error">操作失败，请重试</string>
     <string name="user_agreement_content">1)    明远按摩器APP旨在通过采集和跟踪与健康相关的信息来帮助用户管理自身的整体健康状况。仅用于健康和健身方面的目的，并不用于治疗、缓解、护理疾病或其他情况。\n
 2)	明远按摩器APP以及通过应用程序提供的任何信息或服务仅用于检测或监控，并不用于诊断理任何医疗状况、疾病或生理过程的管理或护理。此处提供的任何监控信息或通过明远按摩器APP收集或访问的任何材料或信息中的健康相关的信息都旨在向您提供便利，不得视为医疗诊断依据。用户向医生寻求医疗建议，您通过使用明远按摩器APP所获得的信息都不一定适合、准确、完整、可靠。\n
 3)	正在接受治疗或身体不适的人员，在使用机器前，应咨询医师。\n

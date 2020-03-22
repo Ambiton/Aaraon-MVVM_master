@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.RadioGroup;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -251,6 +253,9 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
         binding.tvVolumeMiddle.setEnabled(isEnable);
         binding.tvVolumeLow.setEnabled(isEnable);
         binding.tvVolumeSilent.setEnabled(isEnable);
+        if(!isEnable){
+            binding.switchWarm.setChecked(false);
+        }
     }
 
     private final BleConnectStatusListener mBleConnectStatusListener = new BleConnectStatusListener() {
@@ -267,6 +272,26 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
 
     @Override
     public void initViewObservable() {
+        binding.switchOpen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                DeviceStatusInfoEntity deviceStatusInfoEntity = viewModel.statusInfoChageObeserver.get();
+                Boolean aBoolean=(isChecked==(deviceStatusInfoEntity.getIsDeviceOpen()==DeviceStatusInfoEntity.FLAG_TRUE));
+                if(!aBoolean){
+                    viewModel.setPowerSwitchStatus(isChecked);
+                }
+            }
+        });
+        binding.switchWarm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                DeviceStatusInfoEntity deviceStatusInfoEntity = viewModel.statusInfoChageObeserver.get();
+                Boolean aBoolean=(isChecked==(deviceStatusInfoEntity.getIsHeatingOpen() == DeviceStatusInfoEntity.FLAG_TRUE));
+                if(!aBoolean){
+                    viewModel.setWarmSwitchStatus(isChecked);
+                }
+            }
+        });
         viewModel.statusInfoChageObeserver.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
@@ -282,11 +307,17 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
                     binding.ivDevicecontrolBg.setImageResource(R.drawable.stop);
                     binding.ivDevicecontrolBg.setVisibility(View.VISIBLE);
                     binding.ivDevicecontrolGif.setVisibility(View.INVISIBLE);
+                    deviceStatusInfoEntity.setIsHeatingOpen(DeviceStatusInfoEntity.FLAG_FALSE);
+                    viewModel.statusInfoChageObeserver.set(deviceStatusInfoEntity);
+                    binding.tvRotationModePositive.setChecked(false);
+                    binding.tvRotationModeReversal.setChecked(false);
+                    binding.tvRotationModeAuto.setChecked(false);
                     setAllOptionEnable(false);
                 } else {
                     setAllOptionEnable(true);
                     binding.ivDevicecontrolGif.setVisibility(View.VISIBLE);
                     binding.ivDevicecontrolBg.setVisibility(View.INVISIBLE);
+
                     binding.switchOpen.setChecked(deviceStatusInfoEntity.getIsDeviceOpen() == DeviceStatusInfoEntity.FLAG_TRUE);
                     binding.switchWarm.setChecked(deviceStatusInfoEntity.getIsHeatingOpen() == DeviceStatusInfoEntity.FLAG_TRUE);
                     binding.tvRotationHigh.setChecked(deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MAX);
@@ -296,12 +327,9 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
                     binding.tvVolumeMiddle.setChecked(deviceStatusInfoEntity.getDeviceVoice() == DeviceStatusInfoEntity.FLAG_VOICE_MID);
                     binding.tvVolumeLow.setChecked(deviceStatusInfoEntity.getDeviceVoice() == DeviceStatusInfoEntity.FLAG_VOICE_MIN);
                     binding.tvVolumeSilent.setChecked(deviceStatusInfoEntity.getDeviceVoice() == DeviceStatusInfoEntity.FLAG_VOICE_MUTE);
-                    binding.tvRotationModePositive.setBackgroundResource(deviceStatusInfoEntity.getDeviceRoation() == DeviceStatusInfoEntity.FLAG_ROATION_POSISTION ?
-                            R.drawable.orange_round_normal_left : R.drawable.white_round_normal_left);
-                    binding.tvRotationModeReversal.setBackgroundResource(deviceStatusInfoEntity.getDeviceRoation() == DeviceStatusInfoEntity.FLAG_ROATION_REV ?
-                            R.drawable.orange_noround_normal : R.drawable.white_noround_normal);
-                    binding.tvRotationModeAuto.setBackgroundResource(deviceStatusInfoEntity.getDeviceRoation() == DeviceStatusInfoEntity.FLAG_ROATION_AUTO?
-                            R.drawable.orange_round_normal_right : R.drawable.white_round_normal_right);
+                    binding.tvRotationModePositive.setChecked(deviceStatusInfoEntity.getDeviceRoation() == DeviceStatusInfoEntity.FLAG_ROATION_POSISTION );
+                    binding.tvRotationModeReversal.setChecked(deviceStatusInfoEntity.getDeviceRoation() == DeviceStatusInfoEntity.FLAG_ROATION_REV );
+                    binding.tvRotationModeAuto.setChecked(deviceStatusInfoEntity.getDeviceRoation() == DeviceStatusInfoEntity.FLAG_ROATION_AUTO );
                     binding.ivDevicecontrolGif.setImageResource(getGifRes(deviceStatusInfoEntity));
                 }
 
