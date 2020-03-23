@@ -16,11 +16,6 @@
             android:background="@mipmap/otherbackup"
             android:gravity="center"
             android:orientation="vertical">
-            <View
-                android:id="@+id/view1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="3"/>
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
@@ -31,29 +26,16 @@
                 android:text="@string/user_heightchoose" />
 
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_normal"
-                android:gravity="center"
-                android:orientation="horizontal">
-                <EditText
-                    android:id="@+id/editText"
-                    android:ems="10"
-                    style="@style/EditText_Style"
-                    android:layout_width="wrap_content"
-                    android:text="170"
-                    android:inputType="number" />
-
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="wrap_content"
+                android:layout_marginTop="@dimen/margin_large">
+                <com.contrarywind.view.WheelView
+                    android:id="@+id/wheelview_height"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_min"
-                    android:textSize="@dimen/text_large"
-                    android:textColor="@color/gray66_color"
-                    android:text="cm" />
-            </LinearLayout>
+                    android:layout_centerHorizontal="true"/>
+            </RelativeLayout>
 
 
 

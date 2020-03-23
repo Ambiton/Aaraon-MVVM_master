@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.goldze.mvvmhabit.ui.main.DeviceListActivity;
 
+import me.goldze.mvvmhabit.base.AppManager;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
@@ -70,7 +71,9 @@ public class UserHeightViewModel extends BaseViewModel {
         @Override
         public void call() {
             //跳转到设备列表
+            AppManager.getAppManager().finishAllActivity();
             startActivity(DeviceListActivity.class);
+
         }
     });
 

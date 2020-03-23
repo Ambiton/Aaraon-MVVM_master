@@ -183,7 +183,7 @@ public class AppTools {
                 if(isUnzip){
                     loadingViewModel.setLoadingVersion(checkUpdateResponseDataEntity.getNewestVerno());
                 }else{
-                    ToastUtils.showLong("Loading资源文件解压失败");
+                    RxLogTool.e(TAG,"Loading资源文件解压失败");
                 }
 //                builder.build().dismiss();
                 loadingViewModel.setLoadNewst(true);
@@ -225,7 +225,7 @@ public class AppTools {
                 if(isUnzip){
                     loadingViewModel.setBannerVersion(checkUpdateResponseDataEntity.getNewestVerno());
                 }else{
-                    ToastUtils.showLong("Banner资源文件解压失败");
+                    RxLogTool.e(TAG,"Banner资源文件解压失败");
                 }
 //                builder.build().dismiss();
                 loadingViewModel.setBannerNewst(true);
