@@ -77,7 +77,6 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
             Log.e(TAG, "onWrite  sucess");
         } else {
             Log.e(TAG, "onWrite  failed");
-            ToastUtils.showLong(getApplication().getString(R.string.toast_title_option_error));
         }
     }
 

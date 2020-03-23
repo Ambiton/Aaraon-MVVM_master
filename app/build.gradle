@@ -53,7 +53,5 @@ dependencies {
     implementation 'com.youth.banner:banner:1.4.10'
     //基础工具库
     implementation 'com.github.tamsiree.RxTool:RxKit:2.4.3'
-    compile('com.github.gzu-liyujiang.AndroidPicker:WheelPicker:1.5.6') {
-        exclude group: 'com.android.support'
-    }
+    compile 'com.contrarywind:Android-PickerView:4.1.9'
 }

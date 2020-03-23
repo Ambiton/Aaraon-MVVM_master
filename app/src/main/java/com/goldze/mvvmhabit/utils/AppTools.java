@@ -159,12 +159,12 @@ public class AppTools {
         return arrayList;
     }
 
-    public static void downImageLoadingFiles(Context context,final CheckUpdateResponseDataEntity checkUpdateResponseDataEntity, final LoadingViewModel loadingViewModel, final MaterialDialog.Builder builder) {
+    public static void downImageLoadingFiles(Context context,final CheckUpdateResponseDataEntity checkUpdateResponseDataEntity, final LoadingViewModel loadingViewModel) {
         final String destFileDir = getLoadPath(context);
         final String destFileName = FILENAME_ZIP_LOAD + ".zip";
-        if(!builder.build().isShowing()){
-            builder.build().show();
-        }
+//        if(!builder.build().isShowing()){
+//            builder.build().show();
+//        }
         DownLoadManager.getInstance().load(checkUpdateResponseDataEntity.getPackSavepath(), new ProgressCallBack<ResponseBody>(destFileDir, destFileName){
             @Override
             public void onStart() {
@@ -185,7 +185,7 @@ public class AppTools {
                 }else{
                     ToastUtils.showLong("Loading资源文件解压失败");
                 }
-                builder.build().dismiss();
+//                builder.build().dismiss();
                 loadingViewModel.setLoadNewst(true);
             }
 
@@ -201,12 +201,12 @@ public class AppTools {
         });
     }
 
-    public static void downImageBannerFiles(Context context, final CheckUpdateResponseDataEntity checkUpdateResponseDataEntity,  final LoadingViewModel loadingViewModel, final MaterialDialog.Builder builder) {
+    public static void downImageBannerFiles(Context context, final CheckUpdateResponseDataEntity checkUpdateResponseDataEntity,  final LoadingViewModel loadingViewModel) {
         final String destFileDir = getBannerPath(context);
         final String destFileName = FILENAME_ZIP_BANNER + ".zip";
-        if(!builder.build().isShowing()){
-            builder.build().show();
-        }
+//        if(!builder.build().isShowing()){
+//            builder.build().show();
+//        }
         DownLoadManager.getInstance().load(checkUpdateResponseDataEntity.getPackSavepath(), new ProgressCallBack<ResponseBody>(destFileDir, destFileName) {
             @Override
             public void onStart() {
@@ -227,7 +227,7 @@ public class AppTools {
                 }else{
                     ToastUtils.showLong("Banner资源文件解压失败");
                 }
-                builder.build().dismiss();
+//                builder.build().dismiss();
                 loadingViewModel.setBannerNewst(true);
             }
 

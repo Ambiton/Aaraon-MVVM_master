@@ -86,7 +86,7 @@ public class LoadingActivity extends BaseActivity<ActivityLoadingBinding, Loadin
             public void onPropertyChanged(Observable sender, int propertyId) {
                 if (viewModel.versionEvent.get() != null && viewModel.versionEvent.get().getResponseDataEntityArray() != null
                         && viewModel.versionEvent.get().getResponseDataEntityArray().length >= 3) {
-                    MaterialDialog.Builder builderLoading = MaterialDialogUtils.showUpdateResProgressDialog(LoadingActivity.this, false);
+//                    MaterialDialog.Builder builderLoading = MaterialDialogUtils.showUpdateResProgressDialog(LoadingActivity.this, false);
                     for (CheckUpdateResponseDataEntity checkUpdateResponseDataEntity : viewModel.versionEvent.get().getResponseDataEntityArray()) {
                         if (CheckUpdateResponseDataEntity.TYPE_APP.equals(checkUpdateResponseDataEntity.getType())) {
                             //APK 版本检测更新
@@ -114,7 +114,7 @@ public class LoadingActivity extends BaseActivity<ActivityLoadingBinding, Loadin
                             //Banner 版本检测更新
                             if(AppTools.isVersionNeedUpdate(viewModel.getBannerVersion(),checkUpdateResponseDataEntity.getNewestVerno())){
                                 RxLogTool.e("TAG","banner need update...");
-                                AppTools.downImageBannerFiles(LoadingActivity.this, checkUpdateResponseDataEntity, viewModel,builderLoading);
+                                AppTools.downImageBannerFiles(LoadingActivity.this, checkUpdateResponseDataEntity, viewModel);
                             }else{
                                 viewModel.setBannerNewst(true);
                             }
@@ -123,7 +123,7 @@ public class LoadingActivity extends BaseActivity<ActivityLoadingBinding, Loadin
                             //Loading图 版本检测更新
                             if(AppTools.isVersionNeedUpdate(viewModel.getBannerVersion(),checkUpdateResponseDataEntity.getNewestVerno())){
                                 RxLogTool.e("TAG","loadImage need update...");
-                                AppTools.downImageLoadingFiles(LoadingActivity.this, checkUpdateResponseDataEntity,viewModel, builderLoading);
+                                AppTools.downImageLoadingFiles(LoadingActivity.this, checkUpdateResponseDataEntity,viewModel);
                             }else{
                                 viewModel.setLoadNewst(true);
                             }
@@ -178,7 +178,7 @@ public class LoadingActivity extends BaseActivity<ActivityLoadingBinding, Loadin
                 }
 
             }
-        }, 1000);
+        }, 2000);
     }
 
     private boolean checkGpsIsOpen() {

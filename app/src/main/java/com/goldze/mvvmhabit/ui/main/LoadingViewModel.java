@@ -89,14 +89,15 @@ public class LoadingViewModel extends BaseViewModel <DemoRepository>{
                 .doOnSubscribe(new Consumer<Disposable>() {
                     @Override
                     public void accept(Disposable disposable) throws Exception {
-                        showDialog();
+//                        showDialog();
                     }
                 })
                 .subscribe(new Consumer<CheckUpdateResponseEntity>() {
                     @Override
                     public void accept(CheckUpdateResponseEntity entity) throws Exception {
-                        dismissDialog();
+//                        dismissDialog();
                         Log.e(TAG,"getStatus is:;Array is "+entity.getStatus());
+
                         if(entity.getStatus()== HttpStatus.STATUS_CODE_SUCESS){
                             //保存账号密码
                             versionEvent.set(entity);

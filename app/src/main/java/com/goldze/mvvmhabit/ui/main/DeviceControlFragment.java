@@ -188,33 +188,33 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
      */
     private int getGifRes(DeviceStatusInfoEntity deviceStatusInfoEntity) {
         int res = R.drawable.stop;
-        if (deviceStatusInfoEntity.getIsHeatingOpen() == DeviceStatusInfoEntity.FLAG_TRUE) {
-            if (deviceStatusInfoEntity.getDeviceRoation() == DeviceStatusInfoEntity.FLAG_ROATION_AUTO) {
-                if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MAX) {
-                    res = R.drawable.auto_high_hot;
-                } else if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MID) {
-                    res = R.drawable.auto_mid_hot;
-                } else {
-                    res = R.drawable.auto_low_hot;
-                }
-            } else if (deviceStatusInfoEntity.getDeviceRoation() == DeviceStatusInfoEntity.FLAG_ROATION_POSISTION) {
-                if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MAX) {
-                    res = R.drawable.inner_high_hot;
-                } else if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MID) {
-                    res = R.drawable.inner_mid_hot;
-                } else {
-                    res = R.drawable.inner_low_hot;
-                }
-            } else {
-                if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MAX) {
-                    res = R.drawable.outer_high_hot;
-                } else if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MID) {
-                    res = R.drawable.outer_mid_hot;
-                } else {
-                    res = R.drawable.outer_low_hot;
-                }
-            }
-        } else {
+//        if (deviceStatusInfoEntity.getIsHeatingOpen() == DeviceStatusInfoEntity.FLAG_TRUE) {
+//            if (deviceStatusInfoEntity.getDeviceRoation() == DeviceStatusInfoEntity.FLAG_ROATION_AUTO) {
+//                if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MAX) {
+//                    res = R.drawable.auto_high_hot;
+//                } else if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MID) {
+//                    res = R.drawable.auto_mid_hot;
+//                } else {
+//                    res = R.drawable.auto_low_hot;
+//                }
+//            } else if (deviceStatusInfoEntity.getDeviceRoation() == DeviceStatusInfoEntity.FLAG_ROATION_POSISTION) {
+//                if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MAX) {
+//                    res = R.drawable.inner_high_hot;
+//                } else if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MID) {
+//                    res = R.drawable.inner_mid_hot;
+//                } else {
+//                    res = R.drawable.inner_low_hot;
+//                }
+//            } else {
+//                if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MAX) {
+//                    res = R.drawable.outer_high_hot;
+//                } else if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MID) {
+//                    res = R.drawable.outer_mid_hot;
+//                } else {
+//                    res = R.drawable.outer_low_hot;
+//                }
+//            }
+//        } else {
             if (deviceStatusInfoEntity.getDeviceRoation() == DeviceStatusInfoEntity.FLAG_ROATION_AUTO) {
                 if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MAX) {
                     res = R.drawable.auto_high_normal;
@@ -240,7 +240,7 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
                     res = R.drawable.outer_low_normal;
                 }
             }
-        }
+//        }
         return res;
     }
 
@@ -298,6 +298,7 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
                 Log.e(TAG, "onPropertyChanged " + viewModel.statusInfoChageObeserver.get());
                 DeviceStatusInfoEntity deviceStatusInfoEntity = viewModel.statusInfoChageObeserver.get();
                 if (deviceStatusInfoEntity == null) {
+                    binding.ivDevicecontrolAllBg.setImageResource(R.mipmap.pillow);
                     binding.ivDevicecontrolBg.setImageResource(R.drawable.stop);
                     binding.ivDevicecontrolBg.setVisibility(View.VISIBLE);
                     binding.ivDevicecontrolGif.setVisibility(View.INVISIBLE);
@@ -305,6 +306,7 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
                 }
                 if (deviceStatusInfoEntity.getIsDeviceOpen() == DeviceStatusInfoEntity.FLAG_FALSE) {
                     binding.ivDevicecontrolBg.setImageResource(R.drawable.stop);
+                    binding.ivDevicecontrolAllBg.setImageResource(R.mipmap.pillow);
                     binding.ivDevicecontrolBg.setVisibility(View.VISIBLE);
                     binding.ivDevicecontrolGif.setVisibility(View.INVISIBLE);
                     deviceStatusInfoEntity.setIsHeatingOpen(DeviceStatusInfoEntity.FLAG_FALSE);
@@ -317,7 +319,7 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
                     setAllOptionEnable(true);
                     binding.ivDevicecontrolGif.setVisibility(View.VISIBLE);
                     binding.ivDevicecontrolBg.setVisibility(View.INVISIBLE);
-
+                    binding.ivDevicecontrolAllBg.setImageResource(deviceStatusInfoEntity.getIsHeatingOpen() == DeviceStatusInfoEntity.FLAG_TRUE?R.mipmap.warmpillow:R.mipmap.pillow);
                     binding.switchOpen.setChecked(deviceStatusInfoEntity.getIsDeviceOpen() == DeviceStatusInfoEntity.FLAG_TRUE);
                     binding.switchWarm.setChecked(deviceStatusInfoEntity.getIsHeatingOpen() == DeviceStatusInfoEntity.FLAG_TRUE);
                     binding.tvRotationHigh.setChecked(deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MAX);

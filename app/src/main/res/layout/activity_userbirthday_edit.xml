@@ -10,6 +10,7 @@
     </data>
 
         <LinearLayout
+            android:id="@+id/ll_group"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
@@ -25,26 +26,26 @@
                 android:text="@string/user_birthdaychoose" />
 
 
-            <CalendarView
-                android:id="@+id/calendarView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_normal"
-                />
+<!--            <CalendarView-->
+<!--                android:id="@+id/calendarView"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="@dimen/margin_normal"-->
+<!--                />-->
 
-            <View
-                android:id="@+id/view2"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/buttonOfBottom"
-                android:text="@string/btn_nextstep"
-                android:layout_marginTop="@dimen/margin_normal"
-                android:textSize="18sp"
-                binding:onClickCommand="@{viewModel.nextButtonClick}" />
+<!--            <View-->
+<!--                android:id="@+id/view2"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="0dp"-->
+<!--                android:layout_weight="1"/>-->
+<!--            <Button-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                style="@style/buttonOfBottom"-->
+<!--                android:text="@string/btn_nextstep"-->
+<!--                android:layout_marginTop="@dimen/margin_normal"-->
+<!--                android:textSize="18sp"-->
+<!--                binding:onClickCommand="@{viewModel.nextButtonClick}" />-->
         </LinearLayout>
 
 </layout>
