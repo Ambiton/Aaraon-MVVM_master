@@ -12,6 +12,7 @@ import com.inuker.bluetooth.library.connect.response.BleReadResponse;
 import com.inuker.bluetooth.library.connect.response.BleReadRssiResponse;
 import com.inuker.bluetooth.library.connect.response.BleWriteResponse;
 import com.inuker.bluetooth.library.utils.BluetoothUtils;
+import com.tamsiree.rxtool.RxLogTool;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -113,36 +114,20 @@ public class BleOption {
      * 开启获取设备信息的定时器，每2秒获取一次
      *
      * @param bleWriteResponse
-     * @param onceTimer 是否是只查询一次，是：200ms后查询，否：200ms后每3秒查询一次
      */
-    public void startTimerGetDeviceInfo(final BleWriteResponse bleWriteResponse, boolean onceTimer) {
-        if(onceTimer){
-            if (getOnceDeviceInfoTimer != null) {
-                getOnceDeviceInfoTimer.cancel();
-                getOnceDeviceInfoTimer = null;
-            }
-            getOnceDeviceInfoTimer = new Timer();
-            getOnceDeviceInfoTimer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    getDeviceInfo(bleWriteResponse);
-                }
-            }, 200);
-        }else{
-            if (deviceInfoTimer != null) {
-                deviceInfoTimer.cancel();
-                deviceInfoTimer = null;
-            }
-            deviceInfoTimer = new Timer();
-            deviceInfoTimer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    getDeviceInfo(bleWriteResponse);
-                }
-            }, 200, 3 * 1000);
+    public void startTimerGetDeviceInfo(final BleWriteResponse bleWriteResponse) {
+        if (deviceInfoTimer != null) {
+            deviceInfoTimer.cancel();
+            deviceInfoTimer = null;
+            RxLogTool.e(TAG, "deviceInfoTimer.cancel...");
         }
-
-
+        deviceInfoTimer = new Timer();
+        deviceInfoTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                getDeviceInfo(bleWriteResponse);
+            }
+        }, 100, 3 * 1000);
     }
 
     /**
@@ -375,11 +360,11 @@ public class BleOption {
         AppApplication.getBluetoothClient(AppApplication.getInstance()).write(this.curDeviceMac, UUID_SERVICE_CHANNEL, UUID_CHARACTERISTIC_CHANNEL_WRITE_READ, datas, bleWriteResponse);
     }
 
-    public void registerConnectListener(BleConnectStatusListener mBleConnectStatusListener){
+    public void registerConnectListener(BleConnectStatusListener mBleConnectStatusListener) {
         AppApplication.getBluetoothClient(AppApplication.getInstance()).registerConnectStatusListener(this.curDeviceMac, mBleConnectStatusListener);
     }
 
-    public void unregisterConnectStatusListener(BleConnectStatusListener mBleConnectStatusListener){
+    public void unregisterConnectStatusListener(BleConnectStatusListener mBleConnectStatusListener) {
         AppApplication.getBluetoothClient(AppApplication.getInstance()).unregisterConnectStatusListener(this.curDeviceMac, mBleConnectStatusListener);
     }
 }

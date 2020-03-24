@@ -29,6 +29,7 @@ import com.goldze.mvvmhabit.utils.AppTools;
 import com.goldze.mvvmhabit.utils.BleOption;
 import com.goldze.mvvmhabit.utils.GlideImageLoader;
 import com.inuker.bluetooth.library.connect.listener.BleConnectStatusListener;
+import com.tamsiree.rxtool.RxLogTool;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
@@ -95,7 +96,6 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
         // Adapter属于View层的东西, 不建议定义到ViewModel中绑定，以免内存泄漏
         BleOption.getInstance().registerConnectListener(mBleConnectStatusListener);
         //请求设备信息数据
-        viewModel.addPlayIndex();
         viewModel.initBleEvent();
         viewModel.requestDeviceInfo();
         viewModel.initToolbar();
@@ -270,26 +270,40 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
         }
     };
 
+    private void controlFastOption(final View view){
+        view.setClickable(false);
+        view.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                view.setClickable(true);
+            }
+        },500);
+    }
     @Override
     public void initViewObservable() {
         binding.switchOpen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                DeviceStatusInfoEntity deviceStatusInfoEntity = viewModel.statusInfoChageObeserver.get();
-                Boolean aBoolean=(isChecked==(deviceStatusInfoEntity.getIsDeviceOpen()==DeviceStatusInfoEntity.FLAG_TRUE));
-                if(!aBoolean){
-                    viewModel.setPowerSwitchStatus(isChecked);
-                }
+                controlFastOption(binding.switchOpen);
+                    DeviceStatusInfoEntity deviceStatusInfoEntity = viewModel.statusInfoChageObeserver.get();
+                    Boolean aBoolean=(isChecked==(deviceStatusInfoEntity.getIsDeviceOpen()==DeviceStatusInfoEntity.FLAG_TRUE));
+                    if(!aBoolean){
+                        viewModel.setPowerSwitchStatus(isChecked);
+                    }
+
             }
         });
         binding.switchWarm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
+                RxLogTool.e("onCheckedChanged","switchWarm. isClickable is "+binding.switchWarm.isClickable());
+                controlFastOption(binding.switchWarm);
                 DeviceStatusInfoEntity deviceStatusInfoEntity = viewModel.statusInfoChageObeserver.get();
                 Boolean aBoolean=(isChecked==(deviceStatusInfoEntity.getIsHeatingOpen() == DeviceStatusInfoEntity.FLAG_TRUE));
                 if(!aBoolean){
                     viewModel.setWarmSwitchStatus(isChecked);
                 }
+
             }
         });
         viewModel.statusInfoChageObeserver.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
