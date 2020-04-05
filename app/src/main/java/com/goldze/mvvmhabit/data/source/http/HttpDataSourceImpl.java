@@ -9,6 +9,8 @@ import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.entity.http.login.LoginBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterOrLoginResponseEntity;
+import com.goldze.mvvmhabit.entity.http.userinfo.RegisterUserInfoEntity;
+import com.goldze.mvvmhabit.entity.http.userinfo.RegisterUserInfoResponseEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeResponseEntity;
 
@@ -86,6 +88,16 @@ public class HttpDataSourceImpl implements HttpDataSource {
         map.put("token",token);
         map.put("callId",callId);
         return apiService.getDeviceInfo(serioNum,map);
+    }
+
+    @Override
+    public Observable<RegisterUserInfoResponseEntity> registerUserInfo(String userId, String appid, String sign, String token, String callId, RegisterUserInfoEntity entity) {
+        Map<String, String> map=new HashMap<>();
+        map.put("appKey",appid);
+        map.put("mysig",sign);
+        map.put("token",token);
+        map.put("callId",callId);
+        return apiService.registerUserInfo(userId,map,entity);
     }
 
 

@@ -12,6 +12,8 @@ import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.entity.http.login.LoginBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterOrLoginResponseEntity;
+import com.goldze.mvvmhabit.entity.http.userinfo.RegisterUserInfoEntity;
+import com.goldze.mvvmhabit.entity.http.userinfo.RegisterUserInfoResponseEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeResponseEntity;
 
@@ -79,12 +81,12 @@ public class DemoRepository extends BaseModel implements HttpDataSource, LocalDa
 
     @Override
     public Observable<ResponseNetDeviceInfoEntity> getDeviceInfo(String serioNum, String appid, String sign, String token, String callId) {
-        Map<String, String> map=new HashMap<>();
-        map.put("appKey",appid);
-        map.put("mysig",sign);
-        map.put("token",token);
-        map.put("callId",callId);
         return mHttpDataSource.getDeviceInfo(serioNum,appid, sign, token,callId);
+    }
+
+    @Override
+    public Observable<RegisterUserInfoResponseEntity> registerUserInfo(String userId, String appid, String sign, String token, String callId, RegisterUserInfoEntity entity) {
+        return mHttpDataSource.registerUserInfo(userId,appid, sign, token,callId,entity);
     }
 
     @Override

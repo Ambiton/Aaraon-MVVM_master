@@ -30,6 +30,7 @@ import com.tamsiree.rxtool.RxTimeTool;
 import com.tamsiree.rxtool.RxTool;
 
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
@@ -46,24 +47,29 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
     private static final String TAG = "DeviceControlViewModel";
     //监听蓝牙接收的数据变化
     public ObservableField<DeviceStatusInfoEntity> statusInfoChageObeserver = new ObservableField();
+    public ObservableField<Boolean> writeDataResult = new ObservableField();
     public ObservableField<String> testStr = new ObservableField("test");
     //封装一个界面发生改变的观察者
     public UIChangeObservable uc = new UIChangeObservable();
+    private AtomicBoolean isGifNeedChange=new AtomicBoolean(false);//GIF 资源是否需要切换
 
     private DeviceStatusInfoEntity deviceStatusInfoEntity = new DeviceStatusInfoEntity();
 
     @Override
     public void onNotify(UUID service, UUID character, byte[] value) {
         Log.e(TAG, "data  length is " + value.length);
-        Log.e(TAG, "heat value is " + (value[3] + value[4]));
         Log.e(TAG, "onNotify UUID is " + character + ",data is " + RxDataTool.bytes2HexString(value));
         if (value.length == 6) {
             //dismissDialog();
             for (int i = 0; i < 6; i++) {
                 Log.e(TAG, "getNotifyData,data  " + (i + 1) + "is" + value[i]);
             }
+
             DeviceStatusInfoEntity recDeviceStatusInfoEntity = new DeviceStatusInfoEntity(value);
-            RxLogTool.d(TAG, "deviceStatusInfoEntity.getDeviceRoation() is " + deviceStatusInfoEntity.getDeviceRoation());
+            if(BleOption.getInstance().isCurrentSetReturn(recDeviceStatusInfoEntity)){
+                BleOption.getInstance().clearLatestWriteCommondAndFlag();
+            }
+            setIsGifNeedChange(recDeviceStatusInfoEntity);
             if (deviceStatusInfoEntity.getIsHeatingOpen() != recDeviceStatusInfoEntity.getIsHeatingOpen() ||
                     deviceStatusInfoEntity.getIsDeviceOpen() != recDeviceStatusInfoEntity.getIsDeviceOpen() ||
                     deviceStatusInfoEntity.getDeviceRoation() != recDeviceStatusInfoEntity.getDeviceRoation() ||
@@ -79,8 +85,29 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
 
     }
 
+    public boolean isGifNeedChange(){
+        return isGifNeedChange.get();
+    }
+
+
+    private void setIsGifNeedChange(DeviceStatusInfoEntity recDeviceStatusInfoEntity){
+        if(recDeviceStatusInfoEntity==null){
+            isGifNeedChange.compareAndSet(true,false);
+            return;
+        }
+        if (deviceStatusInfoEntity.getIsHeatingOpen() != recDeviceStatusInfoEntity.getIsHeatingOpen() ||
+                deviceStatusInfoEntity.getIsDeviceOpen() != recDeviceStatusInfoEntity.getIsDeviceOpen() ||
+                deviceStatusInfoEntity.getDeviceRoation() != recDeviceStatusInfoEntity.getDeviceRoation() ||
+                deviceStatusInfoEntity.getDeviceSpeed() != recDeviceStatusInfoEntity.getDeviceSpeed()){
+            isGifNeedChange.compareAndSet(false,true);
+        }else{
+            isGifNeedChange.compareAndSet(true,false);
+        }
+
+    }
+
     public boolean isFastOption() {
-        boolean result = RxTool.isFastClick(500);
+        boolean result = RxTool.isFastClick(1000);
         if (result) {
             ToastUtils.showShort("请不要过快频繁的操作～");
         }
@@ -91,9 +118,15 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
     public void onResponse(int code) {
         if (code == Code.REQUEST_SUCCESS) {
             Log.e(TAG, "onWrite  sucess");
+            writeDataResult.set(true);
+        } else if (code == BleOption.REQUEST_TIMEOUT) {
+            writeDataResult.set(false);
+            BleOption.getInstance().getDeviceInfo(this);
+            writeDataResult.notifyChange();
         } else {
             Log.e(TAG, "onWrite  failed");
         }
+
     }
 
     @Override
@@ -120,16 +153,6 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
         public SingleLiveEvent highSpeedSwitch = new SingleLiveEvent<>();
         //中速
         public SingleLiveEvent midSpeedSwitch = new SingleLiveEvent<>();
-        //低速
-        public SingleLiveEvent lowSpeedSwitch = new SingleLiveEvent<>();
-        //高音
-        public SingleLiveEvent highVolSwitch = new SingleLiveEvent<>();
-        //中音
-        public SingleLiveEvent midVolSwitch = new SingleLiveEvent<>();
-        //低音
-        public SingleLiveEvent lowVolSwitch = new SingleLiveEvent<>();
-        //静音
-        public SingleLiveEvent muteVolSwitch = new SingleLiveEvent<>();
     }
 
     public DeviceControlViewModel(@NonNull Application application, DemoRepository repository) {
@@ -239,13 +262,17 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
 //            } else {
 //                BleOption.getInstance().turnOffDevice(DeviceControlViewModel.this);
 //            }
-
-
 //            statusInfoChageObeserver.set(deviceStatusInfoEntity);
 //            statusInfoChageObeserver.notifyChange();
         }
     });
     //加热开关
+    BindingCommand<Boolean> bindingAction=new BindingCommand<>(new BindingAction() {
+        @Override
+        public void call() {
+
+        }
+    });
     public BindingCommand onWarmSwitchChangeCommand = new BindingCommand<>(new BindingAction() {
         @Override
         public void call() {
@@ -410,6 +437,7 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
     });
 
     public void initBleEvent() {
+        BleOption.getInstance().initWriteDataEnv();
         BleOption.getInstance().getNotifyData(this);
         BleOption.getInstance().getRssiData(this);
         BleOption.getInstance().getReadData(new BleReadResponse() {
@@ -434,6 +462,7 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
     public void onDestroy() {
         super.onDestroy();
         BleOption.getInstance().stopGetDeviceInfo();
+        BleOption.getInstance().uninitWriteDataEnv();
         AppApplication.getBluetoothClient(this.getApplication()).disconnect(BleOption.getInstance().getMac());
     }
 }

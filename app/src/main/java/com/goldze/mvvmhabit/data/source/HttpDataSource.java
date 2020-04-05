@@ -7,6 +7,8 @@ import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.entity.http.login.LoginBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterOrLoginResponseEntity;
+import com.goldze.mvvmhabit.entity.http.userinfo.RegisterUserInfoEntity;
+import com.goldze.mvvmhabit.entity.http.userinfo.RegisterUserInfoResponseEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeResponseEntity;
 
@@ -39,6 +41,13 @@ public interface HttpDataSource {
      * @return
      */
     Observable<ResponseNetDeviceInfoEntity> getDeviceInfo(String serioNum,String appid, String sign, String token, String callId);
+
+    /**
+     * 注册用户信息
+     *
+     * @return
+     */
+    Observable<RegisterUserInfoResponseEntity> registerUserInfo(String userId, String appid, String sign, String token, String callId, RegisterUserInfoEntity entity);
 
     /**
      * 登录

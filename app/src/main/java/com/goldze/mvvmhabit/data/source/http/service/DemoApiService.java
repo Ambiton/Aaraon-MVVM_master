@@ -8,6 +8,8 @@ import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.entity.http.login.LoginBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterOrLoginResponseEntity;
+import com.goldze.mvvmhabit.entity.http.userinfo.RegisterUserInfoEntity;
+import com.goldze.mvvmhabit.entity.http.userinfo.RegisterUserInfoResponseEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeResponseEntity;
 
@@ -49,4 +51,13 @@ public interface DemoApiService {
 
     @POST("v1/register?appKey=1uMqYWpHo3MoLH&callId=1276418994&mysig=sig-result")
     Observable<RegisterOrLoginResponseEntity> registerUser(@Body RegisterBodyEntity entity);
+
+    /**
+     * 注册用户信息
+     * @param entity
+     * @return
+     */
+    @POST("v1/users/{userId}/profile")
+    Observable<RegisterUserInfoResponseEntity> registerUserInfo(@Path("userId") String userId, @QueryMap Map<String, String> map,@Body RegisterUserInfoEntity entity);
+
 }

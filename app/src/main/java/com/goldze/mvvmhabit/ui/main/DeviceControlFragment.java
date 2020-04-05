@@ -97,10 +97,15 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
         BleOption.getInstance().registerConnectListener(mBleConnectStatusListener);
         //请求设备信息数据
         viewModel.initBleEvent();
-        viewModel.requestDeviceInfo();
         viewModel.initToolbar();
         startBanner();
         //binding.ivDevicecontrolGif.setBackgroundResource("asset:inner_high_hot");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        viewModel.requestDeviceInfo();
     }
 
     private ArrayList<Object> getBannerPlayList(ArrayList<Object> allDatas){
@@ -188,33 +193,6 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
      */
     private int getGifRes(DeviceStatusInfoEntity deviceStatusInfoEntity) {
         int res = R.drawable.stop;
-//        if (deviceStatusInfoEntity.getIsHeatingOpen() == DeviceStatusInfoEntity.FLAG_TRUE) {
-//            if (deviceStatusInfoEntity.getDeviceRoation() == DeviceStatusInfoEntity.FLAG_ROATION_AUTO) {
-//                if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MAX) {
-//                    res = R.drawable.auto_high_hot;
-//                } else if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MID) {
-//                    res = R.drawable.auto_mid_hot;
-//                } else {
-//                    res = R.drawable.auto_low_hot;
-//                }
-//            } else if (deviceStatusInfoEntity.getDeviceRoation() == DeviceStatusInfoEntity.FLAG_ROATION_POSISTION) {
-//                if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MAX) {
-//                    res = R.drawable.inner_high_hot;
-//                } else if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MID) {
-//                    res = R.drawable.inner_mid_hot;
-//                } else {
-//                    res = R.drawable.inner_low_hot;
-//                }
-//            } else {
-//                if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MAX) {
-//                    res = R.drawable.outer_high_hot;
-//                } else if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MID) {
-//                    res = R.drawable.outer_mid_hot;
-//                } else {
-//                    res = R.drawable.outer_low_hot;
-//                }
-//            }
-//        } else {
             if (deviceStatusInfoEntity.getDeviceRoation() == DeviceStatusInfoEntity.FLAG_ROATION_AUTO) {
                 if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MAX) {
                     res = R.drawable.auto_high_normal;
@@ -306,6 +284,21 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
 
             }
         });
+
+        viewModel.writeDataResult.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                if(!viewModel.writeDataResult.get()){
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+//                            ToastUtils.showLong("操作失败，请重试!");
+                        }
+                    });
+                }
+            }
+        });
+
         viewModel.statusInfoChageObeserver.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
@@ -345,8 +338,10 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
                     binding.tvVolumeSilent.setChecked(deviceStatusInfoEntity.getDeviceVoice() == DeviceStatusInfoEntity.FLAG_VOICE_MUTE);
                     binding.tvRotationModePositive.setChecked(deviceStatusInfoEntity.getDeviceRoation() == DeviceStatusInfoEntity.FLAG_ROATION_POSISTION );
                     binding.tvRotationModeReversal.setChecked(deviceStatusInfoEntity.getDeviceRoation() == DeviceStatusInfoEntity.FLAG_ROATION_REV );
-                    binding.tvRotationModeAuto.setChecked(deviceStatusInfoEntity.getDeviceRoation() == DeviceStatusInfoEntity.FLAG_ROATION_AUTO );
-                    binding.ivDevicecontrolGif.setImageResource(getGifRes(deviceStatusInfoEntity));
+                    binding.tvRotationModeAuto.setChecked(deviceStatusInfoEntity.getDeviceRoation() == DeviceStatusInfoEntity.FLAG_ROATION_AUTO);
+                    if (viewModel.isGifNeedChange()) {
+                        binding.ivDevicecontrolGif.setImageResource(getGifRes(deviceStatusInfoEntity));
+                    }
                 }
 
             }

@@ -52,6 +52,8 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> {
     public ObservableField<String> password = new ObservableField<>("");
     //密码的焦点
     public ObservableField<Boolean> passwordFocus = new ObservableField<>(false);
+    //是否同意协议
+    public ObservableField<Boolean> agreeProtect = new ObservableField<>(false);
     //发送验证码按钮绑定
     public ObservableField<String> verfyCodeText = new ObservableField<>("");
     //用户名清除按钮的显示隐藏绑定
