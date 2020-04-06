@@ -6,6 +6,7 @@ import androidx.annotation.VisibleForTesting;
 import com.goldze.mvvmhabit.data.source.HttpDataSource;
 import com.goldze.mvvmhabit.data.source.LocalDataSource;
 import com.goldze.mvvmhabit.entity.DemoEntity;
+import com.goldze.mvvmhabit.entity.db.UserActionData;
 import com.goldze.mvvmhabit.entity.http.ResponseNetDeviceInfoEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
@@ -125,6 +126,11 @@ public class DemoRepository extends BaseModel implements HttpDataSource, LocalDa
     }
 
     @Override
+    public void saveUnitId(int unitId) {
+        mLocalDataSource.saveUnitId(unitId);
+    }
+
+    @Override
     public void saveUserName(String userName) {
         mLocalDataSource.saveUserName(userName);
     }
@@ -192,6 +198,22 @@ public class DemoRepository extends BaseModel implements HttpDataSource, LocalDa
     @Override
     public int getUserID() {
         return mLocalDataSource.getUserID();
+    }
+
+    @Override
+    public int getUnitID() {
+        return mLocalDataSource.getUnitID();
+    }
+
+    @Override
+    public void saveUserActionDataToDB(UserActionData userActionData) {
+        mLocalDataSource.saveUserActionDataToDB(userActionData);
+
+    }
+
+    @Override
+    public void deleteUserActionDataToDB(UserActionData... userActionDatas) {
+        mLocalDataSource.deleteUserActionDataToDB(userActionDatas);
     }
 
     @Override

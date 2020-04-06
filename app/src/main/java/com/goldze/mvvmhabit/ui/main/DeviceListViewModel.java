@@ -142,7 +142,6 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
     }
 
     public void checkDeviceInfo(String serioNum, final OnDeviceInfoListener onDeviceInfoListener){
-        //RaJava检测更新
         addSubscribe(model.getDeviceInfo(serioNum,"1uMqYWpHo3MoLH","sig-result",model.getToken(), HttpsUtils.getCurrentMills())
                 .compose(RxUtils.schedulersTransformer()) //线程调度
                 .doOnSubscribe(new Consumer<Disposable>() {
@@ -157,8 +156,8 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
                         dismissDialog();
                         Log.e(TAG,"getStatus is:; "+entity.getStatus());
                         boolean isCanUse=entity.getStatus()== HttpStatus.STATUS_CODE_SUCESS;
+                        model.saveUnitId(entity.getData().getUnitId());
                         onDeviceInfoListener.onDeviceCanUseResult(isCanUse);
-
                     }
                 }));
     }
@@ -211,10 +210,7 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
                         observableCanUseList.add(itemViewModel);
                         BluetoothLog.e("CanUseList is " + device.getName() + " MacAdress is " + device.getAddress());
                     }
-
                 }
-
-
             }
 
             @Override

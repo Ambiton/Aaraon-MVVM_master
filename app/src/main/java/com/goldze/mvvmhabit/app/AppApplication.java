@@ -34,9 +34,10 @@ import me.goldze.mvvmhabit.utils.KLog;
 public class AppApplication extends BaseApplication {
     private static final String TAG = "AppApplication";
     private static BluetoothClient mClient;
-    private static final String DB_NAME="appdate";
+    private static final String DB_NAME="myzr_db_date";
     private static final int TIME_PERIOD_OBSERVER = 1 * 60 * 1000;//检测进程后台运行的最大时间MAX_OBSERVER_INDEX*60*1000
     private static final int MAX_OBSERVER_INDEX = 10;//检测进程后台运行的最大时间MAX_OBSERVER_INDEX*60*1000
+    private static AppApplication sInstance;
     private volatile DaoMaster.DevOpenHelper mHelper;
     private SQLiteDatabase db;
     private DaoMaster mDaoMaster;
@@ -47,6 +48,7 @@ public class AppApplication extends BaseApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        sInstance=this;
         //是否开启打印日志
         KLog.init(BuildConfig.DEBUG);
 
@@ -62,7 +64,15 @@ public class AppApplication extends BaseApplication {
 //            LeakCanary.install(this);
 //        }
     }
-
+    /**
+     * 获得当前app运行的Application
+     */
+    public static AppApplication getInstance() {
+        if (sInstance == null) {
+            throw new NullPointerException("please inherit BaseApplication or call setApplication.");
+        }
+        return sInstance;
+    }
     private void startObserverTimer(){
         stopObserverTimer();
         observerTimer=new Timer();
@@ -133,9 +143,10 @@ public class AppApplication extends BaseApplication {
 
         mHelper = new DaoMaster.DevOpenHelper(this, DB_NAME, null);
         db = mHelper.getWritableDatabase();
-        // 注意：该数据库连接属于 DaoMaster，所以多个 Session 指的是相同的数据库连接。
+        // 注意：该数据库连接属于 DaoMaster，unitId所以多个 Session 指的是相同的数据库连接。
         mDaoMaster = new DaoMaster(db);
         mDaoSession = mDaoMaster.newSession();
+        mDaoSession.getUserActionDataDao().deleteInTx();
     }
     public DaoSession getDaoSession() {
         return mDaoSession;

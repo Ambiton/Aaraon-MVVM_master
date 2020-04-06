@@ -15,11 +15,13 @@ import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.app.AppApplication;
 import com.goldze.mvvmhabit.data.DemoRepository;
 import com.goldze.mvvmhabit.entity.DeviceStatusInfoEntity;
+import com.goldze.mvvmhabit.entity.db.UserActionData;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseDataEntity;
 import com.goldze.mvvmhabit.ui.base.viewmodel.ToolbarViewModel;
 import com.goldze.mvvmhabit.utils.AppTools;
 import com.goldze.mvvmhabit.utils.BleOption;
 import com.goldze.mvvmhabit.utils.RxDataTool;
+import com.google.gson.Gson;
 import com.inuker.bluetooth.library.Code;
 import com.inuker.bluetooth.library.connect.response.BleNotifyResponse;
 import com.inuker.bluetooth.library.connect.response.BleReadResponse;
@@ -55,6 +57,8 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
 
     private DeviceStatusInfoEntity deviceStatusInfoEntity = new DeviceStatusInfoEntity();
 
+    private UserActionData userActionData=null;
+
     @Override
     public void onNotify(UUID service, UUID character, byte[] value) {
         Log.e(TAG, "data  length is " + value.length);
@@ -66,8 +70,15 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
             }
 
             DeviceStatusInfoEntity recDeviceStatusInfoEntity = new DeviceStatusInfoEntity(value);
+            Gson gson = new Gson();
+            String jsonDevStatus = gson.toJson(recDeviceStatusInfoEntity);
             if(BleOption.getInstance().isCurrentSetReturn(recDeviceStatusInfoEntity)){
                 BleOption.getInstance().clearLatestWriteCommondAndFlag();
+                if(userActionData!=null){
+                    userActionData.setDevStatus(jsonDevStatus);
+                    model.saveUserActionDataToDB(userActionData);
+                    userActionData=null;
+                }
             }
             setIsGifNeedChange(recDeviceStatusInfoEntity);
             if (deviceStatusInfoEntity.getIsHeatingOpen() != recDeviceStatusInfoEntity.getIsHeatingOpen() ||
@@ -85,6 +96,13 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
 
     }
 
+    private void setUserActionData(String actFlag,String actVal){
+        userActionData=new UserActionData();
+        userActionData.setActFlag(actFlag);
+        userActionData.setActVal(actVal);
+        userActionData.setActTime(RxTimeTool.getCurTimeString());
+        userActionData.setUnitId(model.getUnitID());
+    }
     public boolean isGifNeedChange(){
         return isGifNeedChange.get();
     }
@@ -224,6 +242,7 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
         } else {
             BleOption.getInstance().turnOffDevice(DeviceControlViewModel.this);
         }
+        setUserActionData(AppTools.UserActionFlagAndValue.FLAG_SWITCH_DEVICE,String.valueOf(deviceStatusInfoEntity.getIsDeviceOpen()));
         statusInfoChageObeserver.set(deviceStatusInfoEntity);
         statusInfoChageObeserver.notifyChange();
     }
@@ -244,7 +263,7 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
         } else {
             BleOption.getInstance().turnOffHeating(DeviceControlViewModel.this);
         }
-
+        setUserActionData(AppTools.UserActionFlagAndValue.FLAG_SWITCH_WARM,String.valueOf(deviceStatusInfoEntity.getIsHeatingOpen()));
         statusInfoChageObeserver.set(deviceStatusInfoEntity);
         statusInfoChageObeserver.notifyChange();
         showWaitingDialog();
@@ -297,7 +316,9 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
                 Log.e(TAG, "getIsSpeedHigh is " + statusInfoChageObeserver.get().getDeviceSpeed());
                 BleOption.getInstance().setMaxSpeed(DeviceControlViewModel.this);
                 showWaitingDialog();
+                setUserActionData(AppTools.UserActionFlagAndValue.FLAG_SPEED_VALUE,String.valueOf(deviceStatusInfoEntity.getDeviceSpeed()));
             }
+
             statusInfoChageObeserver.set(deviceStatusInfoEntity);
             statusInfoChageObeserver.notifyChange();
 
@@ -312,7 +333,9 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
                 deviceStatusInfoEntity.setDeviceSpeed(DeviceStatusInfoEntity.FLAG_SPEED_MID);
                 BleOption.getInstance().setMidSpeed(DeviceControlViewModel.this);
                 showWaitingDialog();
+                setUserActionData(AppTools.UserActionFlagAndValue.FLAG_SPEED_VALUE,String.valueOf(deviceStatusInfoEntity.getDeviceSpeed()));
             }
+
             statusInfoChageObeserver.set(deviceStatusInfoEntity);
             statusInfoChageObeserver.notifyChange();
 
@@ -326,6 +349,7 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
                 deviceStatusInfoEntity.setDeviceSpeed(DeviceStatusInfoEntity.FLAG_SPEED_MIN);
                 BleOption.getInstance().setMinSpeed(DeviceControlViewModel.this);
                 showWaitingDialog();
+                setUserActionData(AppTools.UserActionFlagAndValue.FLAG_SPEED_VALUE,String.valueOf(deviceStatusInfoEntity.getDeviceSpeed()));
             }
             statusInfoChageObeserver.set(deviceStatusInfoEntity);
             statusInfoChageObeserver.notifyChange();
@@ -339,6 +363,7 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
                 deviceStatusInfoEntity.setDeviceVoice(DeviceStatusInfoEntity.FLAG_VOICE_MUTE);
                 BleOption.getInstance().setSilentVoice(DeviceControlViewModel.this);
                 showWaitingDialog();
+                setUserActionData(AppTools.UserActionFlagAndValue.FLAG_VOICE_VOLUME,String.valueOf(deviceStatusInfoEntity.getDeviceVoice()));
             }
             statusInfoChageObeserver.set(deviceStatusInfoEntity);
             statusInfoChageObeserver.notifyChange();
@@ -352,6 +377,7 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
                 deviceStatusInfoEntity.setDeviceVoice(DeviceStatusInfoEntity.FLAG_VOICE_MIN);
                 BleOption.getInstance().setMinVoice(DeviceControlViewModel.this);
                 showWaitingDialog();
+                setUserActionData(AppTools.UserActionFlagAndValue.FLAG_VOICE_VOLUME,String.valueOf(deviceStatusInfoEntity.getDeviceVoice()));
             }
             statusInfoChageObeserver.set(deviceStatusInfoEntity);
             statusInfoChageObeserver.notifyChange();
@@ -366,6 +392,7 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
                 deviceStatusInfoEntity.setDeviceVoice(DeviceStatusInfoEntity.FLAG_VOICE_MID);
                 BleOption.getInstance().setMidVoice(DeviceControlViewModel.this);
                 showWaitingDialog();
+                setUserActionData(AppTools.UserActionFlagAndValue.FLAG_VOICE_VOLUME,String.valueOf(deviceStatusInfoEntity.getDeviceVoice()));
             }
             statusInfoChageObeserver.set(deviceStatusInfoEntity);
             statusInfoChageObeserver.notifyChange();
@@ -379,6 +406,7 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
                 deviceStatusInfoEntity.setDeviceVoice(DeviceStatusInfoEntity.FLAG_VOICE_MAX);
                 BleOption.getInstance().setMaxVoice(DeviceControlViewModel.this);
                 showWaitingDialog();
+                setUserActionData(AppTools.UserActionFlagAndValue.FLAG_VOICE_VOLUME,String.valueOf(deviceStatusInfoEntity.getDeviceVoice()));
             }
             statusInfoChageObeserver.set(deviceStatusInfoEntity);
             statusInfoChageObeserver.notifyChange();
@@ -392,6 +420,7 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
                 deviceStatusInfoEntity.setDeviceRoation(DeviceStatusInfoEntity.FLAG_ROATION_AUTO);
                 BleOption.getInstance().roationAuto(DeviceControlViewModel.this);
                 showWaitingDialog();
+                setUserActionData(AppTools.UserActionFlagAndValue.FLAG_ROATION_MODE,String.valueOf(deviceStatusInfoEntity.getDeviceRoation()));
             }
             statusInfoChageObeserver.set(deviceStatusInfoEntity);
             statusInfoChageObeserver.notifyChange();
@@ -405,6 +434,7 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
                 deviceStatusInfoEntity.setDeviceRoation(DeviceStatusInfoEntity.FLAG_ROATION_POSISTION);
                 BleOption.getInstance().roationPositive(DeviceControlViewModel.this);
                 showWaitingDialog();
+                setUserActionData(AppTools.UserActionFlagAndValue.FLAG_ROATION_MODE,String.valueOf(deviceStatusInfoEntity.getDeviceRoation()));
             }
             statusInfoChageObeserver.set(deviceStatusInfoEntity);
             statusInfoChageObeserver.notifyChange();
@@ -418,6 +448,7 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
                 deviceStatusInfoEntity.setDeviceRoation(DeviceStatusInfoEntity.FLAG_ROATION_REV);
                 BleOption.getInstance().roationReversal(DeviceControlViewModel.this);
                 showWaitingDialog();
+                setUserActionData(AppTools.UserActionFlagAndValue.FLAG_ROATION_MODE,String.valueOf(deviceStatusInfoEntity.getDeviceRoation()));
             }
             statusInfoChageObeserver.set(deviceStatusInfoEntity);
             statusInfoChageObeserver.notifyChange();

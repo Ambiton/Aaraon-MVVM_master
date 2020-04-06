@@ -38,6 +38,14 @@ public class AppTools {
     private static final String TAG="AppTools";
     private static final String FILENAME_ZIP_BANNER="bannerImages";
     private static final String FILENAME_ZIP_LOAD="loadImages";
+
+    public static class UserActionFlagAndValue{
+        public static final String FLAG_ROATION_MODE="roationMode";
+        public static final String FLAG_SPEED_VALUE="speedValue";
+        public static final String FLAG_SWITCH_WARM="warmSwitch";
+        public static final String FLAG_SWITCH_DEVICE="openSwitch";
+        public static final String FLAG_VOICE_VOLUME="voiceVolume";
+    }
     public static boolean install(Context con, String filePath) {
         try {
             if(TextUtils.isEmpty(filePath))

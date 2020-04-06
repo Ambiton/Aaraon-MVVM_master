@@ -1,6 +1,8 @@
 package com.goldze.mvvmhabit.data.source.local;
 
+import com.goldze.mvvmhabit.app.AppApplication;
 import com.goldze.mvvmhabit.data.source.LocalDataSource;
+import com.goldze.mvvmhabit.entity.db.UserActionData;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseDataEntity;
 import com.goldze.mvvmhabit.utils.VersionControlUtil;
 
@@ -16,6 +18,7 @@ public class LocalDataSourceImpl implements LocalDataSource {
     private static final String KEY_PASSWORD = "password";
     private static final String KEY_TOKEN = "Token";
     private static final String KEY_USERID = "userid";
+    private static final String KEY_UNITID = "unitid";
     private static final String KEY_SMSTOKEN = "smstoken";
     private static final String KEY_VERSION_BANNER = "bannerversion";
     private static final String KEY_VERSION_LOADING = "loadversion";
@@ -53,6 +56,11 @@ public class LocalDataSourceImpl implements LocalDataSource {
     @Override
     public void saveUserID(int userId) {
         SPUtils.getInstance().put(KEY_USERID, userId);
+    }
+
+    @Override
+    public void saveUnitId(int unitId) {
+        SPUtils.getInstance().put(KEY_UNITID, unitId);
     }
 
     @Override
@@ -128,5 +136,20 @@ public class LocalDataSourceImpl implements LocalDataSource {
     @Override
     public int getUserID() {
         return SPUtils.getInstance().getInt(KEY_USERID);
+    }
+
+    @Override
+    public int getUnitID() {
+        return SPUtils.getInstance().getInt(KEY_UNITID);
+    }
+
+    @Override
+    public void saveUserActionDataToDB(UserActionData userActionData) {
+        AppApplication.getInstance().getDaoSession().getUserActionDataDao().save(userActionData);
+    }
+
+    @Override
+    public void deleteUserActionDataToDB(UserActionData... userActionDatas) {
+        AppApplication.getInstance().getDaoSession().getUserActionDataDao().deleteInTx(userActionDatas);
     }
 }

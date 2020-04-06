@@ -50,6 +50,7 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding, LoginViewM
                 MaterialDialogUtils.showBasicDialogNoCancel(LoginActivity.this,viewModel.dialogEvent.get()).show();
             }
         });
+        binding.cbLoginUseragreement.setOnCheckedChangeListener(viewModel);
         viewModel.uc.pSwitchEvent.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean aBoolean) {

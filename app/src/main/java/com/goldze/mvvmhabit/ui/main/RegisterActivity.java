@@ -1,15 +1,14 @@
 package com.goldze.mvvmhabit.ui.main;
 
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.databinding.Observable;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 
 import com.goldze.mvvmhabit.BR;
 import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.app.AppViewModelFactory;
-import com.goldze.mvvmhabit.databinding.ActivityLoginBinding;
+import com.goldze.mvvmhabit.databinding.ActivityRegisternewBinding;
+import com.tamsiree.rxtool.RxTextTool;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 import me.goldze.mvvmhabit.utils.MaterialDialogUtils;
@@ -17,12 +16,12 @@ import me.goldze.mvvmhabit.utils.MaterialDialogUtils;
 /**
  * 一个MVVM模式的注册界面
  */
-public class RegisterActivity extends BaseActivity<ActivityLoginBinding, RegisterViewModel> {
+public class RegisterActivity extends BaseActivity<ActivityRegisternewBinding, RegisterViewModel> {
     private static final String TAG="RegisterActivity";
     //ActivityLoginBinding类是databinding框架自定生成的,对应activity_login.xml
     @Override
     public int initContentView(Bundle savedInstanceState) {
-        return R.layout.activity_register;
+        return R.layout.activity_registernew;
     }
 
     @Override
@@ -39,7 +38,8 @@ public class RegisterActivity extends BaseActivity<ActivityLoginBinding, Registe
 
     @Override
     public void initViewObservable() {
-
+        RxTextTool.getBuilder("").setUnderline();
+        binding.cbRegister.setOnCheckedChangeListener(viewModel);
         viewModel.dialogEvent.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {

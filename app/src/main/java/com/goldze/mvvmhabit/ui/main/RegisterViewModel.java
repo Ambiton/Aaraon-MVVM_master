@@ -7,7 +7,9 @@ import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 
+import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.data.DemoRepository;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterBodyEntity;
@@ -17,6 +19,7 @@ import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeResponseEntity;
 import com.goldze.mvvmhabit.ui.register.UserNickNameActivity;
 import com.goldze.mvvmhabit.utils.HttpStatus;
 import com.goldze.mvvmhabit.utils.RxRegTool;
+import com.tamsiree.rxtool.RxTextTool;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -35,7 +38,7 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
  * Created by goldze on 2017/7/17.
  */
 
-public class RegisterViewModel extends BaseViewModel<DemoRepository> {
+public class RegisterViewModel extends BaseViewModel<DemoRepository> implements CompoundButton.OnCheckedChangeListener {
     private static final String TAG="RegisterViewModel";
     private static final String STR_SENDVERIFY="发送验证码";
     private static final String STR_SENDVERIFY_DURATION="s后重发";
@@ -46,7 +49,8 @@ public class RegisterViewModel extends BaseViewModel<DemoRepository> {
     public ObservableField<String> userName = new ObservableField<>("");
     //密码的绑定
     public ObservableField<String> password = new ObservableField<>("");
-
+    //是否同意协议
+    public boolean agreeProtect = false;
     //发送验证码按钮绑定
     public ObservableField<String> verfyCodeText = new ObservableField<>("");
 
@@ -67,6 +71,16 @@ public class RegisterViewModel extends BaseViewModel<DemoRepository> {
     public class UIChangeObservable {
         //密码开关观察者
         public SingleLiveEvent<Boolean> pSwitchEvent = new SingleLiveEvent<>();
+    }
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()){
+            case R.id.cb_register:
+                agreeProtect=isChecked;
+                break;
+            default:
+                break;
+        }
     }
 
     public RegisterViewModel(@NonNull Application application, DemoRepository repository) {
@@ -159,12 +173,16 @@ public class RegisterViewModel extends BaseViewModel<DemoRepository> {
     });
 
     private void register(){
+        if(!agreeProtect){
+            ToastUtils.showLong("请先阅读并同意服务条款！");
+            return;
+        }
         if (TextUtils.isEmpty(userName.get())&& !RxRegTool.isMobileSimple(userName.get())) {
-            ToastUtils.showShort("请输入正确的手机号！");
+            ToastUtils.showLong("请输入正确的手机号！");
             return;
         }
         if (TextUtils.isEmpty(password.get())) {
-            ToastUtils.showShort("请输入验证码！");
+            ToastUtils.showLong("请输入验证码！");
             return;
         }
         addSubscribe(model.registerUser(new RegisterBodyEntity(model.getSmsToken(),userName.get(),password.get(),"1"))

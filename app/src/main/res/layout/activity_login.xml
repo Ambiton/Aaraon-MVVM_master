@@ -148,13 +148,13 @@
                 android:layout_margin="@dimen/margin_normal"
                 android:orientation="horizontal">
                 <CheckBox
-                    android:id="@+id/checkBox"
+                    android:id="@+id/cb_login_useragreement"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="visible"
                     android:text="" />
                 <TextView
-                    android:id="@+id/cb_login_useragreement"
+                    android:id="@+id/txt_login_useragreement"
                     android:gravity="center|start"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

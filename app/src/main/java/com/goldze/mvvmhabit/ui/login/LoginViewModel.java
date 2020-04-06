@@ -9,7 +9,9 @@ import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 
+import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.data.DemoRepository;
 import com.goldze.mvvmhabit.entity.http.login.LoginBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterOrLoginResponseEntity;
@@ -37,7 +39,7 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
  * Created by goldze on 2017/7/17.
  */
 
-public class LoginViewModel extends BaseViewModel<DemoRepository> {
+public class LoginViewModel extends BaseViewModel<DemoRepository> implements CompoundButton.OnCheckedChangeListener {
     private static final String TAG="LoginViewModel";
     private static final String STR_SENDVERIFY="发送验证码";
     private static final String STR_SENDVERIFY_DURATION="s后重发";
@@ -53,7 +55,7 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> {
     //密码的焦点
     public ObservableField<Boolean> passwordFocus = new ObservableField<>(false);
     //是否同意协议
-    public ObservableField<Boolean> agreeProtect = new ObservableField<>(false);
+    public boolean agreeProtect = false;
     //发送验证码按钮绑定
     public ObservableField<String> verfyCodeText = new ObservableField<>("");
     //用户名清除按钮的显示隐藏绑定
@@ -66,6 +68,18 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> {
     private final String PRIVATE_PASSWORD="myzrapp";
     private final String PRIVATE_TYPE_REGISTER="1";
     private final String PRIVATE_TYPE_LOGIN="2";
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()){
+            case R.id.cb_login_useragreement:
+                agreeProtect=isChecked;
+                break;
+            default:
+                break;
+        }
+    }
+
     public class UIChangeObservable {
         //密码开关观察者
         public SingleLiveEvent<Boolean> pSwitchEvent = new SingleLiveEvent<>();
@@ -197,6 +211,10 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> {
      * 网络登陆操作
      **/
     private void login() {
+        if(!agreeProtect){
+            ToastUtils.showShort("请先阅读并同意服务条款！");
+            return;
+        }
         if (TextUtils.isEmpty(userName.get())||!RxRegTool.isMobileSimple(userName.get())) {
             ToastUtils.showShort("请输入正确的手机号！");
             return;

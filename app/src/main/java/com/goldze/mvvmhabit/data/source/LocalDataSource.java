@@ -1,5 +1,7 @@
 package com.goldze.mvvmhabit.data.source;
 
+import com.goldze.mvvmhabit.entity.db.UserActionData;
+
 /**
  * Created by goldze on 2019/3/26.
  */
@@ -19,6 +21,10 @@ public interface LocalDataSource {
      * 保存用户ID
      */
     void saveUserID(int userId);
+    /**
+     * 保存设备唯一ID
+     */
+    void saveUnitId(int unitId);
     /**
      * 保存用户名
      */
@@ -92,4 +98,20 @@ public interface LocalDataSource {
      * 获取smsToken
      */
     int getUserID();
+
+    /**
+     * 获取设备唯一ID
+     * @return
+     */
+    int getUnitID();
+
+    /**
+     * save 用户数据
+     */
+    void saveUserActionDataToDB(UserActionData userActionData);
+
+    /**
+     * save 用户数据
+     */
+    void deleteUserActionDataToDB(UserActionData ...userActionDatas);
 }
