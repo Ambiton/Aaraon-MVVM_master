@@ -35,6 +35,7 @@ import okhttp3.ResponseBody;
  * @date : 2020/3/8 16:49
  */
 public class AppTools {
+    public static final String CUREENT_SERIONUM="123456";//按摩椅的设备串号
     private static final String TAG="AppTools";
     private static final String FILENAME_ZIP_BANNER="bannerImages";
     private static final String FILENAME_ZIP_LOAD="loadImages";

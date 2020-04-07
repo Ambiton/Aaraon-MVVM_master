@@ -3,7 +3,6 @@ package com.goldze.mvvmhabit.entity;
 import androidx.databinding.BaseObservable;
 import android.os.Parcel;
 import android.os.Parcelable;
-import androidx.annotation.Nullable;
 
 import com.goldze.mvvmhabit.utils.RxDataTool;
 
@@ -22,6 +21,11 @@ public class DeviceStatusInfoEntity extends BaseObservable implements Parcelable
     public static final byte FLAG_ROATION_AUTO = 0;
     public static final byte FLAG_ROATION_POSISTION = 1;
     public static final byte FLAG_ROATION_REV = 2;
+    public static final byte FLAG_ROATION_POSISTION_AND_REV = 3;
+    public static final byte FLAG_ROATION_DIRECT_STOP0 = 0;
+    public static final byte FLAG_ROATION_DIRECT_POSISION = 1;
+    public static final byte FLAG_ROATION_DIRECT_REV = 2;
+    public static final byte FLAG_ROATION_DIRECT_STOP3 = 0;
     public static final byte FLAG_VOICE_MAX = 25;
     public static final byte FLAG_VOICE_MID = 20;
     public static final byte FLAG_VOICE_MIN = 15;
@@ -29,7 +33,8 @@ public class DeviceStatusInfoEntity extends BaseObservable implements Parcelable
     private byte isDeviceOpen;
     private byte isHeatingOpen;
     private byte deviceSpeed;
-    private byte deviceRoation;
+    private byte deviceRoationDirect;
+    private byte deviceRoationMode;
     private byte deviceVoice;
     private byte deviceVoiceSwitch;
 
@@ -49,12 +54,12 @@ public class DeviceStatusInfoEntity extends BaseObservable implements Parcelable
         this.isHeatingOpen = isHeatingOpen;
     }
 
-    public byte getDeviceRoation() {
-        return deviceRoation;
+    public byte getDeviceRoationMode() {
+        return deviceRoationMode;
     }
 
-    public void setDeviceRoation(byte deviceRoation) {
-        this.deviceRoation = deviceRoation;
+    public void setDeviceRoationMode(byte deviceRoationMode) {
+        this.deviceRoationMode = deviceRoationMode;
     }
 
     public byte getDeviceVoice() {
@@ -73,6 +78,14 @@ public class DeviceStatusInfoEntity extends BaseObservable implements Parcelable
         this.deviceSpeed = deviceSpeed;
     }
 
+    public byte getDeviceRoationDirect() {
+        return deviceRoationDirect;
+    }
+
+    public void setDeviceRoationDirect(byte deviceRoationDirect) {
+        this.deviceRoationDirect = deviceRoationDirect;
+    }
+
     public byte getDeviceVoiceSwitch() {
         return deviceVoiceSwitch;
     }
@@ -88,7 +101,8 @@ public class DeviceStatusInfoEntity extends BaseObservable implements Parcelable
             this.isDeviceOpen = info[0];
             this.isHeatingOpen = info[1];
             this.deviceSpeed = info[2];
-            this.deviceRoation = RxDataTool.getLow4(info[3]);
+            this.deviceRoationDirect = RxDataTool.getHeight4(info[3]);
+            this.deviceRoationMode = RxDataTool.getLow4(info[3]);
             this.deviceVoice = info[4];
             this.deviceVoiceSwitch = info[5];
         }
@@ -99,7 +113,8 @@ public class DeviceStatusInfoEntity extends BaseObservable implements Parcelable
         this.isDeviceOpen = in.readByte();
         this.isHeatingOpen = in.readByte();
         this.deviceSpeed = in.readByte();
-        this.deviceRoation = in.readByte();
+        this.deviceRoationDirect=in.readByte();
+        this.deviceRoationMode = in.readByte();
         this.deviceVoice = in.readByte();
         this.deviceVoiceSwitch = in.readByte();
     }
@@ -126,7 +141,8 @@ public class DeviceStatusInfoEntity extends BaseObservable implements Parcelable
         dest.writeByte(this.isDeviceOpen);
         dest.writeByte(this.isHeatingOpen);
         dest.writeByte(this.deviceSpeed);
-        dest.writeByte(this.deviceRoation);
+        dest.writeByte(this.deviceRoationDirect);
+        dest.writeByte(this.deviceRoationMode);
         dest.writeByte(this.deviceVoice);
         dest.writeByte(this.deviceVoiceSwitch);
     }

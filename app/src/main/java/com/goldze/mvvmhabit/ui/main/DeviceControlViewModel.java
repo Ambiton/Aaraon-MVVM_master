@@ -16,7 +16,6 @@ import com.goldze.mvvmhabit.app.AppApplication;
 import com.goldze.mvvmhabit.data.DemoRepository;
 import com.goldze.mvvmhabit.entity.DeviceStatusInfoEntity;
 import com.goldze.mvvmhabit.entity.db.UserActionData;
-import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseDataEntity;
 import com.goldze.mvvmhabit.ui.base.viewmodel.ToolbarViewModel;
 import com.goldze.mvvmhabit.utils.AppTools;
 import com.goldze.mvvmhabit.utils.BleOption;
@@ -37,7 +36,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
-import me.goldze.mvvmhabit.utils.MaterialDialogUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 import me.tatarka.bindingcollectionadapter2.ItemBinding;
 
@@ -83,10 +81,11 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
             setIsGifNeedChange(recDeviceStatusInfoEntity);
             if (deviceStatusInfoEntity.getIsHeatingOpen() != recDeviceStatusInfoEntity.getIsHeatingOpen() ||
                     deviceStatusInfoEntity.getIsDeviceOpen() != recDeviceStatusInfoEntity.getIsDeviceOpen() ||
-                    deviceStatusInfoEntity.getDeviceRoation() != recDeviceStatusInfoEntity.getDeviceRoation() ||
+                    deviceStatusInfoEntity.getDeviceRoationMode() != recDeviceStatusInfoEntity.getDeviceRoationMode() ||
                     deviceStatusInfoEntity.getDeviceSpeed() != recDeviceStatusInfoEntity.getDeviceSpeed() ||
                     deviceStatusInfoEntity.getDeviceVoice() != recDeviceStatusInfoEntity.getDeviceVoice() ||
-                    deviceStatusInfoEntity.getDeviceVoiceSwitch() != recDeviceStatusInfoEntity.getDeviceVoiceSwitch()) {
+                    deviceStatusInfoEntity.getDeviceVoiceSwitch() != recDeviceStatusInfoEntity.getDeviceVoiceSwitch()||
+                    deviceStatusInfoEntity.getDeviceRoationDirect() != recDeviceStatusInfoEntity.getDeviceRoationDirect()) {
                 deviceStatusInfoEntity = recDeviceStatusInfoEntity;
                 statusInfoChageObeserver.set(deviceStatusInfoEntity);
                 statusInfoChageObeserver.notifyChange();
@@ -102,24 +101,32 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
         userActionData.setActVal(actVal);
         userActionData.setActTime(RxTimeTool.getCurTimeString());
         userActionData.setUnitId(model.getUnitID());
+        userActionData.setStatus("0");
+        userActionData.setSeriNo(AppTools.CUREENT_SERIONUM);
     }
     public boolean isGifNeedChange(){
         return isGifNeedChange.get();
     }
 
+    private void setIsGifNeedChange(boolean isTure){
+        isGifNeedChange.compareAndSet(!isTure, isTure);
+    }
 
-    private void setIsGifNeedChange(DeviceStatusInfoEntity recDeviceStatusInfoEntity){
-        if(recDeviceStatusInfoEntity==null){
-            isGifNeedChange.compareAndSet(true,false);
+
+
+    private void setIsGifNeedChange(DeviceStatusInfoEntity recDeviceStatusInfoEntity) {
+        if (recDeviceStatusInfoEntity == null) {
+            isGifNeedChange.compareAndSet(true, false);
             return;
         }
         if (deviceStatusInfoEntity.getIsHeatingOpen() != recDeviceStatusInfoEntity.getIsHeatingOpen() ||
                 deviceStatusInfoEntity.getIsDeviceOpen() != recDeviceStatusInfoEntity.getIsDeviceOpen() ||
-                deviceStatusInfoEntity.getDeviceRoation() != recDeviceStatusInfoEntity.getDeviceRoation() ||
-                deviceStatusInfoEntity.getDeviceSpeed() != recDeviceStatusInfoEntity.getDeviceSpeed()){
-            isGifNeedChange.compareAndSet(false,true);
-        }else{
-            isGifNeedChange.compareAndSet(true,false);
+                deviceStatusInfoEntity.getDeviceRoationMode() != recDeviceStatusInfoEntity.getDeviceRoationMode() ||
+                deviceStatusInfoEntity.getDeviceSpeed() != recDeviceStatusInfoEntity.getDeviceSpeed() ||
+                deviceStatusInfoEntity.getDeviceRoationDirect() != recDeviceStatusInfoEntity.getDeviceRoationDirect()) {
+            isGifNeedChange.compareAndSet(false, true);
+        } else {
+            isGifNeedChange.compareAndSet(true, false);
         }
 
     }
@@ -127,7 +134,8 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
     public boolean isFastOption() {
         boolean result = RxTool.isFastClick(1000);
         if (result) {
-            ToastUtils.showShort("请不要过快频繁的操作～");
+//            ToastUtils.showShort("请不要过快频繁的操作～");
+            RxLogTool.e(TAG,"isFastOption...");
         }
         return result;
     }
@@ -181,7 +189,7 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
 
 
     public boolean isDeviceCanChangeSpeed() {
-        boolean result = (deviceStatusInfoEntity.getDeviceRoation() != DeviceStatusInfoEntity.FLAG_ROATION_AUTO);
+        boolean result = (deviceStatusInfoEntity.getDeviceRoationMode() != DeviceStatusInfoEntity.FLAG_ROATION_AUTO);
         if (!result) {
             ToastUtils.showLong("自动模式下无法进行手动调速，如要调速请切换到其他模式");
         }
@@ -243,6 +251,7 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
             BleOption.getInstance().turnOffDevice(DeviceControlViewModel.this);
         }
         setUserActionData(AppTools.UserActionFlagAndValue.FLAG_SWITCH_DEVICE,String.valueOf(deviceStatusInfoEntity.getIsDeviceOpen()));
+        setIsGifNeedChange(true);
         statusInfoChageObeserver.set(deviceStatusInfoEntity);
         statusInfoChageObeserver.notifyChange();
     }
@@ -264,6 +273,7 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
             BleOption.getInstance().turnOffHeating(DeviceControlViewModel.this);
         }
         setUserActionData(AppTools.UserActionFlagAndValue.FLAG_SWITCH_WARM,String.valueOf(deviceStatusInfoEntity.getIsHeatingOpen()));
+        setIsGifNeedChange(true);
         statusInfoChageObeserver.set(deviceStatusInfoEntity);
         statusInfoChageObeserver.notifyChange();
         showWaitingDialog();
@@ -316,6 +326,7 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
                 Log.e(TAG, "getIsSpeedHigh is " + statusInfoChageObeserver.get().getDeviceSpeed());
                 BleOption.getInstance().setMaxSpeed(DeviceControlViewModel.this);
                 showWaitingDialog();
+                setIsGifNeedChange(true);
                 setUserActionData(AppTools.UserActionFlagAndValue.FLAG_SPEED_VALUE,String.valueOf(deviceStatusInfoEntity.getDeviceSpeed()));
             }
 
@@ -333,6 +344,7 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
                 deviceStatusInfoEntity.setDeviceSpeed(DeviceStatusInfoEntity.FLAG_SPEED_MID);
                 BleOption.getInstance().setMidSpeed(DeviceControlViewModel.this);
                 showWaitingDialog();
+                setIsGifNeedChange(true);
                 setUserActionData(AppTools.UserActionFlagAndValue.FLAG_SPEED_VALUE,String.valueOf(deviceStatusInfoEntity.getDeviceSpeed()));
             }
 
@@ -349,6 +361,7 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
                 deviceStatusInfoEntity.setDeviceSpeed(DeviceStatusInfoEntity.FLAG_SPEED_MIN);
                 BleOption.getInstance().setMinSpeed(DeviceControlViewModel.this);
                 showWaitingDialog();
+                setIsGifNeedChange(true);
                 setUserActionData(AppTools.UserActionFlagAndValue.FLAG_SPEED_VALUE,String.valueOf(deviceStatusInfoEntity.getDeviceSpeed()));
             }
             statusInfoChageObeserver.set(deviceStatusInfoEntity);
@@ -417,10 +430,16 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
         @Override
         public void call() {
             if (!isFastOption()) {
-                deviceStatusInfoEntity.setDeviceRoation(DeviceStatusInfoEntity.FLAG_ROATION_AUTO);
+                if(deviceStatusInfoEntity.getDeviceRoationMode()!=DeviceStatusInfoEntity.FLAG_ROATION_AUTO||
+                        deviceStatusInfoEntity.getDeviceRoationMode()!=DeviceStatusInfoEntity.FLAG_ROATION_POSISTION_AND_REV){
+                    deviceStatusInfoEntity.setDeviceRoationDirect(deviceStatusInfoEntity.getDeviceRoationMode()==
+                            DeviceStatusInfoEntity.FLAG_ROATION_POSISTION?DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_POSISION:DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_REV);
+                }
+                deviceStatusInfoEntity.setDeviceRoationMode(DeviceStatusInfoEntity.FLAG_ROATION_AUTO);
                 BleOption.getInstance().roationAuto(DeviceControlViewModel.this);
                 showWaitingDialog();
-                setUserActionData(AppTools.UserActionFlagAndValue.FLAG_ROATION_MODE,String.valueOf(deviceStatusInfoEntity.getDeviceRoation()));
+                setIsGifNeedChange(true);
+                setUserActionData(AppTools.UserActionFlagAndValue.FLAG_ROATION_MODE,String.valueOf(deviceStatusInfoEntity.getDeviceRoationMode()));
             }
             statusInfoChageObeserver.set(deviceStatusInfoEntity);
             statusInfoChageObeserver.notifyChange();
@@ -431,10 +450,11 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
         @Override
         public void call() {
             if (!isFastOption()) {
-                deviceStatusInfoEntity.setDeviceRoation(DeviceStatusInfoEntity.FLAG_ROATION_POSISTION);
+                deviceStatusInfoEntity.setDeviceRoationMode(DeviceStatusInfoEntity.FLAG_ROATION_POSISTION);
                 BleOption.getInstance().roationPositive(DeviceControlViewModel.this);
                 showWaitingDialog();
-                setUserActionData(AppTools.UserActionFlagAndValue.FLAG_ROATION_MODE,String.valueOf(deviceStatusInfoEntity.getDeviceRoation()));
+                setIsGifNeedChange(true);
+                setUserActionData(AppTools.UserActionFlagAndValue.FLAG_ROATION_MODE,String.valueOf(deviceStatusInfoEntity.getDeviceRoationMode()));
             }
             statusInfoChageObeserver.set(deviceStatusInfoEntity);
             statusInfoChageObeserver.notifyChange();
@@ -445,10 +465,11 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
         @Override
         public void call() {
             if (!isFastOption()) {
-                deviceStatusInfoEntity.setDeviceRoation(DeviceStatusInfoEntity.FLAG_ROATION_REV);
+                deviceStatusInfoEntity.setDeviceRoationMode(DeviceStatusInfoEntity.FLAG_ROATION_REV);
                 BleOption.getInstance().roationReversal(DeviceControlViewModel.this);
                 showWaitingDialog();
-                setUserActionData(AppTools.UserActionFlagAndValue.FLAG_ROATION_MODE,String.valueOf(deviceStatusInfoEntity.getDeviceRoation()));
+                setIsGifNeedChange(true);
+                setUserActionData(AppTools.UserActionFlagAndValue.FLAG_ROATION_MODE,String.valueOf(deviceStatusInfoEntity.getDeviceRoationMode()));
             }
             statusInfoChageObeserver.set(deviceStatusInfoEntity);
             statusInfoChageObeserver.notifyChange();

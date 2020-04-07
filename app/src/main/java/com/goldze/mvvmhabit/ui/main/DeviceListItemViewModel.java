@@ -13,6 +13,7 @@ import com.goldze.mvvmhabit.app.AppApplication;
 import com.goldze.mvvmhabit.entity.BlutoothDeviceInfoEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
+import com.goldze.mvvmhabit.utils.AppTools;
 import com.goldze.mvvmhabit.utils.BleOption;
 import com.goldze.mvvmhabit.utils.HttpsUtils;
 import com.inuker.bluetooth.library.connect.response.BleConnectResponse;
@@ -38,7 +39,6 @@ import static com.inuker.bluetooth.library.Constants.SERVICE_UNREADY;
  */
 
 public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> implements BleConnectResponse, OnDeviceInfoListener {
-    private static final String CUREENT_SERIONUM="123456";
     public ObservableField<BlutoothDeviceInfoEntity> entity = new ObservableField<>();
     public Drawable drawableImg;
     MaterialDialog  dialog;
@@ -77,7 +77,7 @@ public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> 
         @Override
         public void call() {
             //这里可以通过一个标识,做出判断，已达到跳入不同界面的逻辑
-            viewModel.checkDeviceInfo(CUREENT_SERIONUM, DeviceListItemViewModel.this);
+            viewModel.checkDeviceInfo(AppTools.CUREENT_SERIONUM, DeviceListItemViewModel.this);
 //            AppApplication.getBluetoothClient(viewModel.getContext()).connect(BluetoothUtils.getRemoteDevice(entity.get().getMacAddress()).getAddress(), new BleConnectResponse() {
 //                @Override
 //                public void onResponse(int code, BleGattProfile data) {

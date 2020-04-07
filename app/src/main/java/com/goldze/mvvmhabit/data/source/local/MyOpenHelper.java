@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.goldze.mvvmhabit.entity.DaoMaster;
+import com.goldze.mvvmhabit.entity.db.UserActionDataDao;
 
 import org.greenrobot.greendao.database.Database;
 
@@ -23,9 +24,9 @@ public class MyOpenHelper extends DaoMaster.OpenHelper {
 
     @Override
     public void onUpgrade(Database db, int oldVersion, int newVersion) {
-//
+
 //        //把需要管理的数据库表DAO作为最后一个参数传入到方法中
-//        MigrationHelper.migrate(db, new MigrationHelper.ReCreateAllTableListener() {
+//        UserActionDataH.migrate(db, new MigrationHelper.ReCreateAllTableListener() {
 //
 //            @Override
 //            public void onCreateAllTables(Database db, boolean ifNotExists) {

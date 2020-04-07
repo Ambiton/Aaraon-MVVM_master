@@ -1,21 +1,19 @@
 package com.goldze.mvvmhabit.ui.main;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
 import android.content.pm.ActivityInfo;
+
 import androidx.databinding.Observable;
 
-import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.RadioGroup;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -24,7 +22,6 @@ import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.app.AppViewModelFactory;
 import com.goldze.mvvmhabit.databinding.FragmentDevicecontrolBinding;
 import com.goldze.mvvmhabit.entity.DeviceStatusInfoEntity;
-import com.goldze.mvvmhabit.ui.banner.DataBean;
 import com.goldze.mvvmhabit.utils.AppTools;
 import com.goldze.mvvmhabit.utils.BleOption;
 import com.goldze.mvvmhabit.utils.GlideImageLoader;
@@ -52,7 +49,8 @@ import static com.inuker.bluetooth.library.Constants.STATUS_DISCONNECTED;
 
 public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBinding, DeviceControlViewModel> implements OnBannerListener {
     private static final String TAG = "DeviceControlFragment";
-    private  MaterialDialog.Builder builderBle;
+    private MaterialDialog.Builder builderBle;
+
     @Override
     public void initParam() {
         super.initParam();
@@ -86,7 +84,7 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
     public void initData() {
         //给RecyclerView添加Adpter，请使用自定义的Adapter继承BindingRecyclerViewAdapter，重写onBindBinding方法，里面有你要的Item对应的binding对象。
 
-        builderBle=MaterialDialogUtils.showBasicDialogNoCancel(this.getActivity(),"温馨提示",getResources().getString(R.string.dialog_title_connect_failed));
+        builderBle = MaterialDialogUtils.showBasicDialogNoCancel(this.getActivity(), "温馨提示", getResources().getString(R.string.dialog_title_connect_failed));
         builderBle.onPositive(new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -108,20 +106,21 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
         viewModel.requestDeviceInfo();
     }
 
-    private ArrayList<Object> getBannerPlayList(ArrayList<Object> allDatas){
+    private ArrayList<Object> getBannerPlayList(ArrayList<Object> allDatas) {
         ArrayList<Object> list_path = new ArrayList<>();
-        if(AppTools.isAutoPlayMode(viewModel.getBannerPlayMode())){
-            list_path=allDatas;
-        }else{
-            if(viewModel.getBannerPlayIndex()>allDatas.size()-1){
+        if (AppTools.isAutoPlayMode(viewModel.getBannerPlayMode())) {
+            list_path = allDatas;
+        } else {
+            if (viewModel.getBannerPlayIndex() > allDatas.size() - 1) {
                 viewModel.saveBannerPlayIndex(0);
             }
             list_path.add(allDatas.get(viewModel.getBannerPlayIndex()));
         }
         return list_path;
     }
+
     private void startBanner() {
-        Banner banner=binding.bannerControl;
+        Banner banner = binding.bannerControl;
         //放标题的集合
         ArrayList<String> list_title = new ArrayList<>();
         ArrayList<Object> list_path = getBannerPlayList(AppTools.getBannerUnZipFiles(this.getActivity()));
@@ -131,15 +130,15 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
 //        list_path.add(Uri.fromFile());
 //        list_title.add("天天向上");
         //设置内置样式，共有六种可以点入方法内逐一体验使用。
-        if(list_path.size()>1){
+        if (list_path.size() > 1) {
             banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR);
-        }else{
+        } else {
             banner.setBannerStyle(BannerConfig.CENTER);
         }
 
         banner.setImages(list_path);
 
-        for(int i=0;i<list_path.size();i++){
+        for (int i = 0; i < list_path.size(); i++) {
             list_title.add("");
         }
         banner.setBannerTitles(list_title);
@@ -191,38 +190,41 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
      * @param deviceStatusInfoEntity
      * @return
      */
-    private int getGifRes(DeviceStatusInfoEntity deviceStatusInfoEntity) {
-        int res = R.drawable.stop;
-            if (deviceStatusInfoEntity.getDeviceRoation() == DeviceStatusInfoEntity.FLAG_ROATION_AUTO) {
-                if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MAX) {
-                    res = R.drawable.auto_high_normal;
-                } else if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MID) {
-                    res = R.drawable.auto_mid_normal;
-                } else {
-                    res = R.drawable.auto_low_normal;
-                }
-            } else if (deviceStatusInfoEntity.getDeviceRoation() == DeviceStatusInfoEntity.FLAG_ROATION_POSISTION) {
-                if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MAX) {
+    private void setGifRes(DeviceStatusInfoEntity deviceStatusInfoEntity) {
+        if ((deviceStatusInfoEntity.getDeviceRoationMode() == DeviceStatusInfoEntity.FLAG_ROATION_AUTO) &&
+                deviceStatusInfoEntity.getDeviceRoationDirect() != DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_POSISION &&
+                        deviceStatusInfoEntity.getDeviceRoationDirect() != DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_REV) {
+            binding.ivDevicecontrolBg.setImageResource(R.drawable.stop);
+            binding.ivDevicecontrolAllBg.setImageResource(R.mipmap.pillow);
+            binding.ivDevicecontrolBg.setVisibility(View.VISIBLE);
+            binding.ivDevicecontrolGif.setVisibility(View.INVISIBLE);
+        } else {
+            int res = R.drawable.stop;
+            int directtion = deviceStatusInfoEntity.getDeviceRoationDirect();
+            int speed = deviceStatusInfoEntity.getDeviceSpeed();
+            if (deviceStatusInfoEntity.getDeviceRoationMode() == DeviceStatusInfoEntity.FLAG_ROATION_POSISTION ||
+                    directtion == DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_POSISION) {
+                if (speed == DeviceStatusInfoEntity.FLAG_SPEED_MAX) {
                     res = R.drawable.inner_high_normal;
-                } else if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MID) {
+                } else if (speed == DeviceStatusInfoEntity.FLAG_SPEED_MID) {
                     res = R.drawable.inner_mid_normal;
                 } else {
                     res = R.drawable.inner_low_normal;
                 }
             } else {
-                if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MAX) {
+                if (speed == DeviceStatusInfoEntity.FLAG_SPEED_MAX) {
                     res = R.drawable.outer_high_normal;
-                } else if (deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MID) {
+                } else if (speed == DeviceStatusInfoEntity.FLAG_SPEED_MID) {
                     res = R.drawable.outer_mid_normal;
                 } else {
                     res = R.drawable.outer_low_normal;
                 }
             }
-//        }
-        return res;
+            binding.ivDevicecontrolGif.setImageResource(res);
+        }
     }
 
-    private void setAllOptionEnable(boolean isEnable){
+    private void setAllOptionEnable(boolean isEnable) {
         binding.switchWarm.setEnabled(isEnable);
         binding.tvRotationHigh.setEnabled(isEnable);
         binding.tvRotationMid.setEnabled(isEnable);
@@ -231,7 +233,7 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
         binding.tvVolumeMiddle.setEnabled(isEnable);
         binding.tvVolumeLow.setEnabled(isEnable);
         binding.tvVolumeSilent.setEnabled(isEnable);
-        if(!isEnable){
+        if (!isEnable) {
             binding.switchWarm.setChecked(false);
         }
     }
@@ -248,37 +250,38 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
         }
     };
 
-    private void controlFastOption(final View view){
+    private void controlFastOption(final View view) {
         view.setClickable(false);
         view.postDelayed(new Runnable() {
             @Override
             public void run() {
                 view.setClickable(true);
             }
-        },500);
+        }, 500);
     }
+
     @Override
     public void initViewObservable() {
         binding.switchOpen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 controlFastOption(binding.switchOpen);
-                    DeviceStatusInfoEntity deviceStatusInfoEntity = viewModel.statusInfoChageObeserver.get();
-                    Boolean aBoolean=(isChecked==(deviceStatusInfoEntity.getIsDeviceOpen()==DeviceStatusInfoEntity.FLAG_TRUE));
-                    if(!aBoolean){
-                        viewModel.setPowerSwitchStatus(isChecked);
-                    }
+                DeviceStatusInfoEntity deviceStatusInfoEntity = viewModel.statusInfoChageObeserver.get();
+                Boolean aBoolean = (isChecked == (deviceStatusInfoEntity.getIsDeviceOpen() == DeviceStatusInfoEntity.FLAG_TRUE));
+                if (!aBoolean) {
+                    viewModel.setPowerSwitchStatus(isChecked);
+                }
 
             }
         });
         binding.switchWarm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
-                RxLogTool.e("onCheckedChanged","switchWarm. isClickable is "+binding.switchWarm.isClickable());
+                RxLogTool.e("onCheckedChanged", "switchWarm. isClickable is " + binding.switchWarm.isClickable());
                 controlFastOption(binding.switchWarm);
                 DeviceStatusInfoEntity deviceStatusInfoEntity = viewModel.statusInfoChageObeserver.get();
-                Boolean aBoolean=(isChecked==(deviceStatusInfoEntity.getIsHeatingOpen() == DeviceStatusInfoEntity.FLAG_TRUE));
-                if(!aBoolean){
+                Boolean aBoolean = (isChecked == (deviceStatusInfoEntity.getIsHeatingOpen() == DeviceStatusInfoEntity.FLAG_TRUE));
+                if (!aBoolean) {
                     viewModel.setWarmSwitchStatus(isChecked);
                 }
 
@@ -288,7 +291,7 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
         viewModel.writeDataResult.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
-                if(!viewModel.writeDataResult.get()){
+                if (!viewModel.writeDataResult.get()) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -326,7 +329,7 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
                     setAllOptionEnable(true);
                     binding.ivDevicecontrolGif.setVisibility(View.VISIBLE);
                     binding.ivDevicecontrolBg.setVisibility(View.INVISIBLE);
-                    binding.ivDevicecontrolAllBg.setImageResource(deviceStatusInfoEntity.getIsHeatingOpen() == DeviceStatusInfoEntity.FLAG_TRUE?R.mipmap.warmpillow:R.mipmap.pillow);
+                    binding.ivDevicecontrolAllBg.setImageResource(deviceStatusInfoEntity.getIsHeatingOpen() == DeviceStatusInfoEntity.FLAG_TRUE ? R.mipmap.warmpillow : R.mipmap.pillow);
                     binding.switchOpen.setChecked(deviceStatusInfoEntity.getIsDeviceOpen() == DeviceStatusInfoEntity.FLAG_TRUE);
                     binding.switchWarm.setChecked(deviceStatusInfoEntity.getIsHeatingOpen() == DeviceStatusInfoEntity.FLAG_TRUE);
                     binding.tvRotationHigh.setChecked(deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MAX);
@@ -336,11 +339,12 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
                     binding.tvVolumeMiddle.setChecked(deviceStatusInfoEntity.getDeviceVoice() == DeviceStatusInfoEntity.FLAG_VOICE_MID);
                     binding.tvVolumeLow.setChecked(deviceStatusInfoEntity.getDeviceVoice() == DeviceStatusInfoEntity.FLAG_VOICE_MIN);
                     binding.tvVolumeSilent.setChecked(deviceStatusInfoEntity.getDeviceVoice() == DeviceStatusInfoEntity.FLAG_VOICE_MUTE);
-                    binding.tvRotationModePositive.setChecked(deviceStatusInfoEntity.getDeviceRoation() == DeviceStatusInfoEntity.FLAG_ROATION_POSISTION );
-                    binding.tvRotationModeReversal.setChecked(deviceStatusInfoEntity.getDeviceRoation() == DeviceStatusInfoEntity.FLAG_ROATION_REV );
-                    binding.tvRotationModeAuto.setChecked(deviceStatusInfoEntity.getDeviceRoation() == DeviceStatusInfoEntity.FLAG_ROATION_AUTO);
+                    binding.tvRotationModePositive.setChecked(deviceStatusInfoEntity.getDeviceRoationMode() == DeviceStatusInfoEntity.FLAG_ROATION_POSISTION);
+                    binding.tvRotationModeReversal.setChecked(deviceStatusInfoEntity.getDeviceRoationMode() == DeviceStatusInfoEntity.FLAG_ROATION_REV);
+                    binding.tvRotationModeAuto.setChecked(deviceStatusInfoEntity.getDeviceRoationMode() == DeviceStatusInfoEntity.FLAG_ROATION_AUTO ||
+                            deviceStatusInfoEntity.getDeviceRoationMode() == DeviceStatusInfoEntity.FLAG_ROATION_POSISTION_AND_REV);
                     if (viewModel.isGifNeedChange()) {
-                        binding.ivDevicecontrolGif.setImageResource(getGifRes(deviceStatusInfoEntity));
+                        setGifRes(deviceStatusInfoEntity);
                     }
                 }
 
@@ -350,6 +354,6 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
 
     @Override
     public void OnBannerClick(int position) {
-        ToastUtils.showLong("点击了 "+position);
+//        ToastUtils.showLong("点击了 "+position);
     }
 }

@@ -152,7 +152,7 @@ public class BleOption {
             case OPTION_ROATION_AUTO:
             case OPTION_ROATION_POSITIVE:
             case OPTION_ROATION_REVERSAL:
-                currentStatus = infoEntity.getDeviceRoation();
+                currentStatus = infoEntity.getDeviceRoationMode();
                 break;
 
             case OPTION_VOL_SILENT:

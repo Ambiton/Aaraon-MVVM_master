@@ -17,6 +17,8 @@ public class UserActionData {
     @Id(autoincrement = true)
     @Property(nameInDb = "remoteId")
     private Long remoteId;
+    @Property(nameInDb = "seri_no")
+    private String seriNo;
     @Property(nameInDb = "actFlag")
     private String actFlag;
     @Property(nameInDb = "actVal")
@@ -27,20 +29,41 @@ public class UserActionData {
     private int unitId;
     @Property(nameInDb = "devStatus")
     private String devStatus;
+    @Property(nameInDb = "status")
+    private String status;
 
-    @Generated(hash = 1801625678)
-    public UserActionData(Long remoteId, String actFlag, String actVal,
-            String actTime, int unitId, String devStatus) {
+    @Generated(hash = 1157759329)
+    public UserActionData(Long remoteId, String seriNo, String actFlag,
+            String actVal, String actTime, int unitId, String devStatus,
+            String status) {
         this.remoteId = remoteId;
+        this.seriNo = seriNo;
         this.actFlag = actFlag;
         this.actVal = actVal;
         this.actTime = actTime;
         this.unitId = unitId;
         this.devStatus = devStatus;
+        this.status = status;
     }
 
     @Generated(hash = 1199631021)
     public UserActionData() {
+    }
+
+    public String getSeriNo() {
+        return seriNo;
+    }
+
+    public void setSeriNo(String seriNo) {
+        this.seriNo = seriNo;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Long getRemoteId() {
