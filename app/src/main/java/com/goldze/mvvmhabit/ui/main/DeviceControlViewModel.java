@@ -132,10 +132,10 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
     }
 
     public boolean isFastOption() {
-        boolean result = RxTool.isFastClick(1000);
+        boolean result = RxTool.isFastClick(1000)&& BleOption.getInstance().getResendTimeCount()!=0;
         if (result) {
-//            ToastUtils.showShort("请不要过快频繁的操作～");
-            RxLogTool.e(TAG,"isFastOption...");
+            ToastUtils.showShort("请不要过快频繁的操作～");
+            RxLogTool.e(TAG,"isFastOption..."+BleOption.getInstance().getResendTimeCount());
         }
         return result;
     }

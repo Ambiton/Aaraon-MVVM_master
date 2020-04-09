@@ -295,7 +295,7 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-//                            ToastUtils.showLong("操作失败，请重试!");
+                            ToastUtils.showLong("操作失败，请重试!");
                         }
                     });
                 }

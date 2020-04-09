@@ -66,10 +66,10 @@ public class BleOption {
     private static final byte OPTION_GET_DEVICEINFO = 0x14;
     private static final byte OPTION_VOL_SILENT = 0x15;
 
-    private static final int DELAY_WRITEDATA = 100;
-    private static final int PERIOD_WRITEDATA = 300;
+    private static final int DELAY_WRITEDATA = 10;
+    private static final int PERIOD_WRITEDATA = 200;
 
-    private static final int MAX_REWRITEDATA_TIMES = 3;
+    private static final int MAX_REWRITEDATA_TIMES = 4;
 
     private static BleOption instance;
     private String curDeviceMac;
@@ -189,7 +189,7 @@ public class BleOption {
         resendTimeCount++;
     }
 
-    private synchronized int getResendTimeCount() {
+    public synchronized int getResendTimeCount() {
         return resendTimeCount;
     }
 
