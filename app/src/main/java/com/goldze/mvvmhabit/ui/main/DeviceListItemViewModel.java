@@ -1,6 +1,7 @@
 package com.goldze.mvvmhabit.ui.main;
 
 import androidx.databinding.ObservableField;
+
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
@@ -18,6 +19,7 @@ import com.goldze.mvvmhabit.utils.BleOption;
 import com.goldze.mvvmhabit.utils.HttpsUtils;
 import com.inuker.bluetooth.library.connect.response.BleConnectResponse;
 import com.inuker.bluetooth.library.model.BleGattProfile;
+import com.tamsiree.rxtool.RxLogTool;
 
 import java.util.UUID;
 
@@ -39,9 +41,11 @@ import static com.inuker.bluetooth.library.Constants.SERVICE_UNREADY;
  */
 
 public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> implements BleConnectResponse, OnDeviceInfoListener {
+    private static final String TAG = "DeviceListItemViewModel";
+    private final static int MAX_CONNECTETIMES = 3;
     public ObservableField<BlutoothDeviceInfoEntity> entity = new ObservableField<>();
     public Drawable drawableImg;
-    MaterialDialog  dialog;
+    private MaterialDialog dialog;
     private final String SPP_UUID = "00001101-0000-1000-8000-00805F9B34FB";
     private final String CHAR_UUID = "64e400001-b5a3-f393-e0a9-e50e24dcca9e";
     private static final UUID UUID_SERVICE_CHANNEL
@@ -53,14 +57,17 @@ public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> 
             = UUID.fromString("6e400003-b5a3-f393-e0a9-e50e24dcca9e");
 
 
-    private DeviceListViewModel  deviceListViewModel;
+    private DeviceListViewModel deviceListViewModel;
+
+    private int connectedTimes = 0;
+
     public DeviceListItemViewModel(@NonNull DeviceListViewModel viewModel, BlutoothDeviceInfoEntity entity) {
         super(viewModel);
         this.entity.set(entity);
-        deviceListViewModel=viewModel;
+        deviceListViewModel = viewModel;
         //ImageView的占位图片，可以解决RecyclerView中图片错误问题
         drawableImg = ContextCompat.getDrawable(viewModel.getApplication(), R.mipmap.massagechair);
-        dialog=MaterialDialogUtils.showIndeterminateProgressDialog(viewModel.getContext(),"正在连接设备，请稍后..."+this.entity.get().getMacAddress(),false).build();
+        dialog = MaterialDialogUtils.showIndeterminateProgressDialog(viewModel.getContext(), "正在连接设备，请稍后..." + this.entity.get().getMacAddress(), false).build();
     }
 
     /**
@@ -161,23 +168,35 @@ public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> 
 
     @Override
     public void onResponse(int code, BleGattProfile data) {
-        dialog.dismiss();
+
+        connectedTimes++;
         if (code == REQUEST_SUCCESS) {
-            ToastUtils.showLong(viewModel.getContext().getString(R.string.toast_title_hasconnected));
+            dialog.dismiss();
+//            ToastUtils.showLong(viewModel.getContext().getString(R.string.toast_title_hasconnected));
+            connectedTimes = 0;
             viewModel.startContainerActivity(DeviceControlFragment.class.getCanonicalName());
-        }else{
-            ToastUtils.showLong(viewModel.getContext().getString(R.string.toast_title_connect_error));
+        } else {
+            if (connectedTimes > MAX_CONNECTETIMES) {
+                dialog.dismiss();
+                connectedTimes = 0;
+                ToastUtils.showLong(viewModel.getContext().getString(R.string.toast_title_connect_error));
+            } else {
+                RxLogTool.e(TAG, "ReconnectDevice times is " + connectedTimes);
+                BleOption.getInstance().connectDevice(entity.get().getMacAddress(), DeviceListItemViewModel.this);
+            }
+
         }
     }
 
     @Override
     public void onDeviceCanUseResult(boolean isCanUse) {
-        if(isCanUse){
+        if (isCanUse) {
             dialog.show();
             AppApplication.getBluetoothClient(viewModel.getApplication()).stopSearch();
-            BleOption.getInstance().connectDevice(entity.get().getMacAddress(),DeviceListItemViewModel.this);
-        }else{
-            MaterialDialogUtils.showBasicDialog(viewModel.getContext(),"连接失败","非法的设备串号");
+            connectedTimes = 0;
+            BleOption.getInstance().connectDevice(entity.get().getMacAddress(), DeviceListItemViewModel.this);
+        } else {
+            MaterialDialogUtils.showBasicDialog(viewModel.getContext(), "连接失败", "非法的设备串号");
         }
     }
 //    /**
