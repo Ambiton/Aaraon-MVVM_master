@@ -18,8 +18,12 @@ import com.bigkoo.pickerview.view.TimePickerView;
 import com.goldze.mvvmhabit.BR;
 import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.databinding.ActivityUserbirthdayEditBinding;
+import com.goldze.mvvmhabit.entity.http.userinfo.RegisterUserInfoEntity;
 import com.goldze.mvvmhabit.ui.wheelview.MyTimePickerView;
+import com.goldze.mvvmhabit.utils.AppTools;
+import com.tamsiree.rxtool.RxConstants;
 import com.tamsiree.rxtool.RxLogTool;
+import com.tamsiree.rxtool.RxTimeTool;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -44,7 +48,17 @@ public class BirthdayChooseActivity extends BaseActivity<ActivityUserbirthdayEdi
     public int initVariableId() {
         return BR.viewModel;
     }
-
+    @Override
+    public void initData() {
+        super.initData();
+        Bundle bundle=getIntent().getExtras();
+        if(bundle==null){
+            viewModel.setUserInfoEntity(null);
+        }else{
+            RegisterUserInfoEntity userInfoEntity=bundle.getParcelable(AppTools.KEY_REGISTER_USERINFO);
+            viewModel.setUserInfoEntity(userInfoEntity);
+        }
+    }
     @Override
     public void initViewObservable() {
         //监听ViewModel中pSwitchObservable的变化, 当ViewModel中执行【uc.pSwitchObservable.set(!uc.pSwitchObservable.get());】时会回调该方法
@@ -77,6 +91,6 @@ public class BirthdayChooseActivity extends BaseActivity<ActivityUserbirthdayEdi
     @Override
     public void onTimeSelectChanged(Date date) {
         RxLogTool.e(TAG, "select date is " + date.toString());
-
+        viewModel.getUserInfoEntity().setBirthday(RxTimeTool.simpleDateFormat(RxConstants.DATE_FORMAT_DETACH_SSS,date));
     }
 }

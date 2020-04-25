@@ -1,19 +1,27 @@
 package com.goldze.mvvmhabit.data.source;
 
 import com.goldze.mvvmhabit.entity.DemoEntity;
+import com.goldze.mvvmhabit.entity.db.UserActionData;
 import com.goldze.mvvmhabit.entity.http.ResponseNetDeviceInfoEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.entity.http.login.LoginBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterOrLoginResponseEntity;
+import com.goldze.mvvmhabit.entity.http.useraction.SubmitActionDataResponseEntity;
 import com.goldze.mvvmhabit.entity.http.userinfo.RegisterUserInfoEntity;
 import com.goldze.mvvmhabit.entity.http.userinfo.RegisterUserInfoResponseEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeResponseEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import io.reactivex.Observable;
 import me.goldze.mvvmhabit.http.BaseResponse;
+import retrofit2.http.Body;
+import retrofit2.http.QueryMap;
 
 /**
  * Created by goldze on 2019/3/26.
@@ -48,6 +56,19 @@ public interface HttpDataSource {
      * @return
      */
     Observable<RegisterUserInfoResponseEntity> registerUserInfo(String userId, String appid, String sign, String token, String callId, RegisterUserInfoEntity entity);
+
+    /**
+     * 提交用户行为信息
+     *
+     * @param appid
+     * @param sign
+     * @param token
+     * @param callId
+     * @param entity
+     * @return
+     */
+
+    Observable<SubmitActionDataResponseEntity> submitUserActionData(String appid, String sign, String token, String callId, @Body List<UserActionData> entity);
 
     /**
      * 登录

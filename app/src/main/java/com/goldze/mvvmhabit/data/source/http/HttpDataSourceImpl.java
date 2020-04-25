@@ -3,16 +3,19 @@ package com.goldze.mvvmhabit.data.source.http;
 import com.goldze.mvvmhabit.data.source.HttpDataSource;
 import com.goldze.mvvmhabit.data.source.http.service.DemoApiService;
 import com.goldze.mvvmhabit.entity.DemoEntity;
+import com.goldze.mvvmhabit.entity.db.UserActionData;
 import com.goldze.mvvmhabit.entity.http.ResponseNetDeviceInfoEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.entity.http.login.LoginBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterOrLoginResponseEntity;
+import com.goldze.mvvmhabit.entity.http.useraction.SubmitActionDataResponseEntity;
 import com.goldze.mvvmhabit.entity.http.userinfo.RegisterUserInfoEntity;
 import com.goldze.mvvmhabit.entity.http.userinfo.RegisterUserInfoResponseEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeResponseEntity;
+import com.goldze.mvvmhabit.utils.AppTools;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,7 +57,7 @@ public class HttpDataSourceImpl implements HttpDataSource {
     @Override
     public Observable<VerifiedCodeResponseEntity> getVerifiedCode(VerifiedCodeEntity body) {
         Map<String, String> map=new HashMap<>();
-        map.put("appKey","1uMqYWpHo3MoLH");
+        map.put("appKey", AppTools.APPKEY);
         map.put("mysig","sig-result");
         map.put("callId","1276418994");
         return apiService.getVerifiedCode(map,body);
@@ -98,6 +101,16 @@ public class HttpDataSourceImpl implements HttpDataSource {
         map.put("token",token);
         map.put("callId",callId);
         return apiService.registerUserInfo(userId,map,entity);
+    }
+
+    @Override
+    public Observable<SubmitActionDataResponseEntity> submitUserActionData(String appid, String sign, String token, String callId, List<UserActionData> entitys) {
+        Map<String, String> map=new HashMap<>();
+        map.put("appKey",appid);
+        map.put("mysig",sign);
+        map.put("token",token);
+        map.put("callId",callId);
+        return apiService.submitUserActionData(map,entitys);
     }
 
 

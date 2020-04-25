@@ -63,10 +63,6 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
         Log.e(TAG, "onNotify UUID is " + character + ",data is " + RxDataTool.bytes2HexString(value));
         if (value.length == 6) {
             //dismissDialog();
-            for (int i = 0; i < 6; i++) {
-                Log.e(TAG, "getNotifyData,data  " + (i + 1) + "is" + value[i]);
-            }
-
             DeviceStatusInfoEntity recDeviceStatusInfoEntity = new DeviceStatusInfoEntity(value);
             Gson gson = new Gson();
             String jsonDevStatus = gson.toJson(recDeviceStatusInfoEntity);
@@ -78,7 +74,12 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
                     userActionData=null;
                 }
             }
+//            if( deviceStatusInfoEntity.getDeviceRoationMode() == recDeviceStatusInfoEntity.getDeviceRoationMode()){
+//                updateDeviceRoationDirect(recDeviceStatusInfoEntity,deviceStatusInfoEntity.getDeviceRoationDirect());
+//            }
+            Log.e(TAG, "onNotify roationDirect is " + recDeviceStatusInfoEntity.getDeviceRoationDirect());
             setIsGifNeedChange(recDeviceStatusInfoEntity);
+
             if (deviceStatusInfoEntity.getIsHeatingOpen() != recDeviceStatusInfoEntity.getIsHeatingOpen() ||
                     deviceStatusInfoEntity.getIsDeviceOpen() != recDeviceStatusInfoEntity.getIsDeviceOpen() ||
                     deviceStatusInfoEntity.getDeviceRoationMode() != recDeviceStatusInfoEntity.getDeviceRoationMode() ||
@@ -93,6 +94,20 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
 
         }
 
+    }
+
+    /**
+     * 刚切换为自动模式状态下可能存在转动方向为停止的情况，这种情况改成切换前的转动方向，没有切换前的记录则默认正转动
+     * @param entity
+     */
+    private void updateDeviceRoationDirect(DeviceStatusInfoEntity entity,byte preDirectionDirect){
+        if((entity.getDeviceRoationMode()==DeviceStatusInfoEntity.FLAG_ROATION_AUTO||
+                entity.getDeviceRoationMode()==DeviceStatusInfoEntity.FLAG_ROATION_POSISTION_AND_REV)&&
+                (entity.getDeviceRoationDirect()==DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_STOP0||
+                        entity.getDeviceRoationDirect()==DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_STOP3)){
+            entity.setDeviceRoationDirect(preDirectionDirect==DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_REV?
+                    DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_REV:DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_POSISION);
+        }
     }
 
     private void setUserActionData(String actFlag,String actVal){
@@ -245,6 +260,7 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
     public void setPowerSwitchStatus(Boolean aBoolean) {
         showWaitingDialog();
         deviceStatusInfoEntity.setIsDeviceOpen(aBoolean ? DeviceStatusInfoEntity.FLAG_TRUE : DeviceStatusInfoEntity.FLAG_FALSE);
+        RxLogTool.e("setPowerSwitchStatus is "+aBoolean);
         if (aBoolean) {
             BleOption.getInstance().turnOnDevice(DeviceControlViewModel.this);
         } else {
@@ -430,11 +446,6 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
         @Override
         public void call() {
             if (!isFastOption()) {
-                if(deviceStatusInfoEntity.getDeviceRoationMode()!=DeviceStatusInfoEntity.FLAG_ROATION_AUTO||
-                        deviceStatusInfoEntity.getDeviceRoationMode()!=DeviceStatusInfoEntity.FLAG_ROATION_POSISTION_AND_REV){
-                    deviceStatusInfoEntity.setDeviceRoationDirect(deviceStatusInfoEntity.getDeviceRoationMode()==
-                            DeviceStatusInfoEntity.FLAG_ROATION_POSISTION?DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_POSISION:DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_REV);
-                }
                 deviceStatusInfoEntity.setDeviceRoationMode(DeviceStatusInfoEntity.FLAG_ROATION_AUTO);
                 BleOption.getInstance().roationAuto(DeviceControlViewModel.this);
                 showWaitingDialog();

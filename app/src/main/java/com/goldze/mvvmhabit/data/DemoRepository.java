@@ -3,22 +3,28 @@ package com.goldze.mvvmhabit.data;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
+import com.goldze.mvvmhabit.app.AppApplication;
 import com.goldze.mvvmhabit.data.source.HttpDataSource;
 import com.goldze.mvvmhabit.data.source.LocalDataSource;
 import com.goldze.mvvmhabit.entity.DemoEntity;
+import com.goldze.mvvmhabit.entity.UserDao;
 import com.goldze.mvvmhabit.entity.db.UserActionData;
+import com.goldze.mvvmhabit.entity.db.UserActionDataDao;
 import com.goldze.mvvmhabit.entity.http.ResponseNetDeviceInfoEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.entity.http.login.LoginBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterOrLoginResponseEntity;
+import com.goldze.mvvmhabit.entity.http.useraction.SubmitActionDataResponseEntity;
 import com.goldze.mvvmhabit.entity.http.userinfo.RegisterUserInfoEntity;
 import com.goldze.mvvmhabit.entity.http.userinfo.RegisterUserInfoResponseEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeResponseEntity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observable;
@@ -51,6 +57,18 @@ public class DemoRepository extends BaseModel implements HttpDataSource, LocalDa
             }
         }
         return INSTANCE;
+    }
+
+
+    public List<UserActionData> getLimitUserActionData(int limitCount){
+        int allCount= (int) AppApplication.getInstance().getDaoSession().getUserActionDataDao().count();
+        if(allCount==0){
+            return null;
+        }
+        if(allCount>limitCount){
+            allCount=limitCount;
+        }
+        return AppApplication.getInstance().getDaoSession().getUserActionDataDao().queryBuilder().orderAsc(UserActionDataDao.Properties.RemoteId).limit(allCount).list();
     }
 
     @VisibleForTesting
@@ -88,6 +106,11 @@ public class DemoRepository extends BaseModel implements HttpDataSource, LocalDa
     @Override
     public Observable<RegisterUserInfoResponseEntity> registerUserInfo(String userId, String appid, String sign, String token, String callId, RegisterUserInfoEntity entity) {
         return mHttpDataSource.registerUserInfo(userId,appid, sign, token,callId,entity);
+    }
+
+    @Override
+    public Observable<SubmitActionDataResponseEntity> submitUserActionData(String appid, String sign, String token, String callId, List<UserActionData> entitys) {
+        return mHttpDataSource.submitUserActionData(appid, sign, token, callId, entitys);
     }
 
     @Override
@@ -210,7 +233,9 @@ public class DemoRepository extends BaseModel implements HttpDataSource, LocalDa
         mLocalDataSource.saveUserActionDataToDB(userActionData);
 
     }
-
+    public synchronized void deleteUserActionDataToDB(List<UserActionData> userActionDatas) {
+        AppApplication.getInstance().getDaoSession().getUserActionDataDao().deleteInTx(userActionDatas);
+    }
     @Override
     public void deleteUserActionDataToDB(UserActionData... userActionDatas) {
         mLocalDataSource.deleteUserActionDataToDB(userActionDatas);

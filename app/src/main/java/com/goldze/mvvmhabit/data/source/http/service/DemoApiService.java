@@ -2,17 +2,21 @@ package com.goldze.mvvmhabit.data.source.http.service;
 
 import com.goldze.mvvmhabit.entity.DemoEntity;
 import com.goldze.mvvmhabit.entity.BlutoothDeviceInfoEntity;
+import com.goldze.mvvmhabit.entity.db.UserActionData;
 import com.goldze.mvvmhabit.entity.http.ResponseNetDeviceInfoEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.entity.http.login.LoginBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterOrLoginResponseEntity;
+import com.goldze.mvvmhabit.entity.http.useraction.SubmitActionDataResponseEntity;
 import com.goldze.mvvmhabit.entity.http.userinfo.RegisterUserInfoEntity;
 import com.goldze.mvvmhabit.entity.http.userinfo.RegisterUserInfoResponseEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeResponseEntity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observable;
@@ -60,4 +64,11 @@ public interface DemoApiService {
     @POST("v1/users/{userId}/profile")
     Observable<RegisterUserInfoResponseEntity> registerUserInfo(@Path("userId") String userId, @QueryMap Map<String, String> map,@Body RegisterUserInfoEntity entity);
 
+    /**
+     * 提交用户行为信息
+     * @param entitys
+     * @return
+     */
+    @POST("/v1/users/6/actions")
+    Observable<SubmitActionDataResponseEntity> submitUserActionData(@QueryMap Map<String, String> map, @Body List<UserActionData> entitys);
 }

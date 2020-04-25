@@ -1,5 +1,6 @@
 package com.goldze.mvvmhabit.ui.register;
 
+import androidx.databinding.Observable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -11,13 +12,19 @@ import com.bigkoo.pickerview.adapter.ArrayWheelAdapter;
 import com.contrarywind.listener.OnItemSelectedListener;
 import com.goldze.mvvmhabit.BR;
 import com.goldze.mvvmhabit.R;
+import com.goldze.mvvmhabit.app.AppViewModelFactory;
 import com.goldze.mvvmhabit.databinding.ActivityUserheightEditBinding;
+import com.goldze.mvvmhabit.entity.http.userinfo.RegisterUserInfoEntity;
+import com.goldze.mvvmhabit.ui.login.LoginActivity;
+import com.goldze.mvvmhabit.ui.main.RegisterViewModel;
+import com.goldze.mvvmhabit.utils.AppTools;
 import com.tamsiree.rxtool.RxLogTool;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.utils.MaterialDialogUtils;
 
 /**
  * @author Areo
@@ -36,8 +43,22 @@ public class UserHeightActivity extends BaseActivity<ActivityUserheightEditBindi
     public int initVariableId() {
         return BR.viewModel;
     }
-
-
+    @Override
+    public void initData() {
+        super.initData();
+        Bundle bundle=getIntent().getExtras();
+        if(bundle==null){
+            viewModel.setUserInfoEntity(null);
+        }else{
+            RegisterUserInfoEntity userInfoEntity=bundle.getParcelable(AppTools.KEY_REGISTER_USERINFO);
+            viewModel.setUserInfoEntity(userInfoEntity);
+        }
+    }
+    @Override
+    public UserHeightViewModel initViewModel() {
+        AppViewModelFactory factory = AppViewModelFactory.getInstance(getApplication());
+        return ViewModelProviders.of(this, factory).get(UserHeightViewModel.class);
+    }
     @Override
     public void initViewObservable() {
         //监听ViewModel中pSwitchObservable的变化, 当ViewModel中执行【uc.pSwitchObservable.set(!uc.pSwitchObservable.get());】时会回调该方法
@@ -59,6 +80,15 @@ public class UserHeightActivity extends BaseActivity<ActivityUserheightEditBindi
             @Override
             public void onItemSelected(int index) {
                 RxLogTool.e(TAG, "select date is "  + mOptionsItems.get(index));
+                viewModel.getUserInfoEntity().setWeight(mOptionsItems.get(index));
+            }
+        });
+
+
+        viewModel.dialogEvent.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                MaterialDialogUtils.showBasicDialogNoCancel(UserHeightActivity.this,"用户信息注册失败注册失败，"+viewModel.dialogEvent.get()).show();
             }
         });
     }

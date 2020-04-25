@@ -5,7 +5,11 @@ import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableInt;
 import androidx.annotation.NonNull;
 
+import android.os.Bundle;
 import android.view.View;
+
+import com.goldze.mvvmhabit.entity.http.userinfo.RegisterUserInfoEntity;
+import com.goldze.mvvmhabit.utils.AppTools;
 
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingAction;
@@ -27,7 +31,16 @@ public class BirthdayChooseViewModel extends BaseViewModel {
     public ObservableInt clearBtnVisibility = new ObservableInt();
     //封装一个界面发生改变的观察者
     public BirthdayChooseViewModel.UIChangeObservable uc = new BirthdayChooseViewModel.UIChangeObservable();
-
+    private RegisterUserInfoEntity userInfoEntity=new RegisterUserInfoEntity();
+    public void setUserInfoEntity(RegisterUserInfoEntity userInfoEntity){
+        if(userInfoEntity==null){
+            return;
+        }
+        this.userInfoEntity=userInfoEntity;
+    }
+    public RegisterUserInfoEntity getUserInfoEntity(){
+        return this.userInfoEntity;
+    }
     public class UIChangeObservable {
         //密码开关观察者
         public SingleLiveEvent<Boolean> pSwitchEvent = new SingleLiveEvent<>();
@@ -69,7 +82,9 @@ public class BirthdayChooseViewModel extends BaseViewModel {
         @Override
         public void call() {
             //点击下一步，进入记录体重的生日信息
-            startActivity(UserWeightActivity.class);
+            Bundle bundle=new Bundle();
+            bundle.putParcelable(AppTools.KEY_REGISTER_USERINFO,userInfoEntity);
+            startActivity(UserWeightActivity.class,bundle);
 
         }
     });

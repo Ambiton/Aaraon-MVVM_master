@@ -6,6 +6,8 @@ import com.contrarywind.listener.OnItemSelectedListener;
 import com.goldze.mvvmhabit.BR;
 import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.databinding.ActivityUserweightEditBinding;
+import com.goldze.mvvmhabit.entity.http.userinfo.RegisterUserInfoEntity;
+import com.goldze.mvvmhabit.utils.AppTools;
 import com.tamsiree.rxtool.RxLogTool;
 
 import java.util.ArrayList;
@@ -31,7 +33,17 @@ public class UserWeightActivity extends BaseActivity<ActivityUserweightEditBindi
     public int initVariableId() {
         return BR.viewModel;
     }
-
+    @Override
+    public void initData() {
+        super.initData();
+        Bundle bundle=getIntent().getExtras();
+        if(bundle==null){
+            viewModel.setUserInfoEntity(null);
+        }else{
+            RegisterUserInfoEntity userInfoEntity=bundle.getParcelable(AppTools.KEY_REGISTER_USERINFO);
+            viewModel.setUserInfoEntity(userInfoEntity);
+        }
+    }
 
     @Override
     public void initViewObservable() {
@@ -54,6 +66,7 @@ public class UserWeightActivity extends BaseActivity<ActivityUserweightEditBindi
             @Override
             public void onItemSelected(int index) {
                 RxLogTool.e(TAG, "select date is " + mOptionsItems.get(index));
+                viewModel.getUserInfoEntity().setWeight(mOptionsItems.get(index));
             }
         });
     }

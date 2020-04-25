@@ -102,7 +102,6 @@
                     android:hint="请输入验证码"
                     android:inputType="number"
                     android:text="@={viewModel.password}"
-                    binding:requestFocus="@{viewModel.passwordFocus}"
                     android:textColor="@color/textColor"
                     android:textColorHint="@color/textColorHint"
                     android:textSize="16sp" />

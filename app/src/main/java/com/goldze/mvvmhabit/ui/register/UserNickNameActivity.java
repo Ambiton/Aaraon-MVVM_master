@@ -5,6 +5,8 @@ import android.os.Bundle;
 import com.goldze.mvvmhabit.BR;
 import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.databinding.ActivityUsernicknameEditBinding;
+import com.goldze.mvvmhabit.entity.http.userinfo.RegisterUserInfoEntity;
+import com.goldze.mvvmhabit.utils.AppTools;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 
@@ -25,6 +27,17 @@ public class UserNickNameActivity extends BaseActivity<ActivityUsernicknameEditB
         return BR.viewModel;
     }
 
+    @Override
+    public void initData() {
+        super.initData();
+        Bundle bundle=getIntent().getExtras();
+        if(bundle==null){
+            viewModel.setUserInfoEntity(null);
+        }else{
+            RegisterUserInfoEntity userInfoEntity=bundle.getParcelable(AppTools.KEY_REGISTER_USERINFO);
+            viewModel.setUserInfoEntity(userInfoEntity);
+        }
+    }
 
     @Override
     public void initViewObservable() {

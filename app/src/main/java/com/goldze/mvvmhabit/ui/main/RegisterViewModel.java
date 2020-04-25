@@ -4,6 +4,8 @@ import android.app.Application;
 import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableInt;
 import androidx.annotation.NonNull;
+
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -14,9 +16,11 @@ import com.goldze.mvvmhabit.data.DemoRepository;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterOrLoginResponseEntity;
+import com.goldze.mvvmhabit.entity.http.userinfo.RegisterUserInfoEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeEntity;
 import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeResponseEntity;
 import com.goldze.mvvmhabit.ui.register.UserNickNameActivity;
+import com.goldze.mvvmhabit.utils.AppTools;
 import com.goldze.mvvmhabit.utils.HttpStatus;
 import com.goldze.mvvmhabit.utils.RxRegTool;
 import com.tamsiree.rxtool.RxTextTool;
@@ -200,7 +204,10 @@ public class RegisterViewModel extends BaseViewModel<DemoRepository> implements 
                         if(registerOrLoginResponseEntity.getStatus()== HttpStatus.STATUS_CODE_SUCESS){
                             model.saveToken(registerOrLoginResponseEntity.getRegisterResponseDataEntity().getToken());
                             model.saveUserID(registerOrLoginResponseEntity.getRegisterResponseDataEntity().getUserId());
-                            startActivity(UserNickNameActivity.class);
+                            RegisterUserInfoEntity registerUserInfoEntity=new RegisterUserInfoEntity();
+                            Bundle bundle=new Bundle();
+                            bundle.putParcelable(AppTools.KEY_REGISTER_USERINFO,registerUserInfoEntity);
+                            startActivity(UserNickNameActivity.class,bundle);
                             finish();
                         }else{
                             dialogEvent.set(registerOrLoginResponseEntity.getMessage());

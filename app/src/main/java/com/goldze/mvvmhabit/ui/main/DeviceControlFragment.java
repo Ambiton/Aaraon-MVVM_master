@@ -191,8 +191,7 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
      * @return
      */
     private void setGifRes(DeviceStatusInfoEntity deviceStatusInfoEntity) {
-        if ((deviceStatusInfoEntity.getDeviceRoationMode() == DeviceStatusInfoEntity.FLAG_ROATION_AUTO) &&
-                deviceStatusInfoEntity.getDeviceRoationDirect() != DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_POSISION &&
+        if (deviceStatusInfoEntity.getDeviceRoationDirect() != DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_POSISION &&
                         deviceStatusInfoEntity.getDeviceRoationDirect() != DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_REV) {
             binding.ivDevicecontrolBg.setImageResource(R.drawable.stop);
             binding.ivDevicecontrolAllBg.setImageResource(R.mipmap.pillow);
@@ -202,8 +201,7 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
             int res = R.drawable.stop;
             int directtion = deviceStatusInfoEntity.getDeviceRoationDirect();
             int speed = deviceStatusInfoEntity.getDeviceSpeed();
-            if (deviceStatusInfoEntity.getDeviceRoationMode() == DeviceStatusInfoEntity.FLAG_ROATION_POSISTION ||
-                    directtion == DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_POSISION) {
+            if (directtion == DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_POSISION) {
                 if (speed == DeviceStatusInfoEntity.FLAG_SPEED_MAX) {
                     res = R.drawable.inner_high_normal;
                 } else if (speed == DeviceStatusInfoEntity.FLAG_SPEED_MID) {
@@ -225,6 +223,7 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
     }
 
     private void setAllOptionEnable(boolean isEnable) {
+        binding.switchOpen.setChecked(isEnable);
         binding.switchWarm.setEnabled(isEnable);
         binding.tvRotationHigh.setEnabled(isEnable);
         binding.tvRotationMid.setEnabled(isEnable);
@@ -319,6 +318,7 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
                     binding.ivDevicecontrolAllBg.setImageResource(R.mipmap.pillow);
                     binding.ivDevicecontrolBg.setVisibility(View.VISIBLE);
                     binding.ivDevicecontrolGif.setVisibility(View.INVISIBLE);
+
                     deviceStatusInfoEntity.setIsHeatingOpen(DeviceStatusInfoEntity.FLAG_FALSE);
                     viewModel.statusInfoChageObeserver.set(deviceStatusInfoEntity);
                     binding.tvRotationModePositive.setChecked(false);

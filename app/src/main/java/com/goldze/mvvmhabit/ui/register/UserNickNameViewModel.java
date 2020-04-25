@@ -1,6 +1,11 @@
 package com.goldze.mvvmhabit.ui.register;
 
 import android.app.Application;
+import android.os.Bundle;
+
+import com.goldze.mvvmhabit.entity.http.userinfo.RegisterUserInfoEntity;
+import com.goldze.mvvmhabit.utils.AppTools;
+
 import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableInt;
 import androidx.annotation.NonNull;
@@ -15,16 +20,28 @@ import me.goldze.mvvmhabit.binding.command.BindingCommand;
  * @date : 2019/12/14 20:25
  */
 public class UserNickNameViewModel extends BaseViewModel{
-
+    //用户昵称的绑定
+    public ObservableField<String> userNickName = new ObservableField<>("");
+    private RegisterUserInfoEntity userInfoEntity=new RegisterUserInfoEntity();
 
     //登录按钮的点击事件
     public BindingCommand nextButtonClick = new BindingCommand(new BindingAction() {
         @Override
         public void call() {
             //点击下一步，进入记录当前的生日信息
-            startActivity(SexChooseActivity.class);
+            Bundle bundle=new Bundle();
+            userInfoEntity.setUserNickName(userNickName.get());
+            bundle.putParcelable(AppTools.KEY_REGISTER_USERINFO,userInfoEntity);
+            startActivity(SexChooseActivity.class,bundle);
         }
     });
+
+    public void setUserInfoEntity(RegisterUserInfoEntity userInfoEntity){
+        if(userInfoEntity==null){
+            return;
+        }
+        this.userInfoEntity=userInfoEntity;
+    }
 
     public UserNickNameViewModel(@NonNull Application application) {
         super(application);

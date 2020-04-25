@@ -288,7 +288,7 @@ public class BleOption {
             public void run() {
                 getDeviceInfo(bleWriteResponse);
             }
-        }, 100, 5 * 60 * 1000);
+        }, 100, 3 * 1000);
     }
 
     /**

@@ -115,6 +115,7 @@ public class DeviceListActivity extends BaseActivity<ActivityDevicelistBinding, 
     protected void onResume() {
         super.onResume();
         requestBlutoothScanPermissions();
+        viewModel.submitUserDeviceOption();
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

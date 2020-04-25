@@ -16,10 +16,13 @@ import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.app.AppApplication;
 import com.goldze.mvvmhabit.data.DemoRepository;
 import com.goldze.mvvmhabit.entity.BlutoothDeviceInfoEntity;
+import com.goldze.mvvmhabit.entity.db.UserActionData;
 import com.goldze.mvvmhabit.entity.http.ResponseNetDeviceInfoEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
+import com.goldze.mvvmhabit.entity.http.useraction.SubmitActionDataResponseEntity;
 import com.goldze.mvvmhabit.ui.base.viewmodel.ToolbarViewModel;
+import com.goldze.mvvmhabit.utils.AppTools;
 import com.goldze.mvvmhabit.utils.BleOption;
 import com.goldze.mvvmhabit.utils.HttpStatus;
 import com.goldze.mvvmhabit.utils.HttpsUtils;
@@ -27,8 +30,10 @@ import com.inuker.bluetooth.library.search.SearchRequest;
 import com.inuker.bluetooth.library.search.SearchResult;
 import com.inuker.bluetooth.library.search.response.SearchResponse;
 import com.inuker.bluetooth.library.utils.BluetoothLog;
+import com.tamsiree.rxtool.RxLogTool;
 
 import java.util.HashSet;
+import java.util.List;
 
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -36,6 +41,7 @@ import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
 import me.goldze.mvvmhabit.deviceinterface.OnDeviceInfoListener;
+import me.goldze.mvvmhabit.http.NetworkUtil;
 import me.goldze.mvvmhabit.utils.RxUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 import me.tatarka.bindingcollectionadapter2.ItemBinding;
@@ -120,7 +126,7 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
     });
     public void checkVersion(){
         //RaJava检测更新
-        addSubscribe(model.checkUpdate("1uMqYWpHo3MoLH","sign",model.getToken(), HttpsUtils.getCurrentMills(),new CheckUpdateBodyEntity("01.00","01.00","01.00"))
+        addSubscribe(model.checkUpdate(AppTools.APPKEY,"sig-result",model.getToken(), HttpsUtils.getCurrentMills(),new CheckUpdateBodyEntity("01.00","01.00","01.00"))
                 .compose(RxUtils.schedulersTransformer()) //线程调度
                 .doOnSubscribe(new Consumer<Disposable>() {
                     @Override
@@ -141,8 +147,41 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
                 }));
     }
 
+    public void submitUserDeviceOption(){
+        final List<UserActionData> submitDatas=model.getLimitUserActionData(10);
+        if(model.getLimitUserActionData(10)==null|| !NetworkUtil.isNetworkAvailable(AppApplication.getInstance())){
+            RxLogTool.e(TAG,"cannot submit, isNetworkAvailable is "+NetworkUtil.isNetworkAvailable(AppApplication.getInstance()));
+            return;
+        }
+        Log.e(TAG,"submitDatas size  is:; "+submitDatas.size());
+        addSubscribe(model.submitUserActionData(AppTools.APPKEY,AppTools.APPSIGN,model.getToken(), HttpsUtils.getCurrentMills(),submitDatas)
+                .compose(RxUtils.schedulersTransformer()) //线程调度
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                    }
+                })
+                .subscribe(new Consumer<SubmitActionDataResponseEntity>() {
+                    @Override
+                    public void accept(SubmitActionDataResponseEntity entity) throws Exception {
+                        Log.e(TAG,"getStatus is:; "+entity.getStatus());
+                        boolean isOptionSuccess=entity.getStatus()== HttpStatus.STATUS_CODE_SUCESS;
+                        if(isOptionSuccess){
+                            model.deleteUserActionDataToDB(submitDatas);
+                            if(model.getLimitUserActionData(10)==null){
+                                RxLogTool.e(TAG,"All action Data already submit ,no data to submit now...");
+                            }else{
+                                submitUserDeviceOption();
+                                RxLogTool.e(TAG,"go on  submit action Data...");
+                            }
+                        }
+
+                    }
+                }));
+    }
+
     public void checkDeviceInfo(String serioNum, final OnDeviceInfoListener onDeviceInfoListener){
-        addSubscribe(model.getDeviceInfo(serioNum,"1uMqYWpHo3MoLH","sig-result",model.getToken(), HttpsUtils.getCurrentMills())
+        addSubscribe(model.getDeviceInfo(serioNum,AppTools.APPKEY,"sig-result",model.getToken(), HttpsUtils.getCurrentMills())
                 .compose(RxUtils.schedulersTransformer()) //线程调度
                 .doOnSubscribe(new Consumer<Disposable>() {
                     @Override

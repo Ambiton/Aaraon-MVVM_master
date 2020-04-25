@@ -8,6 +8,8 @@ import androidx.annotation.Nullable;
 import com.goldze.mvvmhabit.BR;
 import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.databinding.ActivitySexchooseEditBinding;
+import com.goldze.mvvmhabit.entity.http.userinfo.RegisterUserInfoEntity;
+import com.goldze.mvvmhabit.utils.AppTools;
 
 import me.goldze.mvvmhabit.base.BaseActivity;
 
@@ -27,7 +29,18 @@ public class SexChooseActivity extends BaseActivity<ActivitySexchooseEditBinding
     public int initVariableId() {
         return BR.viewModel;
     }
+    @Override
+    public void initData() {
+        super.initData();
+        Bundle bundle=getIntent().getExtras();
+        if(bundle==null){
+            viewModel.setUserInfoEntity(null);
+        }else{
+            RegisterUserInfoEntity userInfoEntity=bundle.getParcelable(AppTools.KEY_REGISTER_USERINFO);
+            viewModel.setUserInfoEntity(userInfoEntity);
+        }
 
+    }
     @Override
     public void initViewObservable() {
         //监听ViewModel中pSwitchObservable的变化, 当ViewModel中执行【uc.pSwitchObservable.set(!uc.pSwitchObservable.get());】时会回调该方法

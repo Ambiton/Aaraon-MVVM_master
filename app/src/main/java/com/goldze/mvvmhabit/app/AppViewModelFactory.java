@@ -14,6 +14,8 @@ import com.goldze.mvvmhabit.ui.main.DeviceListViewModel;
 import com.goldze.mvvmhabit.ui.main.LoadingViewModel;
 import com.goldze.mvvmhabit.ui.main.RegisterViewModel;
 import com.goldze.mvvmhabit.ui.network.NetWorkViewModel;
+import com.goldze.mvvmhabit.ui.register.UserHeightActivity;
+import com.goldze.mvvmhabit.ui.register.UserHeightViewModel;
 
 /**
  * Created by goldze on 2019/3/26.
@@ -60,6 +62,8 @@ public class AppViewModelFactory extends ViewModelProvider.NewInstanceFactory {
             return (T) new RegisterViewModel(mApplication, mRepository);
         }else if (modelClass.isAssignableFrom(LoadingViewModel.class)) {
             return (T) new LoadingViewModel(mApplication, mRepository);
+        }else if (modelClass.isAssignableFrom(UserHeightViewModel.class)) {
+            return (T) new UserHeightViewModel(mApplication, mRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }

@@ -5,7 +5,11 @@ import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableInt;
 import androidx.annotation.NonNull;
 
+import android.os.Bundle;
 import android.view.View;
+
+import com.goldze.mvvmhabit.entity.http.userinfo.RegisterUserInfoEntity;
+import com.goldze.mvvmhabit.utils.AppTools;
 
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingAction;
@@ -28,6 +32,16 @@ public class SexChooseViewModel extends BaseViewModel {
     //封装一个界面发生改变的观察者
     public SexChooseViewModel.UIChangeObservable uc = new SexChooseViewModel.UIChangeObservable();
 
+    private RegisterUserInfoEntity userInfoEntity=new RegisterUserInfoEntity();
+    public void setUserInfoEntity(RegisterUserInfoEntity userInfoEntity){
+        if(userInfoEntity==null){
+            return;
+        }
+        this.userInfoEntity=userInfoEntity;
+    }
+    public RegisterUserInfoEntity getUserInfoEntity(){
+        return this.userInfoEntity;
+    }
     public class UIChangeObservable {
         //密码开关观察者
         public SingleLiveEvent<Boolean> pSwitchEvent = new SingleLiveEvent<>();
@@ -64,23 +78,28 @@ public class SexChooseViewModel extends BaseViewModel {
             }
         }
     });
-    //登录按钮的点击事件
+
     public BindingCommand femaleImageClick = new BindingCommand(new BindingAction() {
         @Override
         public void call() {
             //点击的是女士
             //点击下一步，进入记录的生日信息
-            startActivity(BirthdayChooseActivity.class);
+            Bundle bundle=new Bundle();
+            userInfoEntity.setSex(RegisterUserInfoEntity.SEX_FEMALE);
+            bundle.putParcelable(AppTools.KEY_REGISTER_USERINFO,userInfoEntity);
+            startActivity(BirthdayChooseActivity.class,bundle);
         }
     });
 
-    //用户协议的点击事件
     public BindingCommand maleImageClick = new BindingCommand(new BindingAction() {
         @Override
         public void call() {
             //点击的是男士
             //点击下一步，进入记录体重的生日信息
-            startActivity(BirthdayChooseActivity.class);
+            Bundle bundle=new Bundle();
+            userInfoEntity.setSex(RegisterUserInfoEntity.SEX_MALE);
+            bundle.putParcelable(AppTools.KEY_REGISTER_USERINFO,userInfoEntity);
+            startActivity(BirthdayChooseActivity.class,bundle);
         }
     });
 

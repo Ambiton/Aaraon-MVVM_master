@@ -8,6 +8,7 @@ import android.os.Parcelable;
  * @description:用户信息注册
  *
  * {
+ *      "userNickName":"12.12",
  *     "weight":"12.12",
  *     "height":"1.65",
  *     "birthday":"2019-10-01 00:00:00",
@@ -18,6 +19,7 @@ import android.os.Parcelable;
 public class RegisterUserInfoEntity implements Parcelable {
     public static final String SEX_MALE="1";
     public static final String SEX_FEMALE="2";
+    private String userNickName;
     private String weight;
     private String height;
     private String birthday;
@@ -55,15 +57,28 @@ public class RegisterUserInfoEntity implements Parcelable {
         this.sex = sex;
     }
 
+    public String getUserNickName() {
+        return userNickName;
+    }
+
+    public void setUserNickName(String userNickName) {
+        this.userNickName = userNickName;
+    }
+
     protected RegisterUserInfoEntity(Parcel in) {
+        this.userNickName=in.readString();
         this.weight=in.readString();
         this.height=in.readString();
         this.birthday=in.readString();
         this.sex=in.readString();
     }
 
+    public RegisterUserInfoEntity() {
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.userNickName);
         dest.writeString(this.weight);
         dest.writeString(this.height);
         dest.writeString(this.birthday);

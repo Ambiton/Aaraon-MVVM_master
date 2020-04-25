@@ -146,7 +146,6 @@ public class AppApplication extends BaseApplication {
         // 注意：该数据库连接属于 DaoMaster，unitId所以多个 Session 指的是相同的数据库连接。
         mDaoMaster = new DaoMaster(db);
         mDaoSession = mDaoMaster.newSession();
-        mDaoSession.getUserActionDataDao().deleteInTx();
     }
     public DaoSession getDaoSession() {
         return mDaoSession;

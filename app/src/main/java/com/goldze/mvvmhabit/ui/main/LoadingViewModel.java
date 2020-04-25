@@ -12,6 +12,7 @@ import com.goldze.mvvmhabit.data.DemoRepository;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.ui.login.LoginActivity;
+import com.goldze.mvvmhabit.utils.AppTools;
 import com.goldze.mvvmhabit.utils.HttpStatus;
 import com.goldze.mvvmhabit.utils.HttpsUtils;
 import com.tamsiree.rxtool.RxLogTool;
@@ -84,7 +85,7 @@ public class LoadingViewModel extends BaseViewModel <DemoRepository>{
     }
     public void checkVersion(){
         //RaJava检测更新
-        addSubscribe(model.checkUpdate("1uMqYWpHo3MoLH","sign",model.getToken(), HttpsUtils.getCurrentMills(),new CheckUpdateBodyEntity("01.00","01.00","01.00"))
+        addSubscribe(model.checkUpdate(AppTools.APPKEY,"sig-result",model.getToken(), HttpsUtils.getCurrentMills(),new CheckUpdateBodyEntity("01.00","01.00","01.00"))
                 .compose(RxUtils.schedulersTransformer()) //线程调度
                 .doOnSubscribe(new Consumer<Disposable>() {
                     @Override

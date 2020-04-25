@@ -95,7 +95,7 @@ public interface LocalDataSource {
     String getSmsToken();
 
     /**
-     * 获取smsToken
+     * 获取UserID
      */
     int getUserID();
 
@@ -111,7 +111,7 @@ public interface LocalDataSource {
     void saveUserActionDataToDB(UserActionData userActionData);
 
     /**
-     * save 用户数据
+     * delete 用户数据
      */
     void deleteUserActionDataToDB(UserActionData ...userActionDatas);
 }
