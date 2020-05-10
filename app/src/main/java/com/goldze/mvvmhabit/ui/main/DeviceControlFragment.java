@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo;
 
 import androidx.databinding.Observable;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -26,6 +28,7 @@ import com.goldze.mvvmhabit.utils.AppTools;
 import com.goldze.mvvmhabit.utils.BleOption;
 import com.goldze.mvvmhabit.utils.GlideImageLoader;
 import com.inuker.bluetooth.library.connect.listener.BleConnectStatusListener;
+import com.tamsiree.rxtool.RxImageTool;
 import com.tamsiree.rxtool.RxLogTool;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
@@ -38,6 +41,7 @@ import java.util.ArrayList;
 import me.goldze.mvvmhabit.base.BaseFragment;
 import me.goldze.mvvmhabit.utils.MaterialDialogUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
+import pl.droidsonroids.gif.GifImageView;
 
 import static com.inuker.bluetooth.library.Constants.STATUS_CONNECTED;
 import static com.inuker.bluetooth.library.Constants.STATUS_DISCONNECTED;
@@ -170,6 +174,9 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
     public void onStart() {
         super.onStart();
         binding.bannerControl.startAutoPlay();
+        setDrawableTop(binding.tvRotationModePositive,R.drawable.inner_mode_selector);
+        setDrawableTop(binding.tvRotationModeReversal,R.drawable.outer_mode_selector);
+        setDrawableTop(binding.tvRotationModeAuto,R.drawable.auto_mode_selector);
     }
 
     @Override
@@ -184,6 +191,38 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
 
     }
 
+    private void setRoationModeGif(DeviceStatusInfoEntity deviceStatusInfoEntity) {
+        boolean isRotationModePositive = deviceStatusInfoEntity.getDeviceRoationMode() == DeviceStatusInfoEntity.FLAG_ROATION_POSISTION;
+        boolean isRotationModeReversal = deviceStatusInfoEntity.getDeviceRoationMode() == DeviceStatusInfoEntity.FLAG_ROATION_REV;
+        boolean isRotationModeAuto = deviceStatusInfoEntity.getDeviceRoationMode() == DeviceStatusInfoEntity.FLAG_ROATION_AUTO ||
+                deviceStatusInfoEntity.getDeviceRoationMode() == DeviceStatusInfoEntity.FLAG_ROATION_POSISTION_AND_REV;
+        binding.tvRotationModePositive.setChecked(isRotationModePositive);
+        binding.tvRotationModeReversal.setChecked(isRotationModeReversal);
+        binding.tvRotationModeAuto.setChecked(isRotationModeAuto);
+
+    }
+
+    private void setRoationModeGifVisiable(final GifImageView view, boolean isChecked) {
+        boolean isVisble = view.getVisibility() == View.VISIBLE;
+        if (isVisble == isChecked) {
+            //如果View当前状态和 check状态一致则不需要下面的处理
+            return;
+        }
+        if (isChecked) {
+            view.setImageResource(R.drawable.roation_mode);
+            view.setVisibility(View.VISIBLE);
+            view.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    view.setImageResource(R.drawable.oval_highlight_translate);
+                    view.setVisibility(View.GONE);
+                }
+            }, 600);
+        } else {
+            view.setVisibility(View.INVISIBLE);
+        }
+    }
+
     /**
      * 根据当前的设备信息决定使用何种动态图
      *
@@ -192,13 +231,12 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
      */
     private void setGifRes(DeviceStatusInfoEntity deviceStatusInfoEntity) {
         if (deviceStatusInfoEntity.getDeviceRoationDirect() != DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_POSISION &&
-                        deviceStatusInfoEntity.getDeviceRoationDirect() != DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_REV) {
-            binding.ivDevicecontrolBg.setImageResource(R.drawable.stop);
-            binding.ivDevicecontrolAllBg.setImageResource(R.mipmap.pillow);
+                deviceStatusInfoEntity.getDeviceRoationDirect() != DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_REV) {
+            binding.ivDevicecontrolBg.setImageResource(R.drawable.pause);
             binding.ivDevicecontrolBg.setVisibility(View.VISIBLE);
             binding.ivDevicecontrolGif.setVisibility(View.INVISIBLE);
         } else {
-            int res = R.drawable.stop;
+            int res = R.drawable.pause;
             int directtion = deviceStatusInfoEntity.getDeviceRoationDirect();
             int speed = deviceStatusInfoEntity.getDeviceSpeed();
             if (directtion == DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_POSISION) {
@@ -232,6 +270,9 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
         binding.tvVolumeMiddle.setEnabled(isEnable);
         binding.tvVolumeLow.setEnabled(isEnable);
         binding.tvVolumeSilent.setEnabled(isEnable);
+        binding.tvRotationModePositive.setEnabled(isEnable);
+        binding.tvRotationModeReversal.setEnabled(isEnable);
+        binding.tvRotationModeAuto.setEnabled(isEnable);
         if (!isEnable) {
             binding.switchWarm.setChecked(false);
         }
@@ -257,6 +298,12 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
                 view.setClickable(true);
             }
         }, 500);
+    }
+
+    private void setDrawableTop(TextView textView, int resId) {
+        Drawable drawable = getResources().getDrawable(resId); //获取图片
+        drawable.setBounds(0, 0, RxImageTool.dip2px(51), RxImageTool.dip2px(33));  //设置图片参数
+        textView .setCompoundDrawables(null,drawable,null,null);
     }
 
     @Override
@@ -339,15 +386,27 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
                     binding.tvVolumeMiddle.setChecked(deviceStatusInfoEntity.getDeviceVoice() == DeviceStatusInfoEntity.FLAG_VOICE_MID);
                     binding.tvVolumeLow.setChecked(deviceStatusInfoEntity.getDeviceVoice() == DeviceStatusInfoEntity.FLAG_VOICE_MIN);
                     binding.tvVolumeSilent.setChecked(deviceStatusInfoEntity.getDeviceVoice() == DeviceStatusInfoEntity.FLAG_VOICE_MUTE);
-                    binding.tvRotationModePositive.setChecked(deviceStatusInfoEntity.getDeviceRoationMode() == DeviceStatusInfoEntity.FLAG_ROATION_POSISTION);
-                    binding.tvRotationModeReversal.setChecked(deviceStatusInfoEntity.getDeviceRoationMode() == DeviceStatusInfoEntity.FLAG_ROATION_REV);
-                    binding.tvRotationModeAuto.setChecked(deviceStatusInfoEntity.getDeviceRoationMode() == DeviceStatusInfoEntity.FLAG_ROATION_AUTO ||
-                            deviceStatusInfoEntity.getDeviceRoationMode() == DeviceStatusInfoEntity.FLAG_ROATION_POSISTION_AND_REV);
+                    setRoationModeGif(deviceStatusInfoEntity);
                     if (viewModel.isGifNeedChange()) {
                         setGifRes(deviceStatusInfoEntity);
                     }
                 }
 
+            }
+        });
+        viewModel.statusRoationModeUserChageObeserver.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                if (viewModel.statusRoationModeUserChageObeserver.get().getIsDeviceOpen() == DeviceStatusInfoEntity.FLAG_FALSE) {
+                    return;
+                }
+                boolean isRotationModePositive = viewModel.statusRoationModeUserChageObeserver.get().getDeviceRoationMode() == DeviceStatusInfoEntity.FLAG_ROATION_POSISTION;
+                boolean isRotationModeReversal = viewModel.statusRoationModeUserChageObeserver.get().getDeviceRoationMode() == DeviceStatusInfoEntity.FLAG_ROATION_REV;
+                boolean isRotationModeAuto = viewModel.statusRoationModeUserChageObeserver.get().getDeviceRoationMode() == DeviceStatusInfoEntity.FLAG_ROATION_AUTO ||
+                        viewModel.statusRoationModeUserChageObeserver.get().getDeviceRoationMode() == DeviceStatusInfoEntity.FLAG_ROATION_POSISTION_AND_REV;
+                setRoationModeGifVisiable(binding.innerModeGif, isRotationModePositive);
+                setRoationModeGifVisiable(binding.outerModeGif, isRotationModeReversal);
+                setRoationModeGifVisiable(binding.autoModeGif, isRotationModeAuto);
             }
         });
     }

@@ -47,6 +47,7 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
     private static final String TAG = "DeviceControlViewModel";
     //监听蓝牙接收的数据变化
     public ObservableField<DeviceStatusInfoEntity> statusInfoChageObeserver = new ObservableField();
+    public ObservableField<DeviceStatusInfoEntity> statusRoationModeUserChageObeserver = new ObservableField();
     public ObservableField<Boolean> writeDataResult = new ObservableField();
     public ObservableField<String> testStr = new ObservableField("test");
     //封装一个界面发生改变的观察者
@@ -199,7 +200,7 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
     public DeviceControlViewModel(@NonNull Application application, DemoRepository repository) {
         super(application, repository);
         statusInfoChageObeserver.set(deviceStatusInfoEntity);
-        //statusInfoChageObeserver.notifyChange();
+        statusInfoChageObeserver.notifyChange();
     }
 
 
@@ -450,6 +451,8 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
                 BleOption.getInstance().roationAuto(DeviceControlViewModel.this);
                 showWaitingDialog();
                 setIsGifNeedChange(true);
+                statusRoationModeUserChageObeserver.set(deviceStatusInfoEntity);
+                statusRoationModeUserChageObeserver.notifyChange();
                 setUserActionData(AppTools.UserActionFlagAndValue.FLAG_ROATION_MODE,String.valueOf(deviceStatusInfoEntity.getDeviceRoationMode()));
             }
             statusInfoChageObeserver.set(deviceStatusInfoEntity);
@@ -465,6 +468,8 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
                 BleOption.getInstance().roationPositive(DeviceControlViewModel.this);
                 showWaitingDialog();
                 setIsGifNeedChange(true);
+                statusRoationModeUserChageObeserver.set(deviceStatusInfoEntity);
+                statusRoationModeUserChageObeserver.notifyChange();
                 setUserActionData(AppTools.UserActionFlagAndValue.FLAG_ROATION_MODE,String.valueOf(deviceStatusInfoEntity.getDeviceRoationMode()));
             }
             statusInfoChageObeserver.set(deviceStatusInfoEntity);
@@ -480,6 +485,8 @@ public class DeviceControlViewModel extends ToolbarViewModel<DemoRepository> imp
                 BleOption.getInstance().roationReversal(DeviceControlViewModel.this);
                 showWaitingDialog();
                 setIsGifNeedChange(true);
+                statusRoationModeUserChageObeserver.set(deviceStatusInfoEntity);
+                statusRoationModeUserChageObeserver.notifyChange();
                 setUserActionData(AppTools.UserActionFlagAndValue.FLAG_ROATION_MODE,String.valueOf(deviceStatusInfoEntity.getDeviceRoationMode()));
             }
             statusInfoChageObeserver.set(deviceStatusInfoEntity);

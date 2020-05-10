@@ -7,8 +7,8 @@ import android.text.TextUtils;
 
 import com.goldze.mvvmhabit.BuildConfig;
 import com.goldze.mvvmhabit.R;
-import com.goldze.mvvmhabit.entity.DaoMaster;
-import com.goldze.mvvmhabit.entity.DaoSession;
+import com.goldze.mvvmhabit.entity.db.DaoMaster;
+import com.goldze.mvvmhabit.entity.db.DaoSession;
 import com.goldze.mvvmhabit.ui.login.LoginActivity;
 import com.goldze.mvvmhabit.utils.BleOption;
 import com.inuker.bluetooth.library.BluetoothClient;
@@ -16,6 +16,7 @@ import com.tamsiree.rxtool.RxAppTool;
 import com.tamsiree.rxtool.RxLogTool;
 import com.tamsiree.rxtool.RxNetTool;
 import com.tamsiree.rxtool.RxProcessTool;
+import com.tamsiree.rxtool.RxTool;
 //import com.squareup.leakcanary.LeakCanary;
 
 import java.util.Timer;
@@ -58,6 +59,7 @@ public class AppApplication extends BaseApplication {
         setDatabase();
         mClient = new BluetoothClient(this);
         startObserverTimer();
+        RxTool.init(this);
         RxLogTool.d(TAG, "app onCreate...");
         //内存泄漏检测
 //        if (!LeakCanary.isInAnalyzerProcess(this)) {

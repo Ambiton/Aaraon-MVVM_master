@@ -20,8 +20,8 @@
     <string name="devicelist_title_canuselist_scaning">可用设备扫描中...</string>
     <string name="devicecontrol_switch_open">开关</string>
     <string name="devicecontrol_switch_warm">加热</string>
-    <string name="devicecontrol_rotation_mode_positive">正转</string>
-    <string name="devicecontrol_rotation_mode_reversal">反转</string>
+    <string name="devicecontrol_rotation_mode_positive">推拿</string>
+    <string name="devicecontrol_rotation_mode_reversal">揉捏</string>
     <string name="devicecontrol_rotation_mode_auto">自动</string>
     <string name="devicecontrol_rotation_speed_low">低速</string>
     <string name="devicecontrol_rotation_speed_middle">中速</string>

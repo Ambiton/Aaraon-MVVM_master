@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-    android:state_enabled="true"
-    android:state_checked="true"
-    android:drawable="@drawable/highlight"
-    />
+        android:state_enabled="true"
+        android:state_checked="true"
+        android:drawable="@drawable/outer_mode_checkd"
+        />
     <item
         android:state_enabled="true"
         android:state_pressed="true"
-        android:state_checked="false"
-        android:drawable="@drawable/touch"
+        android:drawable="@drawable/outer_mode_checkd"
         />
      <item
          android:state_enabled="true"   
         android:state_pressed="false"
-        android:drawable="@drawable/oval_highlight_translate"
+        android:drawable="@drawable/outer_mode_nor"
         />
        <item
         android:state_enabled="false"
-        android:drawable="@drawable/oval_highlight_translate"
+        android:drawable="@drawable/outer_mode_nor"
         />
     
     </selector>

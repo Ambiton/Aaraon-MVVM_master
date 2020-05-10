@@ -3,7 +3,7 @@ package com.goldze.mvvmhabit.data.source.local;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.goldze.mvvmhabit.entity.DaoMaster;
+import com.goldze.mvvmhabit.entity.db.DaoMaster;
 import com.goldze.mvvmhabit.entity.db.UserActionDataDao;
 
 import org.greenrobot.greendao.database.Database;
