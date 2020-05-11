@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo;
 
 import androidx.databinding.Observable;
 
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
@@ -241,19 +242,19 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
             int speed = deviceStatusInfoEntity.getDeviceSpeed();
             if (directtion == DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_POSISION) {
                 if (speed == DeviceStatusInfoEntity.FLAG_SPEED_MAX) {
-                    res = R.drawable.inner_high_normal;
+                    res = R.drawable.roation_pos_high_normal;
                 } else if (speed == DeviceStatusInfoEntity.FLAG_SPEED_MID) {
-                    res = R.drawable.inner_mid_normal;
+                    res = R.drawable.roation_pos_mid_normal;
                 } else {
-                    res = R.drawable.inner_low_normal;
+                    res = R.drawable.roation_pos_low_normal;
                 }
             } else {
                 if (speed == DeviceStatusInfoEntity.FLAG_SPEED_MAX) {
-                    res = R.drawable.outer_high_normal;
+                    res = R.drawable.roation_rev_high_normal;
                 } else if (speed == DeviceStatusInfoEntity.FLAG_SPEED_MID) {
-                    res = R.drawable.outer_mid_normal;
+                    res = R.drawable.roation_rev_mid_normal;
                 } else {
-                    res = R.drawable.outer_low_normal;
+                    res = R.drawable.roation_rev_low_normal;
                 }
             }
             binding.ivDevicecontrolGif.setImageResource(res);
@@ -302,7 +303,15 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
 
     private void setDrawableTop(TextView textView, int resId) {
         Drawable drawable = getResources().getDrawable(resId); //获取图片
-        drawable.setBounds(0, 0, RxImageTool.dip2px(51), RxImageTool.dip2px(33));  //设置图片参数
+        Rect bounds=drawable.getBounds();
+        if(resId==R.drawable.inner_mode_selector){
+            drawable.setBounds(0, 0, RxImageTool.dip2px(54), RxImageTool.dip2px(33));  //设置图片参数
+        }else if((resId==R.drawable.outer_mode_selector)){
+            drawable.setBounds(0, 0, RxImageTool.dip2px(51), RxImageTool.dip2px(33 ));  //设置图片参数
+        }else{
+            drawable.setBounds(0, 0, RxImageTool.dip2px(34), RxImageTool.dip2px(34));  //设置图片参数
+        }
+
         textView .setCompoundDrawables(null,drawable,null,null);
     }
 

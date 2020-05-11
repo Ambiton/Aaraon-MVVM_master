@@ -75,7 +75,8 @@
                     android:id="@+id/ll_devicecontrol_switch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/ll_devicecontrol_rotation_mode"
+                    android:layout_below="@+id/iv_devicecontrol_bg"
+                    android:layout_marginTop="60dp"
                     android:layout_marginBottom="@dimen/space_26"
                     android:gravity="center"
                     android:orientation="horizontal">
@@ -103,13 +104,12 @@
                     android:id="@+id/ll_devicecontrol_rotation_mode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginStart="@dimen/space_24"
-                    android:layout_marginEnd="@dimen/space_24"
-                    android:layout_marginBottom="@dimen/margin_screenBottom">
+                    android:layout_below="@+id/ll_devicecontrol_switch"
+                    android:layout_marginStart="@dimen/space_16"
+                    android:layout_marginEnd="@dimen/space_16">
                     <pl.droidsonroids.gif.GifImageView
                         android:id="@+id/inner_mode_gif"
-                        android:layout_width="96dp"
+                        android:layout_width="95dp"
                         android:layout_height="80dp"
                         android:layout_alignParentStart="true"
                         android:visibility="invisible"
@@ -139,7 +139,7 @@
                         android:text="@string/devicecontrol_rotation_mode_reversal" />
                     <pl.droidsonroids.gif.GifImageView
                         android:id="@+id/auto_mode_gif"
-                        android:layout_width="96dp"
+                        android:layout_width="95dp"
                         android:layout_height="80dp"
                         android:layout_alignParentEnd="true"
                         android:visibility="invisible"

@@ -177,10 +177,7 @@
         <item name="android:layout_height">95dp</item>
         <item name="android:textSize">@dimen/text_size_14</item>
         <item name="android:gravity">center</item>
-        <item name="android:paddingStart">8dp</item>
-        <item name="android:paddingEnd">8dp</item>
-        <item name="android:paddingBottom">1dp</item>
-        <item name="android:paddingTop">15dp</item>
+        <item name="android:paddingTop">20dp</item>
         <item name="android:textAlignment">center</item>
         <item name="android:background">@drawable/gray_round_normal</item>
         <item name="android:textColor">@color/selector_white_yellow</item>
