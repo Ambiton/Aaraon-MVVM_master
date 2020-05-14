@@ -218,7 +218,7 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
                     view.setImageResource(R.drawable.oval_highlight_translate);
                     view.setVisibility(View.GONE);
                 }
-            }, 600);
+            }, 750);
         } else {
             view.setVisibility(View.INVISIBLE);
         }
@@ -233,9 +233,7 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
     private void setGifRes(DeviceStatusInfoEntity deviceStatusInfoEntity) {
         if (deviceStatusInfoEntity.getDeviceRoationDirect() != DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_POSISION &&
                 deviceStatusInfoEntity.getDeviceRoationDirect() != DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_REV) {
-            binding.ivDevicecontrolBg.setImageResource(R.drawable.pause);
-            binding.ivDevicecontrolBg.setVisibility(View.VISIBLE);
-            binding.ivDevicecontrolGif.setVisibility(View.INVISIBLE);
+            binding.ivDevicecontrolGif.setImageResource(R.drawable.pause);
         } else {
             int res = R.drawable.pause;
             int directtion = deviceStatusInfoEntity.getDeviceRoationDirect();
@@ -303,15 +301,13 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
 
     private void setDrawableTop(TextView textView, int resId) {
         Drawable drawable = getResources().getDrawable(resId); //获取图片
-        Rect bounds=drawable.getBounds();
         if(resId==R.drawable.inner_mode_selector){
-            drawable.setBounds(0, 0, RxImageTool.dip2px(54), RxImageTool.dip2px(33));  //设置图片参数
+            drawable.setBounds(0, 0, RxImageTool.dip2px(56.6f), RxImageTool.dip2px(36.6f));  //设置图片参数
         }else if((resId==R.drawable.outer_mode_selector)){
-            drawable.setBounds(0, 0, RxImageTool.dip2px(51), RxImageTool.dip2px(33 ));  //设置图片参数
+            drawable.setBounds(0, 0, RxImageTool.dip2px(56), RxImageTool.dip2px(36.6f));  //设置图片参数
         }else{
-            drawable.setBounds(0, 0, RxImageTool.dip2px(34), RxImageTool.dip2px(34));  //设置图片参数
+            drawable.setBounds(0, 0, RxImageTool.dip2px(36), RxImageTool.dip2px(36.6f));  //设置图片参数
         }
-
         textView .setCompoundDrawables(null,drawable,null,null);
     }
 

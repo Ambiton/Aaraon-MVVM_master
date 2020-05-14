@@ -48,28 +48,28 @@
 
                 <ImageView
                     android:id="@+id/iv_devicecontrol_all_bg"
-                    android:layout_width="252dp"
-                    android:layout_height="180dp"
-                    android:layout_marginTop="182dp"
+                    android:layout_width="215dp"
+                    android:layout_height="135dp"
+                    android:layout_marginTop="212dp"
                     android:layout_centerHorizontal="true"
                     android:src="@drawable/pillow"
                     />
                 <ImageView
                     android:id="@+id/iv_devicecontrol_bg"
-                    android:layout_width="252dp"
-                    android:layout_height="180dp"
-                    android:layout_marginTop="182dp"
+                    android:layout_width="215dp"
+                    android:layout_height="135dp"
+                    android:layout_marginTop="212dp"
                     android:layout_centerHorizontal="true"
                     android:src="@drawable/stop"
                     />
                 <pl.droidsonroids.gif.GifImageView
                     android:id="@+id/iv_devicecontrol_gif"
-                    android:layout_width="180dp"
-                    android:layout_height="100.8dp"
-                    android:layout_marginTop="219.8dp"
+                    android:layout_width="143dp"
+                    android:layout_height="77dp"
+                    android:layout_marginTop="243.3dp"
                     android:visibility="invisible"
                     android:layout_centerHorizontal="true"
-                    android:src="@drawable/inner_high_hot"
+                    android:src="@drawable/roation_pos_low_normal"
                     />
                 <LinearLayout
                     android:id="@+id/ll_devicecontrol_switch"
@@ -110,11 +110,12 @@
                     <pl.droidsonroids.gif.GifImageView
                         android:id="@+id/inner_mode_gif"
                         android:layout_width="95dp"
-                        android:layout_height="80dp"
+                        android:layout_height="95dp"
                         android:layout_alignParentStart="true"
                         android:visibility="invisible"
                         android:layout_centerHorizontal="true"
-                        android:src="@drawable/roation_mode"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/oval_highlight_translate"
                         />
                     <CheckedTextView
                         android:id="@+id/tv_rotation_mode_positive"
@@ -125,10 +126,11 @@
                     <pl.droidsonroids.gif.GifImageView
                         android:id="@+id/outer_mode_gif"
                         android:layout_width="95dp"
-                        android:layout_height="80dp"
+                        android:layout_height="95dp"
                         android:layout_centerInParent="true"
                         android:visibility="invisible"
                         android:layout_centerHorizontal="true"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/oval_highlight_translate"
                         />
                     <CheckedTextView
@@ -140,11 +142,12 @@
                     <pl.droidsonroids.gif.GifImageView
                         android:id="@+id/auto_mode_gif"
                         android:layout_width="95dp"
-                        android:layout_height="80dp"
+                        android:layout_height="95dp"
                         android:layout_alignParentEnd="true"
                         android:visibility="invisible"
+                        android:scaleType="centerCrop"
                         android:layout_centerHorizontal="true"
-                        android:src="@drawable/roation_mode"
+                        android:src="@drawable/oval_highlight_translate"
                         />
                     <CheckedTextView
                         android:id="@+id/tv_rotation_mode_auto"
