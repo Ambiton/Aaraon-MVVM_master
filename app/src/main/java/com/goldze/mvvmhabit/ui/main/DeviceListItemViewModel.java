@@ -174,7 +174,7 @@ public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> 
             dialog.dismiss();
 //            ToastUtils.showLong(viewModel.getContext().getString(R.string.toast_title_hasconnected));
             connectedTimes = 0;
-            viewModel.startContainerActivity(DeviceControlFragment.class.getCanonicalName());
+            viewModel.startContainerActivity(AllDeviceControlFragment.class.getCanonicalName());
         } else {
             if (connectedTimes > MAX_CONNECTETIMES) {
                 dialog.dismiss();

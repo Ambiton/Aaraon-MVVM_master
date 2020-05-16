@@ -9,6 +9,7 @@ import androidx.annotation.VisibleForTesting;
 
 import com.goldze.mvvmhabit.data.DemoRepository;
 import com.goldze.mvvmhabit.ui.login.LoginViewModel;
+import com.goldze.mvvmhabit.ui.main.AllDeviceControlViewModel;
 import com.goldze.mvvmhabit.ui.main.DeviceControlViewModel;
 import com.goldze.mvvmhabit.ui.main.DeviceListViewModel;
 import com.goldze.mvvmhabit.ui.main.LoadingViewModel;
@@ -52,18 +53,20 @@ public class AppViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(NetWorkViewModel.class)) {
             return (T) new NetWorkViewModel(mApplication, mRepository);
-        }  if (modelClass.isAssignableFrom(DeviceListViewModel.class)) {
+        } else if (modelClass.isAssignableFrom(DeviceListViewModel.class)) {
             return (T) new DeviceListViewModel(mApplication, mRepository);
-        } if (modelClass.isAssignableFrom(DeviceControlViewModel.class)) {
+        } else if (modelClass.isAssignableFrom(DeviceControlViewModel.class)) {
             return (T) new DeviceControlViewModel(mApplication, mRepository);
         } else if (modelClass.isAssignableFrom(LoginViewModel.class)) {
             return (T) new LoginViewModel(mApplication, mRepository);
-        }else if (modelClass.isAssignableFrom(RegisterViewModel.class)) {
+        } else if (modelClass.isAssignableFrom(RegisterViewModel.class)) {
             return (T) new RegisterViewModel(mApplication, mRepository);
-        }else if (modelClass.isAssignableFrom(LoadingViewModel.class)) {
+        } else if (modelClass.isAssignableFrom(LoadingViewModel.class)) {
             return (T) new LoadingViewModel(mApplication, mRepository);
-        }else if (modelClass.isAssignableFrom(UserHeightViewModel.class)) {
+        } else if (modelClass.isAssignableFrom(UserHeightViewModel.class)) {
             return (T) new UserHeightViewModel(mApplication, mRepository);
+        } else if (modelClass.isAssignableFrom(AllDeviceControlViewModel.class)) {
+            return (T) new AllDeviceControlViewModel(mApplication, mRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }
