@@ -159,8 +159,8 @@
                 <CheckedTextView
                     android:id="@+id/tv_rotation_high"
                     android:layout_marginTop="165dp"
-                    android:layout_toStartOf="@+id/iv_devicecontrol_gif"
-                    android:layout_marginEnd="@dimen/margin_max"
+                    android:layout_alignStart="@+id/tv_rotation_mid"
+                    android:layout_marginStart="24dp"
                     binding:onClickCommand="@{viewModel.onHighSpeeSwitchChangeCommand}"
                     style="@style/controlText_larger_Selector"
                     android:text="@string/devicecontrol_rotation_speed_high" />
@@ -169,14 +169,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:layout_below="@+id/tv_rotation_high"
-                    android:layout_toStartOf="@+id/iv_devicecontrol_gif"
-                    android:layout_marginEnd="30dp"
+                    android:layout_alignStart="@+id/tv_rotation_mid"
+                    android:layout_marginStart="20dp"
                     binding:srcCompat="@mipmap/left_topline" />
                 <CheckedTextView
                     android:id="@+id/tv_rotation_mid"
-                    android:layout_toStartOf="@+id/iv_devicecontrol_gif"
+                    android:layout_toStartOf="@+id/iv_devicecontrol_bg"
                     android:layout_below="@+id/imageViewLeftTop"
-                    android:layout_marginEnd="34dp"
+                    android:layout_marginEnd="16dp"
                     style="@style/controlText_larger_Selector"
                     binding:onClickCommand="@{viewModel.onMidSpeeSwitchChangeCommand}"
                     android:text="@string/devicecontrol_rotation_speed_middle" />
@@ -185,17 +185,16 @@
                 <ImageView
                     android:id="@+id/imageViewleftBottom"
                     android:layout_width="wrap_content"
-                    android:layout_height="50dp"
+                    android:layout_height="45dp"
                     android:layout_below="@+id/tv_rotation_mid"
-                    android:layout_alignStart="@+id/imageViewLeftTop"
-                    android:layout_alignEnd="@+id/tv_rotation_low"
-                    android:layout_marginEnd="30dp"
+                    android:layout_alignStart="@+id/tv_rotation_mid"
+                    android:layout_marginStart="20dp"
                     android:background="@mipmap/left_bottomline" />
                 <CheckedTextView
                     android:id="@+id/tv_rotation_low"
-                    android:layout_below="@+id/imageViewleftBottom"
-                    android:layout_alignStart="@+id/tv_rotation_high"
-                    android:layout_marginStart="@dimen/space_20"
+                    android:layout_below="@+id/iv_devicecontrol_bg"
+                    android:layout_alignStart="@+id/tv_rotation_mid"
+                    android:layout_marginStart="32dp"
                     style="@style/controlText_larger_Selector"
                     binding:onClickCommand="@{viewModel.onLowSpeeSwitchChangeCommand}"
                     android:text="@string/devicecontrol_rotation_speed_low" />
@@ -204,64 +203,62 @@
                     android:id="@+id/tv_volume_high"
                     style="@style/controlText_larger_Selector"
                     android:layout_alignTop="@+id/tv_rotation_high"
-                    android:layout_marginStart="@dimen/margin_max"
-                    android:layout_toEndOf="@+id/iv_devicecontrol_gif"
+                    android:layout_alignEnd="@+id/tv_volume_middle"
                     android:gravity="center"
+                    android:layout_marginEnd="24dp"
                     android:paddingStart="15dp"
                     android:text="@string/devicecontrol_volume_high"
                     binding:onClickCommand="@{viewModel.onHighVolSwitchChangeCommand}" />
                 <ImageView
                     android:id="@+id/imageViewRightTop"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
+                    android:layout_width="20dp"
+                    android:layout_height="18.3dp"
                     android:layout_below="@+id/tv_volume_high"
-                    android:layout_alignStart="@+id/tv_volume_high"
                     android:layout_alignEnd="@+id/tv_volume_middle"
-                    android:layout_marginEnd="18dp"
-                    android:layout_marginStart="22dp"
+                    android:layout_marginEnd="20dp"
                     android:background="@mipmap/right_topline" />
                 <CheckedTextView
                     android:id="@+id/tv_volume_middle"
                     android:layout_below="@+id/imageViewRightTop"
-                    android:layout_toEndOf="@+id/iv_devicecontrol_gif"
-                    android:layout_marginStart="30dp"
+                    android:layout_toEndOf="@+id/iv_devicecontrol_bg"
+                    android:layout_marginStart="12dp"
                     style="@style/controlText_larger_Selector"
                     android:paddingStart="15dp"
                     binding:onClickCommand="@{viewModel.onMidVolSwitchChangeCommand}"
                     android:text="@string/devicecontrol_volume_middle" />
                 <ImageView
                     android:id="@+id/imageViewRightMiddle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
+                    android:layout_width="20dp"
+                    android:layout_height="18.3dp"
                     android:layout_below="@+id/tv_volume_middle"
-                    android:layout_alignEnd="@+id/tv_volume_low"
-                    android:layout_marginEnd="15dp"
+                    android:layout_alignEnd="@+id/tv_volume_middle"
+                    android:layout_marginEnd="20dp"
                     android:background="@mipmap/right_midline" />
                 <CheckedTextView
                     android:id="@+id/tv_volume_low"
                     android:layout_below="@+id/imageViewRightMiddle"
-                    android:layout_toEndOf="@+id/iv_devicecontrol_gif"
-                    android:layout_marginStart="26dp"
+                    android:layout_toEndOf="@+id/iv_devicecontrol_bg"
+                    android:layout_marginStart="8dp"
                     style="@style/controlText_larger_Selector"
                     android:paddingStart="15dp"
                     binding:onClickCommand="@{viewModel.onLowVolSwitchChangeCommand}"
                     android:text="@string/devicecontrol_volume_low" />
                 <ImageView
                     android:id="@+id/imageViewRightBotoom"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
+                    android:layout_width="20dp"
+                    android:layout_height="18.3dp"
                     android:layout_below="@+id/tv_volume_low"
-                    android:layout_toEndOf="@+id/iv_devicecontrol_gif"
-                    android:layout_marginStart="24dp"
-                    android:background="@mipmap/right_bottomline" />
+                    android:layout_alignEnd="@+id/tv_volume_low"
+                    android:layout_marginEnd="20dp"
+                    android:src="@mipmap/right_bottomline" />
 
                 <CheckedTextView
                     android:id="@+id/tv_volume_silent"
                     style="@style/controlText_larger_Selector"
                     android:layout_below="@+id/imageViewRightBotoom"
-                    android:layout_alignEnd="@+id/tv_volume_high"
+                    android:layout_alignEnd="@+id/tv_volume_middle"
                     android:layout_alignBottom="@+id/tv_rotation_low"
-                    android:layout_marginEnd="@dimen/margin_normal"
+                    android:layout_marginEnd="32dp"
                     android:gravity="center"
                     android:text="@string/devicecontrol_volume_mute"
                     binding:onClickCommand="@{viewModel.onMuteVolSwitchChangeCommand}" />
