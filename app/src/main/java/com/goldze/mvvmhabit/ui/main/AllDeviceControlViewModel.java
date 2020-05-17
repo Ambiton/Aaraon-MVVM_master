@@ -42,6 +42,7 @@ import me.tatarka.bindingcollectionadapter2.ItemBinding;
 
 public class AllDeviceControlViewModel extends ToolbarViewModel<DemoRepository> implements BleNotifyResponse, BleReadRssiResponse, BleWriteResponse {
     private static final String TAG = "AllDeviceControlViewModel";
+    private static final long WAIT_FOR_USEROPTION = 1 * 1000;
     //监听蓝牙接收的数据变化
     public ObservableField<DeviceStatusInfoEntity> statusInfoChageObeserver = new ObservableField();
     public ObservableField<DeviceStatusInfoEntity> statusRoationModeUserChageObeserver = new ObservableField();
@@ -54,6 +55,8 @@ public class AllDeviceControlViewModel extends ToolbarViewModel<DemoRepository> 
     private DeviceStatusInfoEntity deviceStatusInfoEntity = new DeviceStatusInfoEntity();
 
     private UserActionData userActionData=null;
+
+    private long latestUserOptionTime;
 
     @Override
     public void onNotify(UUID service, UUID character, byte[] value) {
@@ -77,6 +80,10 @@ public class AllDeviceControlViewModel extends ToolbarViewModel<DemoRepository> 
 //            }
             RxLogTool.e(TAG, "onNotify roationDirect is " + recDeviceStatusInfoEntity.getDeviceRoationDirect());
             setIsGifNeedChange(recDeviceStatusInfoEntity);
+            if(!isGetInfoNeedShow()){
+                RxLogTool.e(TAG, "isGetInfoNeedShow donotneed show " );
+                return;
+            }
 
             if (deviceStatusInfoEntity.getIsHeatingOpen() != recDeviceStatusInfoEntity.getIsHeatingOpen() ||
                     deviceStatusInfoEntity.getIsDeviceOpen() != recDeviceStatusInfoEntity.getIsDeviceOpen() ||
@@ -125,6 +132,14 @@ public class AllDeviceControlViewModel extends ToolbarViewModel<DemoRepository> 
         isGifNeedChange.compareAndSet(!isTure, isTure);
     }
 
+    private void setLatestUserOptionTime(){
+        latestUserOptionTime=System.currentTimeMillis();
+    }
+
+    private boolean isGetInfoNeedShow() {
+        long currentTime = System.currentTimeMillis();
+        return currentTime - latestUserOptionTime >= WAIT_FOR_USEROPTION;
+    }
 
 
     private void setIsGifNeedChange(DeviceStatusInfoEntity recDeviceStatusInfoEntity) {
@@ -266,6 +281,7 @@ public class AllDeviceControlViewModel extends ToolbarViewModel<DemoRepository> 
         }
         setUserActionData(AppTools.UserActionFlagAndValue.FLAG_SWITCH_DEVICE,String.valueOf(deviceStatusInfoEntity.getIsDeviceOpen()));
         setIsGifNeedChange(true);
+        setLatestUserOptionTime();
         statusInfoChageObeserver.set(deviceStatusInfoEntity);
         statusInfoChageObeserver.notifyChange();
     }
@@ -288,6 +304,7 @@ public class AllDeviceControlViewModel extends ToolbarViewModel<DemoRepository> 
         }
         setUserActionData(AppTools.UserActionFlagAndValue.FLAG_SWITCH_WARM,String.valueOf(deviceStatusInfoEntity.getIsHeatingOpen()));
         setIsGifNeedChange(true);
+        setLatestUserOptionTime();
         statusInfoChageObeserver.set(deviceStatusInfoEntity);
         statusInfoChageObeserver.notifyChange();
         showWaitingDialog();
@@ -341,11 +358,11 @@ public class AllDeviceControlViewModel extends ToolbarViewModel<DemoRepository> 
                 BleOption.getInstance().setMaxSpeed(AllDeviceControlViewModel.this);
                 showWaitingDialog();
                 setIsGifNeedChange(true);
+                setLatestUserOptionTime();
                 setUserActionData(AppTools.UserActionFlagAndValue.FLAG_SPEED_VALUE,String.valueOf(deviceStatusInfoEntity.getDeviceSpeed()));
+                statusInfoChageObeserver.set(deviceStatusInfoEntity);
+                statusInfoChageObeserver.notifyChange();
             }
-
-            statusInfoChageObeserver.set(deviceStatusInfoEntity);
-            statusInfoChageObeserver.notifyChange();
 
         }
     });
@@ -359,11 +376,11 @@ public class AllDeviceControlViewModel extends ToolbarViewModel<DemoRepository> 
                 BleOption.getInstance().setMidSpeed(AllDeviceControlViewModel.this);
                 showWaitingDialog();
                 setIsGifNeedChange(true);
+                setLatestUserOptionTime();
                 setUserActionData(AppTools.UserActionFlagAndValue.FLAG_SPEED_VALUE,String.valueOf(deviceStatusInfoEntity.getDeviceSpeed()));
+                statusInfoChageObeserver.set(deviceStatusInfoEntity);
+                statusInfoChageObeserver.notifyChange();
             }
-
-            statusInfoChageObeserver.set(deviceStatusInfoEntity);
-            statusInfoChageObeserver.notifyChange();
 
         }
     });
@@ -376,10 +393,11 @@ public class AllDeviceControlViewModel extends ToolbarViewModel<DemoRepository> 
                 BleOption.getInstance().setMinSpeed(AllDeviceControlViewModel.this);
                 showWaitingDialog();
                 setIsGifNeedChange(true);
+                setLatestUserOptionTime();
                 setUserActionData(AppTools.UserActionFlagAndValue.FLAG_SPEED_VALUE,String.valueOf(deviceStatusInfoEntity.getDeviceSpeed()));
+                statusInfoChageObeserver.set(deviceStatusInfoEntity);
+                statusInfoChageObeserver.notifyChange();
             }
-            statusInfoChageObeserver.set(deviceStatusInfoEntity);
-            statusInfoChageObeserver.notifyChange();
         }
     });
     //静音开关
@@ -390,10 +408,11 @@ public class AllDeviceControlViewModel extends ToolbarViewModel<DemoRepository> 
                 deviceStatusInfoEntity.setDeviceVoice(DeviceStatusInfoEntity.FLAG_VOICE_MUTE);
                 BleOption.getInstance().setSilentVoice(AllDeviceControlViewModel.this);
                 showWaitingDialog();
+                setLatestUserOptionTime();
                 setUserActionData(AppTools.UserActionFlagAndValue.FLAG_VOICE_VOLUME,String.valueOf(deviceStatusInfoEntity.getDeviceVoice()));
+                statusInfoChageObeserver.set(deviceStatusInfoEntity);
+                statusInfoChageObeserver.notifyChange();
             }
-            statusInfoChageObeserver.set(deviceStatusInfoEntity);
-            statusInfoChageObeserver.notifyChange();
         }
     });
     //低音开关
@@ -404,10 +423,11 @@ public class AllDeviceControlViewModel extends ToolbarViewModel<DemoRepository> 
                 deviceStatusInfoEntity.setDeviceVoice(DeviceStatusInfoEntity.FLAG_VOICE_MIN);
                 BleOption.getInstance().setMinVoice(AllDeviceControlViewModel.this);
                 showWaitingDialog();
+                setLatestUserOptionTime();
                 setUserActionData(AppTools.UserActionFlagAndValue.FLAG_VOICE_VOLUME,String.valueOf(deviceStatusInfoEntity.getDeviceVoice()));
+                statusInfoChageObeserver.set(deviceStatusInfoEntity);
+                statusInfoChageObeserver.notifyChange();
             }
-            statusInfoChageObeserver.set(deviceStatusInfoEntity);
-            statusInfoChageObeserver.notifyChange();
 
         }
     });
@@ -419,10 +439,11 @@ public class AllDeviceControlViewModel extends ToolbarViewModel<DemoRepository> 
                 deviceStatusInfoEntity.setDeviceVoice(DeviceStatusInfoEntity.FLAG_VOICE_MID);
                 BleOption.getInstance().setMidVoice(AllDeviceControlViewModel.this);
                 showWaitingDialog();
+                setLatestUserOptionTime();
                 setUserActionData(AppTools.UserActionFlagAndValue.FLAG_VOICE_VOLUME,String.valueOf(deviceStatusInfoEntity.getDeviceVoice()));
+                statusInfoChageObeserver.set(deviceStatusInfoEntity);
+                statusInfoChageObeserver.notifyChange();
             }
-            statusInfoChageObeserver.set(deviceStatusInfoEntity);
-            statusInfoChageObeserver.notifyChange();
         }
     });
     //高音开关
@@ -433,10 +454,11 @@ public class AllDeviceControlViewModel extends ToolbarViewModel<DemoRepository> 
                 deviceStatusInfoEntity.setDeviceVoice(DeviceStatusInfoEntity.FLAG_VOICE_MAX);
                 BleOption.getInstance().setMaxVoice(AllDeviceControlViewModel.this);
                 showWaitingDialog();
+                setLatestUserOptionTime();
                 setUserActionData(AppTools.UserActionFlagAndValue.FLAG_VOICE_VOLUME,String.valueOf(deviceStatusInfoEntity.getDeviceVoice()));
+                statusInfoChageObeserver.set(deviceStatusInfoEntity);
+                statusInfoChageObeserver.notifyChange();
             }
-            statusInfoChageObeserver.set(deviceStatusInfoEntity);
-            statusInfoChageObeserver.notifyChange();
         }
     });
     //自动转
@@ -448,12 +470,13 @@ public class AllDeviceControlViewModel extends ToolbarViewModel<DemoRepository> 
                 BleOption.getInstance().roationAuto(AllDeviceControlViewModel.this);
                 showWaitingDialog();
                 setIsGifNeedChange(true);
+                setLatestUserOptionTime();
                 statusRoationModeUserChageObeserver.set(deviceStatusInfoEntity);
                 statusRoationModeUserChageObeserver.notifyChange();
                 setUserActionData(AppTools.UserActionFlagAndValue.FLAG_ROATION_MODE,String.valueOf(deviceStatusInfoEntity.getDeviceRoationMode()));
+                statusInfoChageObeserver.set(deviceStatusInfoEntity);
+                statusInfoChageObeserver.notifyChange();
             }
-            statusInfoChageObeserver.set(deviceStatusInfoEntity);
-            statusInfoChageObeserver.notifyChange();
         }
     });
     //正转
@@ -465,12 +488,13 @@ public class AllDeviceControlViewModel extends ToolbarViewModel<DemoRepository> 
                 BleOption.getInstance().roationPositive(AllDeviceControlViewModel.this);
                 showWaitingDialog();
                 setIsGifNeedChange(true);
+                setLatestUserOptionTime();
                 statusRoationModeUserChageObeserver.set(deviceStatusInfoEntity);
                 statusRoationModeUserChageObeserver.notifyChange();
                 setUserActionData(AppTools.UserActionFlagAndValue.FLAG_ROATION_MODE,String.valueOf(deviceStatusInfoEntity.getDeviceRoationMode()));
+                statusInfoChageObeserver.set(deviceStatusInfoEntity);
+                statusInfoChageObeserver.notifyChange();
             }
-            statusInfoChageObeserver.set(deviceStatusInfoEntity);
-            statusInfoChageObeserver.notifyChange();
         }
     });
     //反转
@@ -482,12 +506,13 @@ public class AllDeviceControlViewModel extends ToolbarViewModel<DemoRepository> 
                 BleOption.getInstance().roationReversal(AllDeviceControlViewModel.this);
                 showWaitingDialog();
                 setIsGifNeedChange(true);
+                setLatestUserOptionTime();
                 statusRoationModeUserChageObeserver.set(deviceStatusInfoEntity);
                 statusRoationModeUserChageObeserver.notifyChange();
                 setUserActionData(AppTools.UserActionFlagAndValue.FLAG_ROATION_MODE,String.valueOf(deviceStatusInfoEntity.getDeviceRoationMode()));
+                statusInfoChageObeserver.set(deviceStatusInfoEntity);
+                statusInfoChageObeserver.notifyChange();
             }
-            statusInfoChageObeserver.set(deviceStatusInfoEntity);
-            statusInfoChageObeserver.notifyChange();
         }
     });
 

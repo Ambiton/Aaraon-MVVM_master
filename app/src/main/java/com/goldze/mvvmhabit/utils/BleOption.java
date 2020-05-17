@@ -30,9 +30,9 @@ import me.goldze.mvvmhabit.utils.StringUtils;
  */
 public class BleOption {
     public static final int REQUEST_TIMEOUT = 0x01;
+    public static final long DURATION_HEART_QUERY = 3 * 1000;
+    private final static String DEVICE_NAME = "BLE_MYZR_";
     private static final String TAG = "BleOption";
-    public final static String DEVICE_NAME = "BLE_MYZR_";
-
     private static final UUID UUID_SERVICE_CHANNEL
             = UUID.fromString("0000ae00-0000-1000-8000-00805f9b34fb");
 
@@ -288,7 +288,7 @@ public class BleOption {
             public void run() {
                 getDeviceInfo(bleWriteResponse);
             }
-        }, 100, 3 * 1000);
+        }, 100, DURATION_HEART_QUERY);
     }
 
     /**
