@@ -3,6 +3,7 @@ package com.goldze.mvvmhabit.ui.main;
 import androidx.databinding.ObservableField;
 
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -12,12 +13,17 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.app.AppApplication;
 import com.goldze.mvvmhabit.entity.BlutoothDeviceInfoEntity;
+import com.goldze.mvvmhabit.entity.DeviceStatusInfoEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
+import com.goldze.mvvmhabit.entity.http.productinfo.ProductInfoResponseDataEntity;
 import com.goldze.mvvmhabit.utils.AppTools;
 import com.goldze.mvvmhabit.utils.BleOption;
 import com.goldze.mvvmhabit.utils.HttpsUtils;
+import com.goldze.mvvmhabit.utils.RxDataTool;
 import com.inuker.bluetooth.library.connect.response.BleConnectResponse;
+import com.inuker.bluetooth.library.connect.response.BleNotifyResponse;
+import com.inuker.bluetooth.library.connect.response.BleWriteResponse;
 import com.inuker.bluetooth.library.model.BleGattProfile;
 import com.tamsiree.rxtool.RxLogTool;
 
@@ -25,6 +31,7 @@ import java.util.UUID;
 
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import me.goldze.mvvmhabit.base.AppManager;
 import me.goldze.mvvmhabit.base.ItemViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
@@ -40,25 +47,13 @@ import static com.inuker.bluetooth.library.Constants.SERVICE_UNREADY;
  * Created by goldze on 2017/7/17.
  */
 
-public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> implements BleConnectResponse, OnDeviceInfoListener {
+public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> implements BleConnectResponse, OnDeviceInfoListener, BleNotifyResponse, BleWriteResponse {
     private static final String TAG = "DeviceListItemViewModel";
     private final static int MAX_CONNECTETIMES = 3;
     public ObservableField<BlutoothDeviceInfoEntity> entity = new ObservableField<>();
     public Drawable drawableImg;
     private MaterialDialog dialog;
-    private final String SPP_UUID = "00001101-0000-1000-8000-00805F9B34FB";
-    private final String CHAR_UUID = "64e400001-b5a3-f393-e0a9-e50e24dcca9e";
-    private static final UUID UUID_SERVICE_CHANNEL
-            = UUID.fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e");
-
-    private static final UUID UUID_CHARACTERISTIC_CHANNEL_WRITE
-            = UUID.fromString("6e400002-b5a3-f393-e0a9-e50e24dcca9e");
-    private static final UUID UUID_CHARACTERISTIC_CHANNEL
-            = UUID.fromString("6e400003-b5a3-f393-e0a9-e50e24dcca9e");
-
-
     private DeviceListViewModel deviceListViewModel;
-
     private int connectedTimes = 0;
 
     public DeviceListItemViewModel(@NonNull DeviceListViewModel viewModel, BlutoothDeviceInfoEntity entity) {
@@ -174,7 +169,9 @@ public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> 
             dialog.dismiss();
 //            ToastUtils.showLong(viewModel.getContext().getString(R.string.toast_title_hasconnected));
             connectedTimes = 0;
-            viewModel.startContainerActivity(AllDeviceControlFragment.class.getCanonicalName());
+            BleOption.getInstance().initWriteDataEnv();
+            BleOption.getInstance().getNotifyData(this);
+            BleOption.getInstance().getDeviceInfo(this);
         } else {
             if (connectedTimes > MAX_CONNECTETIMES) {
                 dialog.dismiss();
@@ -198,6 +195,29 @@ public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> 
         } else {
             MaterialDialogUtils.showBasicDialog(viewModel.getContext(), "连接失败", "非法的设备串号");
         }
+    }
+
+    @Override
+    public void onResponse(int code) {
+
+    }
+
+    @Override
+    public void onNotify(UUID service, UUID character, byte[] value) {
+        if(!AppManager.getAppManager().currentActivity().getLocalClassName().equals("ui.main.DeviceListActivity")){
+            RxLogTool.e(TAG, "getLocalClassName is " + AppManager.getAppManager().currentActivity().getLocalClassName()+";cannot jump...");
+            return;
+        }
+        RxLogTool.e(TAG, "data  length is " + value.length);
+        RxLogTool.e(TAG, "getLocalClassName is " + AppManager.getAppManager().currentActivity().getLocalClassName());
+        BleOption.getInstance().clearLatestWriteCommondAndFlag();
+        if (value.length == 10) {
+            DeviceStatusInfoEntity recDeviceStatusInfoEntity = new DeviceStatusInfoEntity(value);
+            deviceListViewModel.getProductInfo(String.valueOf(recDeviceStatusInfoEntity.getBatchCode()));
+        } else {
+            deviceListViewModel.jumpToControlFragment(null);
+        }
+        BleOption.getInstance().uninitWriteDataEnv();
     }
 //    /**
 //     * 可以在xml中使用binding:currentView="@{viewModel.titleTextView}" 拿到这个控件的引用, 但是强烈不推荐这样做，避免内存泄漏

@@ -8,12 +8,14 @@ import com.goldze.mvvmhabit.data.source.HttpDataSource;
 import com.goldze.mvvmhabit.data.source.LocalDataSource;
 import com.goldze.mvvmhabit.entity.DemoEntity;
 import com.goldze.mvvmhabit.entity.UserDao;
+import com.goldze.mvvmhabit.entity.db.ProductInfoData;
 import com.goldze.mvvmhabit.entity.db.UserActionData;
 import com.goldze.mvvmhabit.entity.db.UserActionDataDao;
 import com.goldze.mvvmhabit.entity.http.ResponseNetDeviceInfoEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.entity.http.login.LoginBodyEntity;
+import com.goldze.mvvmhabit.entity.http.productinfo.ProductInfoResponseEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterOrLoginResponseEntity;
 import com.goldze.mvvmhabit.entity.http.useraction.SubmitActionDataResponseEntity;
@@ -101,6 +103,11 @@ public class DemoRepository extends BaseModel implements HttpDataSource, LocalDa
     @Override
     public Observable<ResponseNetDeviceInfoEntity> getDeviceInfo(String serioNum, String appid, String sign, String token, String callId) {
         return mHttpDataSource.getDeviceInfo(serioNum,appid, sign, token,callId);
+    }
+
+    @Override
+    public Observable<ProductInfoResponseEntity> getProductInfo(String batchCode, String appid, String sign, String callId) {
+        return mHttpDataSource.getProductInfo(batchCode, appid, sign, callId);
     }
 
     @Override
@@ -233,6 +240,17 @@ public class DemoRepository extends BaseModel implements HttpDataSource, LocalDa
         mLocalDataSource.saveUserActionDataToDB(userActionData);
 
     }
+
+    @Override
+    public void saveProductInfoDataToDB(ProductInfoData productInfoData) {
+        mLocalDataSource.saveProductInfoDataToDB(productInfoData);
+    }
+
+    @Override
+    public ProductInfoData getProductInfoData(String productId) {
+        return mLocalDataSource.getProductInfoData(productId);
+    }
+
     public synchronized void deleteUserActionDataToDB(List<UserActionData> userActionDatas) {
         AppApplication.getInstance().getDaoSession().getUserActionDataDao().deleteInTx(userActionDatas);
     }

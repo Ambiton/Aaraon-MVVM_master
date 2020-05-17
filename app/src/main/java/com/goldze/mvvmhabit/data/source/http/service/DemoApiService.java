@@ -7,6 +7,7 @@ import com.goldze.mvvmhabit.entity.http.ResponseNetDeviceInfoEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.entity.http.login.LoginBodyEntity;
+import com.goldze.mvvmhabit.entity.http.productinfo.ProductInfoResponseEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterOrLoginResponseEntity;
 import com.goldze.mvvmhabit.entity.http.useraction.SubmitActionDataResponseEntity;
@@ -49,6 +50,9 @@ public interface DemoApiService {
 
     @GET("v1/units/{seriNo}/info")
     Observable<ResponseNetDeviceInfoEntity> getDeviceInfo(@Path("seriNo") String seriNo, @QueryMap Map<String, String> map);
+
+    @GET("v1/units/batch/{bathCode}")
+    Observable<ProductInfoResponseEntity> getProductInfo(@Path("bathCode") String bathId, @QueryMap Map<String, String> map);
 
     @POST("v1/login?appKey=1uMqYWpHo3MoLH&callId=1276418994&mysig=sig-result")
     Observable<RegisterOrLoginResponseEntity> login(@Body LoginBodyEntity entity);

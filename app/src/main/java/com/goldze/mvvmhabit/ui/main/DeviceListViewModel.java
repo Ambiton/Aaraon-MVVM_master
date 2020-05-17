@@ -8,6 +8,8 @@ import androidx.databinding.ObservableArrayList;
 import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableList;
 import androidx.annotation.NonNull;
+
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
@@ -16,10 +18,13 @@ import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.app.AppApplication;
 import com.goldze.mvvmhabit.data.DemoRepository;
 import com.goldze.mvvmhabit.entity.BlutoothDeviceInfoEntity;
+import com.goldze.mvvmhabit.entity.db.ProductInfoData;
 import com.goldze.mvvmhabit.entity.db.UserActionData;
 import com.goldze.mvvmhabit.entity.http.ResponseNetDeviceInfoEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
+import com.goldze.mvvmhabit.entity.http.productinfo.ProductInfoResponseDataEntity;
+import com.goldze.mvvmhabit.entity.http.productinfo.ProductInfoResponseEntity;
 import com.goldze.mvvmhabit.entity.http.useraction.SubmitActionDataResponseEntity;
 import com.goldze.mvvmhabit.ui.base.viewmodel.ToolbarViewModel;
 import com.goldze.mvvmhabit.utils.AppTools;
@@ -124,6 +129,47 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
             //requestDeviceList();
         }
     });
+    public void saveProductInfoToDB(ProductInfoResponseDataEntity productInfoResponseDataEntity){
+        if (productInfoResponseDataEntity == null) {
+            return;
+        }
+        model.saveProductInfoDataToDB(new ProductInfoData(productInfoResponseDataEntity));
+    }
+    public void jumpToControlFragment(String productId){
+        Bundle bundle=new Bundle();
+        bundle.putString(AllDeviceControlFragment.KEY_PRODUCTID,productId);
+        startContainerActivity(AllDeviceControlFragment.class.getCanonicalName(),bundle);
+    }
+    public void getProductInfo(String batchCode){
+        if(!NetworkUtil.isNetworkAvailable(contex)){
+            startContainerActivity(AllDeviceControlFragment.class.getCanonicalName(),null);
+            return;
+        }
+        //RaJava检测更新
+        addSubscribe(model.getProductInfo(batchCode,AppTools.APPKEY,"sig-result", HttpsUtils.getCurrentMills())
+                .compose(RxUtils.schedulersTransformer()) //线程调度
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                        showDialog();
+                    }
+                })
+                .subscribe(new Consumer<ProductInfoResponseEntity>() {
+                    @Override
+                    public void accept(ProductInfoResponseEntity entity) throws Exception {
+                        dismissDialog();
+                        boolean isOptionSuccess = entity.getStatus() == HttpStatus.STATUS_CODE_SUCESS;
+                        RxLogTool.e(TAG, "ProductInfoResponseEntity getStatus is: " + entity.getStatus());
+                        if (isOptionSuccess) {
+                            AppTools.downProductInfoImageFiles(contex, entity, DeviceListViewModel.this);
+                        }else{
+                            startContainerActivity(AllDeviceControlFragment.class.getCanonicalName(),null);
+                        }
+
+                    }
+                }));
+    }
+
     public void checkVersion(){
         //RaJava检测更新
         addSubscribe(model.checkUpdate(AppTools.APPKEY,"sig-result",model.getToken(), HttpsUtils.getCurrentMills(),new CheckUpdateBodyEntity("01.00","01.00","01.00"))

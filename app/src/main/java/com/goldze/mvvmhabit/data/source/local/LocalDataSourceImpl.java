@@ -2,9 +2,13 @@ package com.goldze.mvvmhabit.data.source.local;
 
 import com.goldze.mvvmhabit.app.AppApplication;
 import com.goldze.mvvmhabit.data.source.LocalDataSource;
+import com.goldze.mvvmhabit.entity.db.ProductInfoData;
+import com.goldze.mvvmhabit.entity.db.ProductInfoDataDao;
 import com.goldze.mvvmhabit.entity.db.UserActionData;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseDataEntity;
 import com.goldze.mvvmhabit.utils.VersionControlUtil;
+
+import org.greenrobot.greendao.query.Query;
 
 import me.goldze.mvvmhabit.utils.SPUtils;
 
@@ -146,6 +150,24 @@ public class LocalDataSourceImpl implements LocalDataSource {
     @Override
     public void saveUserActionDataToDB(UserActionData userActionData) {
         AppApplication.getInstance().getDaoSession().getUserActionDataDao().save(userActionData);
+    }
+
+    @Override
+    public void saveProductInfoDataToDB(ProductInfoData productInfoData) {
+        ProductInfoDataDao productInfoDataDao=AppApplication.getInstance().getDaoSession().getProductInfoDataDao();
+        ProductInfoData productInfoData1=getProductInfoData(productInfoData.getProdId());
+        if(productInfoData1!=null){
+            productInfoData.setId(productInfoData1.getId());
+        }
+        productInfoDataDao.save(productInfoData);
+    }
+
+    @Override
+    public ProductInfoData getProductInfoData(String productId) {
+        ProductInfoDataDao productInfoDataDao=AppApplication.getInstance().getDaoSession().getProductInfoDataDao();
+        Query<ProductInfoData> query = productInfoDataDao.queryBuilder().where(ProductInfoDataDao.Properties.ProdId.eq(productId))
+                .orderDesc(ProductInfoDataDao.Properties.Id).build();
+        return query.unique();
     }
 
     @Override

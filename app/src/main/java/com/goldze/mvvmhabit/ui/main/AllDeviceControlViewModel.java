@@ -62,7 +62,7 @@ public class AllDeviceControlViewModel extends ToolbarViewModel<DemoRepository> 
     public void onNotify(UUID service, UUID character, byte[] value) {
         RxLogTool.e(TAG, "data  length is " + value.length);
         RxLogTool.e(TAG, "onNotify UUID is " + character + ",data is " + RxDataTool.bytes2HexString(value));
-        if (value.length == 6) {
+        if (value.length == 6 || value.length == 10) {
             //dismissDialog();
             DeviceStatusInfoEntity recDeviceStatusInfoEntity = new DeviceStatusInfoEntity(value);
             Gson gson = new Gson();

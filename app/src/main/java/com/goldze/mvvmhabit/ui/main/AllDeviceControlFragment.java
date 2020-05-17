@@ -90,8 +90,9 @@ public class AllDeviceControlFragment extends BaseFragment<FragmentAlldevicecont
 
     @Override
     public void initData() {
-        if (getActivity() != null && getActivity().getIntent() != null && TextUtils.isEmpty(getActivity().getIntent().getStringExtra(KEY_PRODUCTID))) {
-            productId = getActivity().getIntent().getStringExtra(KEY_PRODUCTID);
+        Bundle mBundle = getArguments();
+        if (mBundle != null && !TextUtils.isEmpty(mBundle.getString(KEY_PRODUCTID))) {
+            productId = mBundle.getString(KEY_PRODUCTID);
             styleResEntity = AppTools.getStyleResDrawableEntity(getActivity(), productId);
         }
 

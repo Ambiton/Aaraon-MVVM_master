@@ -8,6 +8,7 @@ import com.goldze.mvvmhabit.entity.http.ResponseNetDeviceInfoEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.entity.http.login.LoginBodyEntity;
+import com.goldze.mvvmhabit.entity.http.productinfo.ProductInfoResponseEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterOrLoginResponseEntity;
 import com.goldze.mvvmhabit.entity.http.useraction.SubmitActionDataResponseEntity;
@@ -91,6 +92,15 @@ public class HttpDataSourceImpl implements HttpDataSource {
         map.put("token",token);
         map.put("callId",callId);
         return apiService.getDeviceInfo(serioNum,map);
+    }
+
+    @Override
+    public Observable<ProductInfoResponseEntity> getProductInfo(String batchCode, String appid, String sign, String callId) {
+        Map<String, String> map=new HashMap<>();
+        map.put("appKey",appid);
+        map.put("mysig",sign);
+        map.put("callId",callId);
+        return apiService.getProductInfo(batchCode,map);
     }
 
     @Override

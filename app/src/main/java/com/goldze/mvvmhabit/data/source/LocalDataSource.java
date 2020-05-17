@@ -1,5 +1,6 @@
 package com.goldze.mvvmhabit.data.source;
 
+import com.goldze.mvvmhabit.entity.db.ProductInfoData;
 import com.goldze.mvvmhabit.entity.db.UserActionData;
 
 /**
@@ -109,6 +110,16 @@ public interface LocalDataSource {
      * save 用户数据
      */
     void saveUserActionDataToDB(UserActionData userActionData);
+
+    /**
+     * save 产品信息
+     */
+    void saveProductInfoDataToDB(ProductInfoData productInfoData);
+
+    /**
+     * 获取 产品信息
+     */
+    ProductInfoData getProductInfoData(String productId);
 
     /**
      * delete 用户数据

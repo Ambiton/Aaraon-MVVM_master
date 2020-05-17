@@ -6,6 +6,7 @@ import com.goldze.mvvmhabit.entity.http.ResponseNetDeviceInfoEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.entity.http.login.LoginBodyEntity;
+import com.goldze.mvvmhabit.entity.http.productinfo.ProductInfoResponseEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterBodyEntity;
 import com.goldze.mvvmhabit.entity.http.register.RegisterOrLoginResponseEntity;
 import com.goldze.mvvmhabit.entity.http.useraction.SubmitActionDataResponseEntity;
@@ -50,6 +51,7 @@ public interface HttpDataSource {
      */
     Observable<ResponseNetDeviceInfoEntity> getDeviceInfo(String serioNum,String appid, String sign, String token, String callId);
 
+    Observable<ProductInfoResponseEntity> getProductInfo(String batchCode, String appid, String sign, String callId) ;
     /**
      * 注册用户信息
      *

@@ -18,6 +18,9 @@ import com.bumptech.glide.Glide;
 import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.entity.StyleResEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseDataEntity;
+import com.goldze.mvvmhabit.entity.http.productinfo.ProductInfoResponseEntity;
+import com.goldze.mvvmhabit.ui.main.DeviceListItemViewModel;
+import com.goldze.mvvmhabit.ui.main.DeviceListViewModel;
 import com.goldze.mvvmhabit.ui.main.LoadingViewModel;
 import com.tamsiree.rxtool.RxFileTool;
 import com.tamsiree.rxtool.RxImageTool;
@@ -301,6 +304,55 @@ public class AppTools {
             }
         });
     }
+
+    public static void downProductInfoImageFiles(Context context, final ProductInfoResponseEntity productInfoResponseEntity, final DeviceListViewModel deviceListItemViewModel) {
+        if (context == null || productInfoResponseEntity == null || productInfoResponseEntity.getData() == null) {
+            return;
+        }
+        final String destFileDir = getStyleResPackSavePath(context, productInfoResponseEntity.getData().getProdId());
+        final String destFileName = productInfoResponseEntity.getData().getProdId() + ".zip";
+        final ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setTitle("正在下载产品资源文件，请稍后...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        DownLoadManager.getInstance().load(productInfoResponseEntity.getData().getStyleResPackSavepath(), new ProgressCallBack<ResponseBody>(destFileDir, destFileName) {
+            @Override
+            public void onStart() {
+                super.onStart();
+            }
+
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onSuccess(ResponseBody responseBody) {
+                //ToastUtils.showShort("文件下载完成！");
+                boolean isUnzip=RxZipTool.unzipFile(destFileDir+destFileName,destFileDir);
+                RxLogTool.d(TAG,"unzip productinfo: "+(destFileDir+destFileName)+" result is "+isUnzip);
+                if(isUnzip){
+                    deviceListItemViewModel.saveProductInfoToDB(productInfoResponseEntity.getData());
+                }else{
+                    RxLogTool.e(TAG,"productinfo资源文件解压失败");
+                }
+                deviceListItemViewModel.jumpToControlFragment(productInfoResponseEntity.getData().getProdId());
+            }
+
+            @Override
+            public void progress(final long progress, final long total) {
+                progressDialog.setMax((int) total);
+                progressDialog.setProgress((int)(progress<total?progress:total));
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                RxLogTool.e(TAG, "download err:", e);
+                ToastUtils.showShort("产品资源文件下载失败！");
+                deviceListItemViewModel.jumpToControlFragment(productInfoResponseEntity.getData().getProdId());
+            }
+        });
+    }
     public static void downFile(final Context context, String url,final LoadingViewModel viewModel) {
         final String destFileDir = context.getExternalCacheDir().getPath();
         final String destFileName = "myzr" + ".apk";
@@ -333,7 +385,7 @@ public class AppTools {
             @Override
             public void progress(final long progress, final long total) {
                 progressDialog.setMax((int) total);
-                progressDialog.setProgress((int) progress);
+                progressDialog.setProgress((int)(progress<total?progress:total));
             }
 
             @Override
