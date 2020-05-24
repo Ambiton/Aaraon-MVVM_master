@@ -95,12 +95,12 @@ public class HttpDataSourceImpl implements HttpDataSource {
     }
 
     @Override
-    public Observable<ProductInfoResponseEntity> getProductInfo(String batchCode, String appid, String sign, String callId) {
+    public Observable<ProductInfoResponseEntity> getProductInfo(String batchCode, String appid, String sign,String token, String callId) {
         Map<String, String> map=new HashMap<>();
         map.put("appKey",appid);
         map.put("mysig",sign);
         map.put("callId",callId);
-        return apiService.getProductInfo(batchCode,map);
+        return apiService.getProductInfo(token,batchCode,map);
     }
 
     @Override

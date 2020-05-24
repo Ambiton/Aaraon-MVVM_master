@@ -158,8 +158,11 @@ public class LocalDataSourceImpl implements LocalDataSource {
         ProductInfoData productInfoData1=getProductInfoData(productInfoData.getProdId());
         if(productInfoData1!=null){
             productInfoData.setId(productInfoData1.getId());
+            productInfoDataDao.save(productInfoData);
+        }else{
+            productInfoDataDao.insert(productInfoData);
         }
-        productInfoDataDao.save(productInfoData);
+
     }
 
     @Override

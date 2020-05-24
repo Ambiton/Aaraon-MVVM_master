@@ -1,26 +1,21 @@
 package com.goldze.mvvmhabit.ui.main;
 
-import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.bumptech.glide.Glide;
 import com.goldze.mvvmhabit.BR;
 import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.app.AppViewModelFactory;
 import com.goldze.mvvmhabit.databinding.FragmentAlldevicecontrolBinding;
-import com.goldze.mvvmhabit.databinding.FragmentDevicecontrolBinding;
 import com.goldze.mvvmhabit.entity.DeviceStatusInfoEntity;
 import com.goldze.mvvmhabit.entity.StyleResEntity;
 import com.goldze.mvvmhabit.utils.AppTools;
@@ -53,10 +48,10 @@ import static com.inuker.bluetooth.library.Constants.STATUS_DISCONNECTED;
  */
 
 public class AllDeviceControlFragment extends BaseFragment<FragmentAlldevicecontrolBinding, AllDeviceControlViewModel> implements OnBannerListener {
-    public static final String KEY_PRODUCTID= "styleProductId";
+    public static final String KEY_PRODUCTID= "batchCode";
     private static final String TAG = "AllDeviceControlFragment";
     private MaterialDialog.Builder builderBle;
-    private String productId="";
+    private String batchCode ="";
     private StyleResEntity styleResEntity=new StyleResEntity();
 
     @Override
@@ -92,8 +87,8 @@ public class AllDeviceControlFragment extends BaseFragment<FragmentAlldevicecont
     public void initData() {
         Bundle mBundle = getArguments();
         if (mBundle != null && !TextUtils.isEmpty(mBundle.getString(KEY_PRODUCTID))) {
-            productId = mBundle.getString(KEY_PRODUCTID);
-            styleResEntity = AppTools.getStyleResDrawableEntity(getActivity(), productId);
+            batchCode = mBundle.getString(KEY_PRODUCTID);
+            styleResEntity = AppTools.getStyleResDrawableEntity(getActivity(), batchCode);
         }
 
         //给RecyclerView添加Adpter，请使用自定义的Adapter继承BindingRecyclerViewAdapter，重写onBindBinding方法，里面有你要的Item对应的binding对象。

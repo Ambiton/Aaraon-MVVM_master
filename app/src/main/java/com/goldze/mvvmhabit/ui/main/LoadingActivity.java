@@ -28,9 +28,13 @@ import com.goldze.mvvmhabit.ui.register.UserWeightActivity;
 import com.goldze.mvvmhabit.utils.AppTools;
 import com.tamsiree.rxtool.RxLogTool;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.base.BaseActivity;
+import me.goldze.mvvmhabit.http.ResponseThrowable;
 import me.goldze.mvvmhabit.utils.MaterialDialogUtils;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 /**
  * Created by 袁剑
@@ -246,6 +250,21 @@ public class LoadingActivity extends BaseActivity<ActivityLoadingBinding, Loadin
                             // ToastUtils.showShort("权限被拒绝,应用将无法正常使用");
                             requestAppPermissions();
                         }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        //关闭对话框
+                        dismissDialog();
+                        if (throwable instanceof ResponseThrowable) {
+                            ToastUtils.showShort(((ResponseThrowable) throwable).message);
+                        }
+                    }
+                }, new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        //关闭对话框
+                        dismissDialog();
                     }
                 });
     }

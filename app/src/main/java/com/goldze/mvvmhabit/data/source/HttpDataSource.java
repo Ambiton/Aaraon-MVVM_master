@@ -51,7 +51,7 @@ public interface HttpDataSource {
      */
     Observable<ResponseNetDeviceInfoEntity> getDeviceInfo(String serioNum,String appid, String sign, String token, String callId);
 
-    Observable<ProductInfoResponseEntity> getProductInfo(String batchCode, String appid, String sign, String callId) ;
+    Observable<ProductInfoResponseEntity> getProductInfo(String batchCode, String appid, String sign,String token, String callId) ;
     /**
      * 注册用户信息
      *

@@ -10,6 +10,7 @@ import androidx.databinding.ObservableList;
 import androidx.annotation.NonNull;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
@@ -18,6 +19,7 @@ import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.app.AppApplication;
 import com.goldze.mvvmhabit.data.DemoRepository;
 import com.goldze.mvvmhabit.entity.BlutoothDeviceInfoEntity;
+import com.goldze.mvvmhabit.entity.DeviceStatusInfoEntity;
 import com.goldze.mvvmhabit.entity.db.ProductInfoData;
 import com.goldze.mvvmhabit.entity.db.UserActionData;
 import com.goldze.mvvmhabit.entity.http.ResponseNetDeviceInfoEntity;
@@ -41,12 +43,15 @@ import java.util.HashSet;
 import java.util.List;
 
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
+import me.goldze.mvvmhabit.base.AppManager;
 import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
 import me.goldze.mvvmhabit.deviceinterface.OnDeviceInfoListener;
 import me.goldze.mvvmhabit.http.NetworkUtil;
+import me.goldze.mvvmhabit.http.ResponseThrowable;
 import me.goldze.mvvmhabit.utils.RxUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 import me.tatarka.bindingcollectionadapter2.ItemBinding;
@@ -56,7 +61,6 @@ import me.tatarka.bindingcollectionadapter2.ItemBinding;
  */
 
 public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
-
     private static final String TAG="DeviceListViewModel";
     public SingleLiveEvent<DeviceListItemViewModel> deleteItemLiveData = new SingleLiveEvent<>();
     //绑定列表的绑定
@@ -135,23 +139,30 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
         }
         model.saveProductInfoDataToDB(new ProductInfoData(productInfoResponseDataEntity));
     }
-    public void jumpToControlFragment(String productId){
-        Bundle bundle=new Bundle();
-        bundle.putString(AllDeviceControlFragment.KEY_PRODUCTID,productId);
-        startContainerActivity(AllDeviceControlFragment.class.getCanonicalName(),bundle);
-    }
-    public void getProductInfo(String batchCode){
-        if(!NetworkUtil.isNetworkAvailable(contex)){
-            startContainerActivity(AllDeviceControlFragment.class.getCanonicalName(),null);
+    public void jumpToControlFragment(String batchCode){
+        if (!AppManager.getAppManager().currentActivity().getLocalClassName().equals("ui.main.DeviceListActivity")) {
+            RxLogTool.e(TAG, "getLocalClassName is " + AppManager.getAppManager().currentActivity().getLocalClassName() + ";cannot jump...");
             return;
         }
-        //RaJava检测更新
-        addSubscribe(model.getProductInfo(batchCode,AppTools.APPKEY,"sig-result", HttpsUtils.getCurrentMills())
+        Bundle bundle=new Bundle();
+        bundle.putString(AllDeviceControlFragment.KEY_PRODUCTID,batchCode);
+        startContainerActivity(AllDeviceControlFragment.class.getCanonicalName(),bundle);
+    }
+    public void getProductInfo(final DeviceStatusInfoEntity deviceStatusInfoEntity){
+        if (deviceStatusInfoEntity==null) {
+            jumpToControlFragment(null);
+            return;
+        }
+        if (!NetworkUtil.isNetworkAvailable(contex)) {
+            jumpToControlFragment(deviceStatusInfoEntity.getBatchCode());
+            return;
+        }
+        addSubscribe(model.getProductInfo(deviceStatusInfoEntity.getBatchCode(),AppTools.APPKEY,"sig-result",model.getToken(), HttpsUtils.getCurrentMills())
                 .compose(RxUtils.schedulersTransformer()) //线程调度
                 .doOnSubscribe(new Consumer<Disposable>() {
                     @Override
                     public void accept(Disposable disposable) throws Exception {
-                        showDialog();
+                        showDialog("获取产品信息中，请稍后...");
                     }
                 })
                 .subscribe(new Consumer<ProductInfoResponseEntity>() {
@@ -160,14 +171,33 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
                         dismissDialog();
                         boolean isOptionSuccess = entity.getStatus() == HttpStatus.STATUS_CODE_SUCESS;
                         RxLogTool.e(TAG, "ProductInfoResponseEntity getStatus is: " + entity.getStatus());
-                        if (isOptionSuccess) {
-                            AppTools.downProductInfoImageFiles(contex, entity, DeviceListViewModel.this);
+                        if (isOptionSuccess&&getProductDBInfo(entity.getData().getProdId())!=null&&
+                                AppTools.isVersionNeedUpdate(getProductDBInfo(entity.getData().getProdId()).getStyleResNewestVerno(),entity.getData().getStyleResNewestVerno())) {
+                            AppTools.downProductInfoImageFiles(contex, entity, DeviceListViewModel.this,deviceStatusInfoEntity.getBatchCode());
                         }else{
-                            startContainerActivity(AllDeviceControlFragment.class.getCanonicalName(),null);
+                            RxLogTool.e(TAG, "ProductInfoStyleRes is newest");
+                            jumpToControlFragment(deviceStatusInfoEntity.getBatchCode());
                         }
 
                     }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        //关闭对话框
+                        dismissDialog();
+                        jumpToControlFragment(deviceStatusInfoEntity.getBatchCode());
+                    }
+                }, new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        //关闭对话框
+                        dismissDialog();
+                    }
                 }));
+    }
+
+    public ProductInfoData getProductDBInfo(String productId){
+        return model.getProductInfoData(productId);
     }
 
     public void checkVersion(){
@@ -189,6 +219,18 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
                         versionEvent.set(entity);
                         versionEvent.notifyChange();
 
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        //关闭对话框
+                        dismissDialog();
+                    }
+                }, new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        //关闭对话框
+                        dismissDialog();
                     }
                 }));
     }
@@ -223,6 +265,18 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
                         }
 
                     }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        //关闭对话框
+                        dismissDialog();
+                    }
+                }, new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        //关闭对话框
+                        dismissDialog();
+                    }
                 }));
     }
 
@@ -239,10 +293,24 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
                     @Override
                     public void accept(ResponseNetDeviceInfoEntity entity) throws Exception {
                         dismissDialog();
-                        Log.e(TAG,"getStatus is:; "+entity.getStatus());
+                        RxLogTool.e(TAG,"getStatus is:; "+entity.getStatus());
                         boolean isCanUse=entity.getStatus()== HttpStatus.STATUS_CODE_SUCESS;
                         model.saveUnitId(entity.getData().getUnitId());
                         onDeviceInfoListener.onDeviceCanUseResult(isCanUse);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        //关闭对话框
+                        dismissDialog();
+                        RxLogTool.e(TAG,"getStatus error:; ",throwable);
+                        onDeviceInfoListener.onDeviceCanUseResult(true);
+                    }
+                }, new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        //关闭对话框
+                        dismissDialog();
                     }
                 }));
     }

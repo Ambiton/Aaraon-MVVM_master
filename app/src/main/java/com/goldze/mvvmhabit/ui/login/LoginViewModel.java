@@ -22,16 +22,20 @@ import com.goldze.mvvmhabit.ui.main.DeviceListActivity;
 import com.goldze.mvvmhabit.ui.main.RegisterActivity;
 import com.goldze.mvvmhabit.utils.HttpStatus;
 import com.goldze.mvvmhabit.utils.RxRegTool;
+import com.tamsiree.rxtool.RxLogTool;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.binding.command.BindingConsumer;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
+import me.goldze.mvvmhabit.http.ResponseThrowable;
 import me.goldze.mvvmhabit.utils.RxUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
@@ -205,6 +209,20 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> implements Com
                         smsToken=entity.getData();
                         model.saveSmsToken(entity.getData());
                     }
+                },new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        //关闭对话框
+                        dismissDialog();
+                        ToastUtils.showShort("请输入正确的手机号！");
+                        RxLogTool.e(TAG,"accept error:; ",throwable);
+                    }
+                }, new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        //关闭对话框
+                        dismissDialog();
+                    }
                 }));
     }
     /**
@@ -249,6 +267,21 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> implements Com
                             dialogEvent.notifyChange();
                         }
 
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        //关闭对话框
+                        dismissDialog();
+                        if (throwable instanceof ResponseThrowable) {
+                            ToastUtils.showShort(((ResponseThrowable) throwable).message);
+                        }
+                    }
+                }, new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        //关闭对话框
+                        dismissDialog();
                     }
                 }));
 

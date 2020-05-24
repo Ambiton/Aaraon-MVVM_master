@@ -213,8 +213,12 @@ public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> 
         BleOption.getInstance().clearLatestWriteCommondAndFlag();
         if (value.length == 10) {
             DeviceStatusInfoEntity recDeviceStatusInfoEntity = new DeviceStatusInfoEntity(value);
-            deviceListViewModel.getProductInfo(String.valueOf(recDeviceStatusInfoEntity.getBatchCode()));
+            deviceListViewModel.getProductInfo(recDeviceStatusInfoEntity);
         } else {
+//            DeviceStatusInfoEntity recDeviceStatusInfoEntity = new DeviceStatusInfoEntity();
+//            recDeviceStatusInfoEntity.setProductType((byte)1);
+//            recDeviceStatusInfoEntity.setStyle((byte)1);
+//            deviceListViewModel.getProductInfo(recDeviceStatusInfoEntity);
             deviceListViewModel.jumpToControlFragment(null);
         }
         BleOption.getInstance().uninitWriteDataEnv();

@@ -128,8 +128,8 @@ public class AppTools {
         return latest>cur;
     }
 
-    private static String getStyleResPackSavePath(Context context,String prodId){
-        return context.getExternalCacheDir().getPath()+File.separator+"styleRes/"+prodId+File.separator;
+    private static String getStyleResPackSavePath(Context context,String batchCode){
+        return context.getExternalCacheDir().getPath()+File.separator+"styleRes/"+batchCode+File.separator;
     }
 
     private static String getBannerPath(Context context){
@@ -147,31 +147,31 @@ public class AppTools {
      * 获取控制页面图片
      * @return
      */
-    public static StyleResEntity getStyleResDrawableEntity(Context context, String productId) {
+    public static StyleResEntity getStyleResDrawableEntity(Context context, String batchCode) {
         StyleResEntity styleResEntity = new StyleResEntity();
-        File fileDir = RxFileTool.getFileByPath(getStyleResPackSavePath(context, productId));
+        File fileDir = RxFileTool.getFileByPath(getStyleResPackSavePath(context, batchCode));
         if (fileDir.exists() && fileDir.isDirectory() && fileDir.list().length > 0) {
             for (File file : fileDir.listFiles()) {
                 Uri uri = Uri.fromFile(file);
-                if (!file.getName().equals(StyleResEntity.FILENAME_PAUSE)) {
+                if (file.getName().equals(StyleResEntity.FILENAME_PAUSE)) {
                     styleResEntity.setPauseUri(uri);
-                } else if (!file.getName().equals(StyleResEntity.FILENAME_PILLOW)) {
+                } else if (file.getName().equals(StyleResEntity.FILENAME_PILLOW)) {
                     styleResEntity.setPillowUri(uri);
-                } else if (!file.getName().equals(StyleResEntity.FILENAME_ROATION_POS_HIGH_GIF)) {
+                } else if (file.getName().equals(StyleResEntity.FILENAME_ROATION_POS_HIGH_GIF)) {
                     styleResEntity.setRoationPosHighNormalUri(uri);
-                } else if (!file.getName().equals(StyleResEntity.FILENAME_ROATION_POS_MID_GIF)) {
+                } else if (file.getName().equals(StyleResEntity.FILENAME_ROATION_POS_MID_GIF)) {
                     styleResEntity.setRoationPosMidNormalUri(uri);
-                } else if (!file.getName().equals(StyleResEntity.FILENAME_ROATION_POS_LOW_GIF)) {
+                } else if (file.getName().equals(StyleResEntity.FILENAME_ROATION_POS_LOW_GIF)) {
                     styleResEntity.setRoationPosLowNormalUri(uri);
-                } else if (!file.getName().equals(StyleResEntity.FILENAME_ROATION_REV_HIGH_GIF)) {
+                } else if (file.getName().equals(StyleResEntity.FILENAME_ROATION_REV_HIGH_GIF)) {
                     styleResEntity.setRoationRevHighNormalUri(uri);
-                } else if (!file.getName().equals(StyleResEntity.FILENAME_ROATION_REV_MID_GIF)) {
+                } else if (file.getName().equals(StyleResEntity.FILENAME_ROATION_REV_MID_GIF)) {
                     styleResEntity.setRoationRevMidNormalUri(uri);
-                } else if (!file.getName().equals(StyleResEntity.FILENAME_ROATION_REV_LOW_GIF)) {
+                } else if (file.getName().equals(StyleResEntity.FILENAME_ROATION_REV_LOW_GIF)) {
                     styleResEntity.setRoationRevLowNormalUri(uri);
-                } else if (!file.getName().equals(StyleResEntity.FILENAME_STOP)) {
+                } else if (file.getName().equals(StyleResEntity.FILENAME_STOP)) {
                     styleResEntity.setStopUri(uri);
-                } else if (!file.getName().equals(StyleResEntity.FILENAME_WARMPILLOW)) {
+                } else if (file.getName().equals(StyleResEntity.FILENAME_WARMPILLOW)) {
                     styleResEntity.setWarmpillowUri(uri);
                 } else {
                     RxLogTool.e(TAG, "other file condition,uri: " + uri);
@@ -305,12 +305,13 @@ public class AppTools {
         });
     }
 
-    public static void downProductInfoImageFiles(Context context, final ProductInfoResponseEntity productInfoResponseEntity, final DeviceListViewModel deviceListItemViewModel) {
+    public static void downProductInfoImageFiles(Context context, final ProductInfoResponseEntity productInfoResponseEntity, final DeviceListViewModel deviceListItemViewModel,final String batchCode) {
         if (context == null || productInfoResponseEntity == null || productInfoResponseEntity.getData() == null) {
+            deviceListItemViewModel.jumpToControlFragment(batchCode);
             return;
         }
-        final String destFileDir = getStyleResPackSavePath(context, productInfoResponseEntity.getData().getProdId());
-        final String destFileName = productInfoResponseEntity.getData().getProdId() + ".zip";
+        final String destFileDir = getStyleResPackSavePath(context, batchCode);
+        final String destFileName = batchCode + ".zip";
         final ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setTitle("正在下载产品资源文件，请稍后...");
@@ -336,7 +337,9 @@ public class AppTools {
                 }else{
                     RxLogTool.e(TAG,"productinfo资源文件解压失败");
                 }
-                deviceListItemViewModel.jumpToControlFragment(productInfoResponseEntity.getData().getProdId());
+//                deviceListItemViewModel.jumpToControlFragment("1_1");
+                deviceListItemViewModel.jumpToControlFragment(batchCode);
+                progressDialog.dismiss();
             }
 
             @Override
@@ -349,7 +352,8 @@ public class AppTools {
             public void onError(Throwable e) {
                 RxLogTool.e(TAG, "download err:", e);
                 ToastUtils.showShort("产品资源文件下载失败！");
-                deviceListItemViewModel.jumpToControlFragment(productInfoResponseEntity.getData().getProdId());
+                deviceListItemViewModel.jumpToControlFragment(batchCode);
+                progressDialog.dismiss();
             }
         });
     }
@@ -379,6 +383,7 @@ public class AppTools {
                 if(viewModel!=null){
                     viewModel.setApkNewst(true);
                 }
+                progressDialog.dismiss();
 
             }
 

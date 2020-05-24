@@ -25,7 +25,7 @@ import org.greenrobot.greendao.annotation.Property;
 public class ProductInfoData {
     @Id(autoincrement = true)
     @Property(nameInDb = "id")
-    private long id;
+    private Long id;
     @Property(nameInDb = "prodId")
     private String prodId;
     @Property(nameInDb = "prodName")
@@ -127,11 +127,11 @@ public class ProductInfoData {
         this.styleResPackSavepath = styleResPackSavepath;
     }
 
-    public long getId() {
+    public Long getId() {
         return this.id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -161,8 +161,8 @@ public class ProductInfoData {
         this.styleResPackSavepath = styleResPackSavepath;
     }
 
-    @Generated(hash = 451457298)
-    public ProductInfoData(long id, String prodId, String prodName, String brandResNewestVerno, long brandResFileLength, String brandResFileName,
+    @Generated(hash = 161818907)
+    public ProductInfoData(Long id, String prodId, String prodName, String brandResNewestVerno, long brandResFileLength, String brandResFileName,
             String brandResPackSavepath, String styleResNewestVerno, long styleResFileLength, String styleResFileName, String styleResPackSavepath) {
         this.id = id;
         this.prodId = prodId;

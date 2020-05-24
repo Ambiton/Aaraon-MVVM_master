@@ -20,6 +20,7 @@ import com.tamsiree.rxtool.RxLogTool;
 import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.base.BaseViewModel;
 import me.goldze.mvvmhabit.http.NetworkUtil;
@@ -114,6 +115,19 @@ public class LoadingViewModel extends BaseViewModel <DemoRepository>{
                         }
 
                     }
-                }));
+                },new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                //关闭对话框
+                dismissDialog();
+                RxLogTool.e(TAG,"accept error:; ",throwable);
+            }
+        }, new Action() {
+            @Override
+            public void run() throws Exception {
+                //关闭对话框
+                dismissDialog();
+            }
+        }));
     }
 }

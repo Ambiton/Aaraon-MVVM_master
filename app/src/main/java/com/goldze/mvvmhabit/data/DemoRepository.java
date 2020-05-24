@@ -106,8 +106,8 @@ public class DemoRepository extends BaseModel implements HttpDataSource, LocalDa
     }
 
     @Override
-    public Observable<ProductInfoResponseEntity> getProductInfo(String batchCode, String appid, String sign, String callId) {
-        return mHttpDataSource.getProductInfo(batchCode, appid, sign, callId);
+    public Observable<ProductInfoResponseEntity> getProductInfo(String batchCode, String appid, String sign,String token, String callId) {
+        return mHttpDataSource.getProductInfo(batchCode, appid, sign,token,  callId);
     }
 
     @Override

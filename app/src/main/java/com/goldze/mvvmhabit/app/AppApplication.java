@@ -35,7 +35,7 @@ import me.goldze.mvvmhabit.utils.KLog;
 public class AppApplication extends BaseApplication {
     private static final String TAG = "AppApplication";
     private static BluetoothClient mClient;
-    private static final String DB_NAME="myzr_db_date";
+    private static final String DB_NAME="myzr_data_db";
     private static final int TIME_PERIOD_OBSERVER = 1 * 60 * 1000;//检测进程后台运行的最大时间MAX_OBSERVER_INDEX*60*1000
     private static final int MAX_OBSERVER_INDEX = 10;//检测进程后台运行的最大时间MAX_OBSERVER_INDEX*60*1000
     private static AppApplication sInstance;

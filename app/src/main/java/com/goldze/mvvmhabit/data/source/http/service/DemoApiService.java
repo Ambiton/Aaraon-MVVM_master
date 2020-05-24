@@ -26,6 +26,7 @@ import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
@@ -51,8 +52,8 @@ public interface DemoApiService {
     @GET("v1/units/{seriNo}/info")
     Observable<ResponseNetDeviceInfoEntity> getDeviceInfo(@Path("seriNo") String seriNo, @QueryMap Map<String, String> map);
 
-    @GET("v1/units/batch/{bathCode}")
-    Observable<ProductInfoResponseEntity> getProductInfo(@Path("bathCode") String bathId, @QueryMap Map<String, String> map);
+    @GET("v1/units/prod/{bathCode}")
+    Observable<ProductInfoResponseEntity> getProductInfo(@Header ("Authorization")String token,@Path("bathCode") String bathCode, @QueryMap Map<String, String> map);
 
     @POST("v1/login?appKey=1uMqYWpHo3MoLH&callId=1276418994&mysig=sig-result")
     Observable<RegisterOrLoginResponseEntity> login(@Body LoginBodyEntity entity);
