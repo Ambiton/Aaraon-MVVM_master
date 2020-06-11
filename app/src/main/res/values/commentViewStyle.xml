@@ -162,7 +162,15 @@
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/radio_selector</item>
     </style>
-
+    <style name="allcontrolText_larger_Selector">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/whiteColor88</item>
+        <item name="android:background">@drawable/highlight_yellow_selector</item>
+    </style>
     <style name="controlText_larger_Selector">
         <item name="android:layout_width">42dp</item>
         <item name="android:layout_height">42dp</item>

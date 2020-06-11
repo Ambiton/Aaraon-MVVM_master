@@ -128,7 +128,7 @@ public class DeviceControlFragment extends BaseFragment<FragmentDevicecontrolBin
         Banner banner = binding.bannerControl;
         //放标题的集合
         ArrayList<String> list_title = new ArrayList<>();
-        ArrayList<Object> list_path = getBannerPlayList(AppTools.getBannerUnZipFiles(this.getActivity()));
+        ArrayList<Object> list_path = getBannerPlayList(AppTools.getBannerUnZipFilesOld(this.getActivity()));
 
 //        list_path.add("http://ww4.sinaimg.cn/large/006uZZy8jw1faic21363tj30ci08ct96.jpg");
 //        list_path.add("http://ww4.sinaimg.cn/large/006uZZy8jw1faic259ohaj30ci08c74r.jpg");

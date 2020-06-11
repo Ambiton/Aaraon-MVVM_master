@@ -38,45 +38,53 @@ public class DeviceStatusInfoEntity extends BaseObservable implements Parcelable
     private byte deviceVoice;
     private byte deviceVoiceSwitch;
 
-    private byte product;
+    private byte productName;
     private byte style;
-    private byte productType;
-    private byte version;
+    private byte productTypeAndVersion;
+    private byte bleVersion;
 
-    public byte getProduct() {
-        return product;
+    public byte getProductName() {
+        return productName;
     }
 
-    public void setProduct(byte product) {
-        this.product = product;
+    public void setProductName(byte productName) {
+        this.productName = productName;
     }
 
     public byte getStyle() {
         return style;
     }
 
+    public byte getProductType(){
+        return RxDataTool.getHeight4(productTypeAndVersion);
+    }
+
+    public byte getProductVersion(){
+        return RxDataTool.getLow4(productTypeAndVersion);
+    }
+
     public String getBatchCode() {
-        return productType+"_"+style;
+        return getProductType() +"_"+getProductVersion()+"_"+style+"_"+bleVersion+"_"+productName;
     }
 
     public void setStyle(byte style) {
         this.style = style;
     }
 
-    public byte getProductType() {
-        return productType;
+    public byte getProductTypeAndVersion() {
+        return productTypeAndVersion;
     }
 
-    public void setProductType(byte productType) {
-        this.productType = productType;
+    public void setProductTypeAndVersion(byte productTypeAndVersion) {
+        this.productTypeAndVersion = productTypeAndVersion;
     }
 
-    public byte getVersion() {
-        return version;
+    public byte getBleVersion() {
+        return bleVersion;
     }
 
-    public void setVersion(byte version) {
-        this.version = version;
+    public void setBleVersion(byte bleVersion) {
+        this.bleVersion = bleVersion;
     }
 
     public byte getIsDeviceOpen() {
@@ -147,10 +155,10 @@ public class DeviceStatusInfoEntity extends BaseObservable implements Parcelable
             this.deviceVoice = info[4];
             this.deviceVoiceSwitch = info[5];
             if(info.length == 10){
-                this.product=info[6];
+                this.productName =info[6];
                 this.style=info[7];
-                this.productType=info[8];
-                this.version=info[9];
+                this.productTypeAndVersion =info[8];
+                this.bleVersion =info[9];
             }
         }
     }
@@ -164,10 +172,10 @@ public class DeviceStatusInfoEntity extends BaseObservable implements Parcelable
         this.deviceRoationMode = in.readByte();
         this.deviceVoice = in.readByte();
         this.deviceVoiceSwitch = in.readByte();
-        this.product=in.readByte();
+        this.productName =in.readByte();
         this.style=in.readByte();
-        this.productType=in.readByte();
-        this.version=in.readByte();
+        this.productTypeAndVersion =in.readByte();
+        this.bleVersion =in.readByte();
     }
 
     public static final Creator<DeviceStatusInfoEntity> CREATOR = new Creator<DeviceStatusInfoEntity>() {
@@ -196,9 +204,9 @@ public class DeviceStatusInfoEntity extends BaseObservable implements Parcelable
         dest.writeByte(this.deviceRoationMode);
         dest.writeByte(this.deviceVoice);
         dest.writeByte(this.deviceVoiceSwitch);
-        dest.writeByte(this.product);
+        dest.writeByte(this.productName);
         dest.writeByte(this.style);
-        dest.writeByte(this.productType);
-        dest.writeByte(this.version);
+        dest.writeByte(this.productTypeAndVersion);
+        dest.writeByte(this.bleVersion);
     }
 }

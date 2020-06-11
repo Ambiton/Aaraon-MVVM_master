@@ -45,6 +45,8 @@
         </activity>
         <activity android:name=".ui.login.LoginActivity"
             android:launchMode="singleTask"></activity>
+        <activity android:name=".ui.main.WebViewActivity"
+            android:launchMode="singleTask"></activity>
         <activity android:name=".ui.main.RegisterActivity"
             android:launchMode="singleTask"></activity>
         <activity android:name=".ui.main.DeviceListActivity"

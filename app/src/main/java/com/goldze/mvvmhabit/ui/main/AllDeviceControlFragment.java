@@ -17,6 +17,7 @@ import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.app.AppViewModelFactory;
 import com.goldze.mvvmhabit.databinding.FragmentAlldevicecontrolBinding;
 import com.goldze.mvvmhabit.entity.DeviceStatusInfoEntity;
+import com.goldze.mvvmhabit.entity.LocalBannerInfo;
 import com.goldze.mvvmhabit.entity.StyleResEntity;
 import com.goldze.mvvmhabit.utils.AppTools;
 import com.goldze.mvvmhabit.utils.BleOption;
@@ -35,6 +36,7 @@ import androidx.annotation.NonNull;
 import androidx.databinding.Observable;
 import androidx.lifecycle.ViewModelProviders;
 import me.goldze.mvvmhabit.base.BaseFragment;
+import me.goldze.mvvmhabit.http.NetworkUtil;
 import me.goldze.mvvmhabit.utils.MaterialDialogUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 import pl.droidsonroids.gif.GifImageView;
@@ -48,11 +50,14 @@ import static com.inuker.bluetooth.library.Constants.STATUS_DISCONNECTED;
  */
 
 public class AllDeviceControlFragment extends BaseFragment<FragmentAlldevicecontrolBinding, AllDeviceControlViewModel> implements OnBannerListener {
-    public static final String KEY_PRODUCTID= "batchCode";
+    public static final String KEY_PRODUCTID = "batchCode";
     private static final String TAG = "AllDeviceControlFragment";
     private MaterialDialog.Builder builderBle;
-    private String batchCode ="";
-    private StyleResEntity styleResEntity=new StyleResEntity();
+    private String batchCode = "";
+    private StyleResEntity styleResEntity = new StyleResEntity();
+    private ArrayList<LocalBannerInfo> bannerPlayHashMap = new ArrayList<>();
+    private ArrayList<Object> list_path = new ArrayList<>();
+    private ArrayList<String> list_path_clickUrl = new ArrayList<>();
 
     @Override
     public void initParam() {
@@ -88,6 +93,7 @@ public class AllDeviceControlFragment extends BaseFragment<FragmentAlldevicecont
         Bundle mBundle = getArguments();
         if (mBundle != null && !TextUtils.isEmpty(mBundle.getString(KEY_PRODUCTID))) {
             batchCode = mBundle.getString(KEY_PRODUCTID);
+//            batchCode="0_0_1_0_1";
             styleResEntity = AppTools.getStyleResDrawableEntity(getActivity(), batchCode);
         }
 
@@ -114,24 +120,29 @@ public class AllDeviceControlFragment extends BaseFragment<FragmentAlldevicecont
         viewModel.requestDeviceInfo();
     }
 
-    private ArrayList<Object> getBannerPlayList(ArrayList<Object> allDatas) {
-        ArrayList<Object> list_path = new ArrayList<>();
+    private void getBannerPlayListInfo(ArrayList<LocalBannerInfo> allDatas) {
+        list_path = new ArrayList<>();
+        list_path_clickUrl = new ArrayList<>();
         if (AppTools.isAutoPlayMode(viewModel.getBannerPlayMode())) {
-            list_path = allDatas;
+            for (LocalBannerInfo localBannerInfo : allDatas) {
+                list_path.add(localBannerInfo.getPicUrl());
+                list_path_clickUrl.add(localBannerInfo.getClickUrl());
+            }
         } else {
             if (viewModel.getBannerPlayIndex() > allDatas.size() - 1) {
                 viewModel.saveBannerPlayIndex(0);
             }
-            list_path.add(allDatas.get(viewModel.getBannerPlayIndex()));
+            list_path.add(allDatas.get(viewModel.getBannerPlayIndex()).getPicUrl());
+            list_path_clickUrl.add(allDatas.get(viewModel.getBannerPlayIndex()).getClickUrl());
         }
-        return list_path;
     }
 
     private void startBanner() {
         Banner banner = binding.bannerControl;
         //放标题的集合
         ArrayList<String> list_title = new ArrayList<>();
-        ArrayList<Object> list_path = getBannerPlayList(AppTools.getBannerUnZipFiles(this.getActivity()));
+        bannerPlayHashMap = AppTools.getBannerUnZipFiles(this.getActivity());
+        getBannerPlayListInfo(bannerPlayHashMap);
 
 //        list_path.add("http://ww4.sinaimg.cn/large/006uZZy8jw1faic21363tj30ci08ct96.jpg");
 //        list_path.add("http://ww4.sinaimg.cn/large/006uZZy8jw1faic259ohaj30ci08c74r.jpg");
@@ -156,7 +167,6 @@ public class AllDeviceControlFragment extends BaseFragment<FragmentAlldevicecont
 
         //List<String> image = new ArrayList<>();
         //banner.setImages(DataBean.getTestData2());
-
         //设置banner动画效果
         banner.setBannerAnimation(Transformer.DepthPage);
         //设置标题集合（当banner样式有显示title时）
@@ -178,9 +188,9 @@ public class AllDeviceControlFragment extends BaseFragment<FragmentAlldevicecont
     public void onStart() {
         super.onStart();
         binding.bannerControl.startAutoPlay();
-        setDrawableTop(binding.tvRotationModePositive,R.drawable.inner_mode_selector);
-        setDrawableTop(binding.tvRotationModeReversal,R.drawable.outer_mode_selector);
-        setDrawableTop(binding.tvRotationModeAuto,R.drawable.auto_mode_selector);
+        setDrawableTop(binding.tvRotationModePositive, R.drawable.inner_mode_selector);
+        setDrawableTop(binding.tvRotationModeReversal, R.drawable.outer_mode_selector);
+        setDrawableTop(binding.tvRotationModeAuto, R.drawable.auto_mode_selector);
     }
 
     @Override
@@ -227,10 +237,11 @@ public class AllDeviceControlFragment extends BaseFragment<FragmentAlldevicecont
         }
     }
 
-    private void initStylePictures(){
-        AppTools.displayImage(getActivity(),styleResEntity.getStopUri(),binding.ivDevicecontrolBg);
-        AppTools.displayImage(getActivity(),styleResEntity.getPillowUri(),binding.ivDevicecontrolAllBg);
-        AppTools.displayImage(getActivity(),styleResEntity.getPauseUri(),binding.ivDevicecontrolGif);
+    private void initStylePictures() {
+        AppTools.displayImage(getActivity(), styleResEntity.getBackgroundUri(), binding.llmainbackground);
+        AppTools.displayImage(getActivity(), styleResEntity.getStopUri(), binding.ivDevicecontrolBg);
+        AppTools.displayImage(getActivity(), styleResEntity.getPillowUri(), binding.ivDevicecontrolAllBg);
+        AppTools.displayImage(getActivity(), styleResEntity.getPauseUri(), binding.ivDevicecontrolGif);
     }
 
     /**
@@ -243,7 +254,7 @@ public class AllDeviceControlFragment extends BaseFragment<FragmentAlldevicecont
         if (deviceStatusInfoEntity.getDeviceRoationDirect() != DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_POSISION &&
                 deviceStatusInfoEntity.getDeviceRoationDirect() != DeviceStatusInfoEntity.FLAG_ROATION_DIRECT_REV) {
 //            binding.ivDevicecontrolGif.setImageResource(R.drawable.pause);
-            AppTools.displayImage(getActivity(),styleResEntity.getPauseUri(),binding.ivDevicecontrolGif);
+            AppTools.displayImage(getActivity(), styleResEntity.getPauseUri(), binding.ivDevicecontrolGif);
         } else {
             Object res = styleResEntity.getPauseUri();
             int directtion = deviceStatusInfoEntity.getDeviceRoationDirect();
@@ -266,7 +277,7 @@ public class AllDeviceControlFragment extends BaseFragment<FragmentAlldevicecont
                 }
             }
 //            binding.ivDevicecontrolGif.setImageResource(res);
-            AppTools.displayImage(getActivity(),res,binding.ivDevicecontrolGif);
+            AppTools.displayImage(getActivity(), res, binding.ivDevicecontrolGif);
         }
     }
 
@@ -312,14 +323,14 @@ public class AllDeviceControlFragment extends BaseFragment<FragmentAlldevicecont
 
     private void setDrawableTop(TextView textView, int resId) {
         Drawable drawable = getResources().getDrawable(resId); //获取图片
-        if(resId==R.drawable.inner_mode_selector){
+        if (resId == R.drawable.inner_mode_selector) {
             drawable.setBounds(0, 0, RxImageTool.dip2px(56.6f), RxImageTool.dip2px(36.6f));  //设置图片参数
-        }else if((resId==R.drawable.outer_mode_selector)){
+        } else if ((resId == R.drawable.outer_mode_selector)) {
             drawable.setBounds(0, 0, RxImageTool.dip2px(56), RxImageTool.dip2px(36.6f));  //设置图片参数
-        }else{
+        } else {
             drawable.setBounds(0, 0, RxImageTool.dip2px(36), RxImageTool.dip2px(36.6f));  //设置图片参数
         }
-        textView .setCompoundDrawables(null,drawable,null,null);
+        textView.setCompoundDrawables(null, drawable, null, null);
     }
 
     @Override
@@ -370,15 +381,15 @@ public class AllDeviceControlFragment extends BaseFragment<FragmentAlldevicecont
                 RxLogTool.e(TAG, "onPropertyChanged " + viewModel.statusInfoChageObeserver.get());
                 DeviceStatusInfoEntity deviceStatusInfoEntity = viewModel.statusInfoChageObeserver.get();
                 if (deviceStatusInfoEntity == null) {
-                    AppTools.displayImage(getActivity(),styleResEntity.getPillowUri(),binding.ivDevicecontrolAllBg);
-                    AppTools.displayImage(getActivity(),styleResEntity.getStopUri(),binding.ivDevicecontrolBg);
+                    AppTools.displayImage(getActivity(), styleResEntity.getPillowUri(), binding.ivDevicecontrolAllBg);
+                    AppTools.displayImage(getActivity(), styleResEntity.getStopUri(), binding.ivDevicecontrolBg);
                     binding.ivDevicecontrolBg.setVisibility(View.VISIBLE);
                     binding.ivDevicecontrolGif.setVisibility(View.INVISIBLE);
                     return;
                 }
                 if (deviceStatusInfoEntity.getIsDeviceOpen() == DeviceStatusInfoEntity.FLAG_FALSE) {
-                    AppTools.displayImage(getActivity(),styleResEntity.getPillowUri(),binding.ivDevicecontrolAllBg);
-                    AppTools.displayImage(getActivity(),styleResEntity.getStopUri(),binding.ivDevicecontrolBg);
+                    AppTools.displayImage(getActivity(), styleResEntity.getPillowUri(), binding.ivDevicecontrolAllBg);
+                    AppTools.displayImage(getActivity(), styleResEntity.getStopUri(), binding.ivDevicecontrolBg);
                     binding.ivDevicecontrolBg.setVisibility(View.VISIBLE);
                     binding.ivDevicecontrolGif.setVisibility(View.INVISIBLE);
 
@@ -392,8 +403,8 @@ public class AllDeviceControlFragment extends BaseFragment<FragmentAlldevicecont
                     setAllOptionEnable(true);
                     binding.ivDevicecontrolGif.setVisibility(View.VISIBLE);
                     binding.ivDevicecontrolBg.setVisibility(View.INVISIBLE);
-                    Object allBg=(deviceStatusInfoEntity.getIsHeatingOpen() == DeviceStatusInfoEntity.FLAG_TRUE ? styleResEntity.getWarmpillowUri(): styleResEntity.getPillowUri());
-                    AppTools.displayImage(getActivity(),allBg,binding.ivDevicecontrolAllBg);
+                    Object allBg = (deviceStatusInfoEntity.getIsHeatingOpen() == DeviceStatusInfoEntity.FLAG_TRUE ? styleResEntity.getWarmpillowUri() : styleResEntity.getPillowUri());
+                    AppTools.displayImage(getActivity(), allBg, binding.ivDevicecontrolAllBg);
                     binding.switchOpen.setChecked(deviceStatusInfoEntity.getIsDeviceOpen() == DeviceStatusInfoEntity.FLAG_TRUE);
                     binding.switchWarm.setChecked(deviceStatusInfoEntity.getIsHeatingOpen() == DeviceStatusInfoEntity.FLAG_TRUE);
                     binding.tvRotationHigh.setChecked(deviceStatusInfoEntity.getDeviceSpeed() == DeviceStatusInfoEntity.FLAG_SPEED_MAX);
@@ -430,6 +441,13 @@ public class AllDeviceControlFragment extends BaseFragment<FragmentAlldevicecont
 
     @Override
     public void OnBannerClick(int position) {
-//        ToastUtils.showLong("点击了 "+position);
+//        ToastUtils.showLong("点击了 " + list_path_clickUrl.get(position));
+        if (NetworkUtil.isNetworkAvailable(this.getActivity())) {
+            Bundle bundle = new Bundle();
+            bundle.putString(WebViewActivity.KEY_URI, list_path_clickUrl.get(position));
+            startActivity(WebViewActivity.class, bundle);
+        } else {
+            ToastUtils.showLong(getString(R.string.toast_title_net_error));
+        }
     }
 }

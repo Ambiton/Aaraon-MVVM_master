@@ -5,30 +5,43 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import androidx.core.content.FileProvider;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.goldze.mvvmhabit.R;
+import com.goldze.mvvmhabit.entity.LocalBannerInfo;
 import com.goldze.mvvmhabit.entity.StyleResEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseDataEntity;
 import com.goldze.mvvmhabit.entity.http.productinfo.ProductInfoResponseEntity;
 import com.goldze.mvvmhabit.ui.main.DeviceListItemViewModel;
 import com.goldze.mvvmhabit.ui.main.DeviceListViewModel;
 import com.goldze.mvvmhabit.ui.main.LoadingViewModel;
+import com.google.gson.Gson;
 import com.tamsiree.rxtool.RxFileTool;
 import com.tamsiree.rxtool.RxImageTool;
 import com.tamsiree.rxtool.RxLogTool;
 import com.tamsiree.rxtool.RxZipTool;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import me.goldze.mvvmhabit.http.DownLoadManager;
 import me.goldze.mvvmhabit.http.download.ProgressCallBack;
@@ -150,30 +163,44 @@ public class AppTools {
     public static StyleResEntity getStyleResDrawableEntity(Context context, String batchCode) {
         StyleResEntity styleResEntity = new StyleResEntity();
         File fileDir = RxFileTool.getFileByPath(getStyleResPackSavePath(context, batchCode));
+        int index=0;
         if (fileDir.exists() && fileDir.isDirectory() && fileDir.list().length > 0) {
             for (File file : fileDir.listFiles()) {
                 Uri uri = Uri.fromFile(file);
                 if (file.getName().equals(StyleResEntity.FILENAME_PAUSE)) {
                     styleResEntity.setPauseUri(uri);
+                    index++;
                 } else if (file.getName().equals(StyleResEntity.FILENAME_PILLOW)) {
                     styleResEntity.setPillowUri(uri);
+                    index++;
                 } else if (file.getName().equals(StyleResEntity.FILENAME_ROATION_POS_HIGH_GIF)) {
                     styleResEntity.setRoationPosHighNormalUri(uri);
+                    index++;
                 } else if (file.getName().equals(StyleResEntity.FILENAME_ROATION_POS_MID_GIF)) {
                     styleResEntity.setRoationPosMidNormalUri(uri);
+                    index++;
                 } else if (file.getName().equals(StyleResEntity.FILENAME_ROATION_POS_LOW_GIF)) {
                     styleResEntity.setRoationPosLowNormalUri(uri);
+                    index++;
                 } else if (file.getName().equals(StyleResEntity.FILENAME_ROATION_REV_HIGH_GIF)) {
                     styleResEntity.setRoationRevHighNormalUri(uri);
+                    index++;
                 } else if (file.getName().equals(StyleResEntity.FILENAME_ROATION_REV_MID_GIF)) {
                     styleResEntity.setRoationRevMidNormalUri(uri);
+                    index++;
                 } else if (file.getName().equals(StyleResEntity.FILENAME_ROATION_REV_LOW_GIF)) {
                     styleResEntity.setRoationRevLowNormalUri(uri);
+                    index++;
                 } else if (file.getName().equals(StyleResEntity.FILENAME_STOP)) {
                     styleResEntity.setStopUri(uri);
+                    index++;
                 } else if (file.getName().equals(StyleResEntity.FILENAME_WARMPILLOW)) {
                     styleResEntity.setWarmpillowUri(uri);
-                } else {
+                    index++;
+                } else if (file.getName().equals(StyleResEntity.FILENAME_BACKGROUND)) {
+                    styleResEntity.setBackgroundUri(uri);
+                    index++;
+                }else {
                     RxLogTool.e(TAG, "other file condition,uri: " + uri);
                 }
             }
@@ -185,7 +212,7 @@ public class AppTools {
      * 获取轮播图片是否存在
      * @return
      */
-    public static ArrayList<Object> getBannerUnZipFiles(Context context){
+    public static ArrayList<Object> getBannerUnZipFilesOld(Context context){
         ArrayList<Object>arrayList=new ArrayList<>();
         File fileDir= RxFileTool.getFileByPath(getBannerPath(context));
         if(fileDir.exists()&&fileDir.isDirectory()&&fileDir.list().length>0){
@@ -199,6 +226,48 @@ public class AppTools {
             arrayList.add(R.mipmap.banner1);
         }
         return arrayList;
+    }
+
+    /**
+     * 获取轮播图片是否存在
+     * @return
+     */
+    public static ArrayList<LocalBannerInfo> getBannerUnZipFiles(Context context){
+        ArrayList<LocalBannerInfo> localBannerInfos=new ArrayList<>();
+        File fileDir= RxFileTool.getFileByPath(getBannerPath(context));
+        String jsonContent="";
+        if(fileDir.exists()&&fileDir.isDirectory()&&fileDir.list().length>0){
+            for(File file:fileDir.listFiles()){
+                if (file.getName().equals("banner.json")) {
+                    jsonContent=RxFileTool.readFile2String(file,"utf8");
+                }
+            }
+        }
+        if(fileDir.exists()&&fileDir.isDirectory()&&fileDir.list().length>0){
+            for(File file:fileDir.listFiles()){
+                if ((file.getName().endsWith(".jpg") || file.getName().endsWith(".png")) && file.getName().startsWith("banner")) {
+                    String fileHeadName=file.getName().split("\\.")[0];
+                    LocalBannerInfo localBannerInfo=new LocalBannerInfo(fileHeadName,Uri.fromFile(file),getBannerPicUrl(jsonContent,fileHeadName));
+                    localBannerInfos.add(localBannerInfo);
+                }
+            }
+        }
+        if(localBannerInfos.size()==0){
+            localBannerInfos.add(new LocalBannerInfo("localBitmap",R.mipmap.banner1,""));
+        }
+        return localBannerInfos;
+    }
+
+    private static String getBannerPicUrl(String jsonContent,String fileHeadName){
+        String result="";
+        try {
+            JSONObject jsonObject = new JSONObject(jsonContent);
+            JSONObject filenameJson = jsonObject.getJSONObject(fileHeadName);
+            result = filenameJson.optString("url");
+        } catch (JSONException e) {
+            RxLogTool.e(TAG,"JSONException is :",e);
+        }
+        return result;
     }
 
     /**
@@ -402,7 +471,7 @@ public class AppTools {
         });
     }
 
-    public static void displayImage(Context context, Object path, ImageView imageView) {
+    public static void displayImage(Context context, Object path, final View view) {
         /**
          注意：
          1.图片加载器由自己选择，这里不限制，只是提供几种使用方法
@@ -413,7 +482,24 @@ public class AppTools {
 //        eg：
 
         //Glide 加载图片简单用法
-        Glide.with(context).load(path).into(imageView);
+        if(view instanceof ImageView){
+            Glide.with(context).load(path).into((ImageView)view);
+        }else{
+            Glide.with(context)
+                    .asBitmap()
+                    .load(path)
+                    .into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                            Drawable drawable = new BitmapDrawable(resource);
+                            view.setBackground(drawable);
+                        }
+
+                    });
+
+        }
+
+
 
         //Picasso 加载图片简单用法
 //        Picasso.with(context).load(path).into(imageView);
@@ -422,4 +508,5 @@ public class AppTools {
 //        Uri uri = Uri.parse((String) path);
 //        imageView.setImageURI(uri);
     }
+
 }

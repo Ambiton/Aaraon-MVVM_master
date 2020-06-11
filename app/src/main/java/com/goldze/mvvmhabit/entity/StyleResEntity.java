@@ -10,9 +10,10 @@ import com.goldze.mvvmhabit.R;
  * @date : 2020/5/16 22:45
  */
 public class StyleResEntity {
+    public static String FILENAME_BACKGROUND = "mainbackground.png";
     public static String FILENAME_PILLOW = "pillow.png";
     public static String FILENAME_STOP = "stop.png";
-    public static String FILENAME_WARMPILLOW = "";
+    public static String FILENAME_WARMPILLOW = "warmpillow.png";
     public static String FILENAME_PAUSE = "pause.png";
     public static String FILENAME_ROATION_POS_HIGH_GIF = "roation_pos_high_normal.gif";
     public static String FILENAME_ROATION_POS_MID_GIF = "roation_pos_mid_normal.gif";
@@ -32,6 +33,16 @@ public class StyleResEntity {
     private Uri roationRevHighNormalUri;
     private Uri roationRevMidNormalUri;
     private Uri roationRevLowNormalUri;
+
+    public Object getBackgroundUri() {
+        return backgroundUri == null ? R.mipmap.mainbackground : backgroundUri;
+    }
+
+    public void setBackgroundUri(Uri backgroundUri) {
+        this.backgroundUri = backgroundUri;
+    }
+
+    private Uri backgroundUri;
 
     private Object hit;
 

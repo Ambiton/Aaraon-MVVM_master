@@ -157,6 +157,7 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
             jumpToControlFragment(deviceStatusInfoEntity.getBatchCode());
             return;
         }
+        //deviceStatusInfoEntity.getBatchCode()
         addSubscribe(model.getProductInfo(deviceStatusInfoEntity.getBatchCode(),AppTools.APPKEY,"sig-result",model.getToken(), HttpsUtils.getCurrentMills())
                 .compose(RxUtils.schedulersTransformer()) //线程调度
                 .doOnSubscribe(new Consumer<Disposable>() {
@@ -171,10 +172,10 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
                         dismissDialog();
                         boolean isOptionSuccess = entity.getStatus() == HttpStatus.STATUS_CODE_SUCESS;
                         RxLogTool.e(TAG, "ProductInfoResponseEntity getStatus is: " + entity.getStatus());
-                        if (isOptionSuccess&&getProductDBInfo(entity.getData().getProdId())!=null&&
-                                AppTools.isVersionNeedUpdate(getProductDBInfo(entity.getData().getProdId()).getStyleResNewestVerno(),entity.getData().getStyleResNewestVerno())) {
-                            AppTools.downProductInfoImageFiles(contex, entity, DeviceListViewModel.this,deviceStatusInfoEntity.getBatchCode());
-                        }else{
+                        if (isOptionSuccess && (getProductDBInfo(entity.getData().getProdId()) == null || (getProductDBInfo(entity.getData().getProdId()) != null &&
+                                AppTools.isVersionNeedUpdate(getProductDBInfo(entity.getData().getProdId()).getStyleResNewestVerno(), entity.getData().getStyleResNewestVerno())))) {
+                            AppTools.downProductInfoImageFiles(contex, entity, DeviceListViewModel.this, deviceStatusInfoEntity.getBatchCode());
+                        } else {
                             RxLogTool.e(TAG, "ProductInfoStyleRes is newest");
                             jumpToControlFragment(deviceStatusInfoEntity.getBatchCode());
                         }
