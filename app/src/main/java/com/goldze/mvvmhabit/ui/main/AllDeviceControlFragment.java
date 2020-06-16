@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.bumptech.glide.Glide;
 import com.goldze.mvvmhabit.BR;
 import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.app.AppViewModelFactory;
@@ -51,6 +52,7 @@ import static com.inuker.bluetooth.library.Constants.STATUS_DISCONNECTED;
 
 public class AllDeviceControlFragment extends BaseFragment<FragmentAlldevicecontrolBinding, AllDeviceControlViewModel> implements OnBannerListener {
     public static final String KEY_PRODUCTID = "batchCode";
+    public static final String KEY_PRODUCTINFO = "productinfo";
     private static final String TAG = "AllDeviceControlFragment";
     private MaterialDialog.Builder builderBle;
     private String batchCode = "";
@@ -109,7 +111,8 @@ public class AllDeviceControlFragment extends BaseFragment<FragmentAlldevicecont
         BleOption.getInstance().registerConnectListener(mBleConnectStatusListener);
         //请求设备信息数据
         viewModel.initBleEvent();
-        viewModel.initToolbar();
+        binding.tvTitle.setText(viewModel.getProductName(batchCode));
+        viewModel.initToolbar(batchCode);
         startBanner();
         initStylePictures();
     }
@@ -134,6 +137,7 @@ public class AllDeviceControlFragment extends BaseFragment<FragmentAlldevicecont
             }
             list_path.add(allDatas.get(viewModel.getBannerPlayIndex()).getPicUrl());
             list_path_clickUrl.add(allDatas.get(viewModel.getBannerPlayIndex()).getClickUrl());
+            viewModel.saveBannerPlayIndex(viewModel.getBannerPlayIndex()+1);
         }
     }
 
@@ -237,7 +241,9 @@ public class AllDeviceControlFragment extends BaseFragment<FragmentAlldevicecont
         }
     }
 
+
     private void initStylePictures() {
+        AppTools.displayImage(getActivity(), styleResEntity.getLogoUri(), binding.ivRightIcon);
         AppTools.displayImage(getActivity(), styleResEntity.getBackgroundUri(), binding.llmainbackground);
         AppTools.displayImage(getActivity(), styleResEntity.getStopUri(), binding.ivDevicecontrolBg);
         AppTools.displayImage(getActivity(), styleResEntity.getPillowUri(), binding.ivDevicecontrolAllBg);
@@ -368,7 +374,10 @@ public class AllDeviceControlFragment extends BaseFragment<FragmentAlldevicecont
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            ToastUtils.showLong("操作失败，请重试!");
+                            if(!viewModel.isTrunOff.get()){
+                                ToastUtils.showLong("操作失败，请重试!");
+                            }
+
                         }
                     });
                 }
@@ -441,13 +450,16 @@ public class AllDeviceControlFragment extends BaseFragment<FragmentAlldevicecont
 
     @Override
     public void OnBannerClick(int position) {
-//        ToastUtils.showLong("点击了 " + list_path_clickUrl.get(position));
-        if (NetworkUtil.isNetworkAvailable(this.getActivity())) {
-            Bundle bundle = new Bundle();
-            bundle.putString(WebViewActivity.KEY_URI, list_path_clickUrl.get(position));
-            startActivity(WebViewActivity.class, bundle);
-        } else {
-            ToastUtils.showLong(getString(R.string.toast_title_net_error));
+        //ToastUtils.showLong("点击了 " + list_path_clickUrl.get(position));
+        if(list_path_clickUrl.size()>=position&&!TextUtils.isEmpty(list_path_clickUrl.get(position))){
+            if (NetworkUtil.isNetworkAvailable(this.getActivity())) {
+                Bundle bundle = new Bundle();
+                bundle.putString(WebViewActivity.KEY_URI, list_path_clickUrl.get(position));
+                startActivity(WebViewActivity.class, bundle);
+            } else {
+                ToastUtils.showLong(getString(R.string.toast_title_net_error));
+            }
         }
+
     }
 }

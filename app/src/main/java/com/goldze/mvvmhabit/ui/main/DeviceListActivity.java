@@ -43,6 +43,7 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
  */
 
 public class DeviceListActivity extends BaseActivity<ActivityDevicelistBinding, DeviceListViewModel> {
+    private static final String TAG="DeviceListActivity";
     private int GPS_REQUEST_CODE = 1;
     @Override
     public int initContentView(Bundle savedInstanceState) {
@@ -68,11 +69,12 @@ public class DeviceListActivity extends BaseActivity<ActivityDevicelistBinding, 
         return ViewModelProviders.of(this, factory).get(DeviceListViewModel.class);
     }
 
+
     @Override
     public void initData() {
         //给RecyclerView添加Adpter，请使用自定义的Adapter继承BindingRecyclerViewAdapter，重写onBindBinding方法，里面有你要的Item对应的binding对象。
         // Adapter属于View层的东西, 不建议定义到ViewModel中绑定，以免内存泄漏
-        viewModel.setContext(this);
+        viewModel.setActivity(this);
         binding.setAdapter(new DeviceListBindingAdapter());
         binding.include.ivRightIcon.setImageResource(R.mipmap.roundlogo);
         binding.include.ivRightIcon.setVisibility(View.VISIBLE);
@@ -114,6 +116,7 @@ public class DeviceListActivity extends BaseActivity<ActivityDevicelistBinding, 
     @Override
     protected void onResume() {
         super.onResume();
+        dismissDialog();
         requestBlutoothScanPermissions();
         viewModel.submitUserDeviceOption();
     }
@@ -210,10 +213,24 @@ public class DeviceListActivity extends BaseActivity<ActivityDevicelistBinding, 
                                 }).show();
                             }
                             break;
+                        }else if (CheckUpdateResponseDataEntity.TYPE_BANNER.equals(checkUpdateResponseDataEntity.getType())) {
+                            viewModel.setBannerPlayModel(checkUpdateResponseDataEntity.getPlayMode());
+                            //Banner 版本检测更新
+                            if(AppTools.isVersionNeedUpdate(viewModel.getBannerVersion(),checkUpdateResponseDataEntity.getNewestVerno())){
+                                RxLogTool.e("TAG","banner need update...");
+                                AppTools.downImageBannerFiles(DeviceListActivity.this, checkUpdateResponseDataEntity, viewModel);
+                            }
+
+                        } else if (CheckUpdateResponseDataEntity.TYPE_LOAD_RES.equals(checkUpdateResponseDataEntity.getType())) {
+                            //Loading图 版本检测更新
+                            if(AppTools.isVersionNeedUpdate(viewModel.getBannerVersion(),checkUpdateResponseDataEntity.getNewestVerno())){
+                                RxLogTool.e("TAG","loadImage need update...");
+                                AppTools.downImageLoadingFiles(DeviceListActivity.this, checkUpdateResponseDataEntity,viewModel);
+                            }
+                        } else {
+                            RxLogTool.e(TAG,"other version retrun...");
                         }
                     }
-
-
                 }
 
             }

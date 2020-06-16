@@ -37,6 +37,16 @@ public interface LocalDataSource {
     void savePassword(String password);
 
     /**
+     * 保存bathcode 对应的 productname
+     */
+    void saveProductname(String batchcode,String productname);
+
+    /**
+     * 获取bathcode 对应的 productname
+     */
+    String getProductname(String batchcode);
+
+    /**
      * 保存Banner版本
      */
     void saveBannerVersion(String version);

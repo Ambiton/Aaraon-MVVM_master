@@ -99,18 +99,6 @@ public class LoadingActivity extends BaseActivity<ActivityLoadingBinding, Loadin
                             final CheckUpdateResponseDataEntity appCheckUpdateResponseDataEntity = checkUpdateResponseDataEntity;
                             if (AppTools.isNeedUpdate(LoadingActivity.this, appCheckUpdateResponseDataEntity.getNewestVerno())) {
                                 RxLogTool.e("TAG","apk need update...");
-//                                final MaterialDialog.Builder builderApk = MaterialDialogUtils.showUpdateDialog(LoadingActivity.this, appCheckUpdateResponseDataEntity.getDesc(), CheckUpdateResponseDataEntity.FORCE_UPGRADE.equals(appCheckUpdateResponseDataEntity));
-//                                builderApk.onPositive(new MaterialDialog.SingleButtonCallback() {
-//                                    @Override
-//                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-//                                        AppTools.downFile(LoadingActivity.this, appCheckUpdateResponseDataEntity.getPackSavepath(),viewModel);
-//                                    }
-//                                }).onNegative(new MaterialDialog.SingleButtonCallback() {
-//                                    @Override
-//                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-//                                        viewModel.setApkNewst(true);
-//                                    }
-//                                }).show();
                             }else{
                                 viewModel.setApkNewst(true);
                             }

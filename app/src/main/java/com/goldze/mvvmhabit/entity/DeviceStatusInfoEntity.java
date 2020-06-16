@@ -159,6 +159,11 @@ public class DeviceStatusInfoEntity extends BaseObservable implements Parcelable
                 this.style=info[7];
                 this.productTypeAndVersion =info[8];
                 this.bleVersion =info[9];
+
+//                this.productName =1;
+//                this.style=1;
+//                this.productTypeAndVersion =0;
+//                this.bleVersion =0;
             }
         }
     }

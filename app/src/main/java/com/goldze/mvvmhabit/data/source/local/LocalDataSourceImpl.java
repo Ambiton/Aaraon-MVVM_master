@@ -78,6 +78,16 @@ public class LocalDataSourceImpl implements LocalDataSource {
     }
 
     @Override
+    public void saveProductname(String batchcode, String productname) {
+        SPUtils.getInstance().put(batchcode, productname);
+    }
+
+    @Override
+    public String getProductname(String batchcode) {
+        return  SPUtils.getInstance().getString(batchcode, "明远科技按摩器");
+    }
+
+    @Override
     public void saveBannerVersion(String version) {
         SPUtils.getInstance().put(KEY_VERSION_BANNER, version);
     }

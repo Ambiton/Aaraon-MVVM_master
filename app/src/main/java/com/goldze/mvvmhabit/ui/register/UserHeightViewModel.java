@@ -21,6 +21,7 @@ import com.goldze.mvvmhabit.utils.HttpsUtils;
 import com.tamsiree.rxtool.RxLogTool;
 
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.base.AppManager;
 import me.goldze.mvvmhabit.base.BaseViewModel;
@@ -28,7 +29,9 @@ import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.binding.command.BindingConsumer;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
+import me.goldze.mvvmhabit.http.ResponseThrowable;
 import me.goldze.mvvmhabit.utils.RxUtils;
+import me.goldze.mvvmhabit.utils.ToastUtils;
 
 /**
  * @author Areo
@@ -127,6 +130,24 @@ public class UserHeightViewModel extends BaseViewModel<DemoRepository> {
                             dialogEvent.notifyChange();
                             RxLogTool.e(TAG, "submit userInfo failed,status code is " + registerUserInfoResponseEntity.getStatus());
                         }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        //关闭对话框
+                        dismissDialog();
+                        if(AppTools.isNetCanUse(getApplication(),true)){
+                            if (throwable instanceof ResponseThrowable) {
+                                ToastUtils.showShort(((ResponseThrowable) throwable).message);
+                            }
+                        }
+
+                    }
+                }, new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        //关闭对话框
+                        dismissDialog();
                     }
                 }));
     }

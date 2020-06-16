@@ -19,6 +19,8 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.goldze.mvvmhabit.R;
@@ -44,6 +46,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import me.goldze.mvvmhabit.http.DownLoadManager;
+import me.goldze.mvvmhabit.http.NetworkUtil;
 import me.goldze.mvvmhabit.http.download.ProgressCallBack;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 import okhttp3.ResponseBody;
@@ -145,6 +148,7 @@ public class AppTools {
         return context.getExternalCacheDir().getPath()+File.separator+"styleRes/"+batchCode+File.separator;
     }
 
+
     private static String getBannerPath(Context context){
         return context.getExternalCacheDir().getPath()+File.separator+"bannerImages/";
     }
@@ -160,6 +164,49 @@ public class AppTools {
      * 获取控制页面图片
      * @return
      */
+    public static boolean isStyleResDrawableTotal(Context context, String batchCode) {
+        File fileDir = RxFileTool.getFileByPath(getStyleResPackSavePath(context, batchCode));
+        int index=0;
+        if (fileDir.exists() && fileDir.isDirectory() && fileDir.list().length > 0) {
+            for (File file : fileDir.listFiles()) {
+                Uri uri = Uri.fromFile(file);
+                String fileHeadName=file.getName().split("\\.")[0];
+                if (fileHeadName.equals(StyleResEntity.FILENAME_PAUSE)) {
+                    index++;
+                } else if (fileHeadName.equals(StyleResEntity.FILENAME_PILLOW)) {
+                    index++;
+                } else if (fileHeadName.equals(StyleResEntity.FILENAME_ROATION_POS_HIGH_GIF)) {
+                    index++;
+                } else if (fileHeadName.equals(StyleResEntity.FILENAME_ROATION_POS_MID_GIF)) {
+                    index++;
+                } else if (fileHeadName.equals(StyleResEntity.FILENAME_ROATION_POS_LOW_GIF)) {
+                    index++;
+                } else if (fileHeadName.equals(StyleResEntity.FILENAME_ROATION_REV_HIGH_GIF)) {
+                    index++;
+                } else if (fileHeadName.equals(StyleResEntity.FILENAME_ROATION_REV_MID_GIF)) {
+                    index++;
+                } else if (fileHeadName.equals(StyleResEntity.FILENAME_ROATION_REV_LOW_GIF)) {
+                    index++;
+                } else if (fileHeadName.equals(StyleResEntity.FILENAME_STOP)) {
+                    index++;
+                } else if (fileHeadName.equals(StyleResEntity.FILENAME_WARMPILLOW)) {
+                    index++;
+                } else if (fileHeadName.equals(StyleResEntity.FILENAME_BACKGROUND)) {
+                    index++;
+                }else if (fileHeadName.equals(StyleResEntity.FILENAME_PRODUCT_LOGO)) {
+                    index++;
+                }else {
+                    RxLogTool.e(TAG, "other file condition,uri: " + uri);
+                }
+            }
+        }
+        return index==12;
+    }
+
+    /**
+     * 获取控制页面图片
+     * @return
+     */
     public static StyleResEntity getStyleResDrawableEntity(Context context, String batchCode) {
         StyleResEntity styleResEntity = new StyleResEntity();
         File fileDir = RxFileTool.getFileByPath(getStyleResPackSavePath(context, batchCode));
@@ -167,38 +214,42 @@ public class AppTools {
         if (fileDir.exists() && fileDir.isDirectory() && fileDir.list().length > 0) {
             for (File file : fileDir.listFiles()) {
                 Uri uri = Uri.fromFile(file);
-                if (file.getName().equals(StyleResEntity.FILENAME_PAUSE)) {
+                String fileHeadName=file.getName().split("\\.")[0];
+                if (fileHeadName.equals(StyleResEntity.FILENAME_PAUSE)) {
                     styleResEntity.setPauseUri(uri);
                     index++;
-                } else if (file.getName().equals(StyleResEntity.FILENAME_PILLOW)) {
+                } else if (fileHeadName.equals(StyleResEntity.FILENAME_PILLOW)) {
                     styleResEntity.setPillowUri(uri);
                     index++;
-                } else if (file.getName().equals(StyleResEntity.FILENAME_ROATION_POS_HIGH_GIF)) {
+                } else if (fileHeadName.equals(StyleResEntity.FILENAME_ROATION_POS_HIGH_GIF)) {
                     styleResEntity.setRoationPosHighNormalUri(uri);
                     index++;
-                } else if (file.getName().equals(StyleResEntity.FILENAME_ROATION_POS_MID_GIF)) {
+                } else if (fileHeadName.equals(StyleResEntity.FILENAME_ROATION_POS_MID_GIF)) {
                     styleResEntity.setRoationPosMidNormalUri(uri);
                     index++;
-                } else if (file.getName().equals(StyleResEntity.FILENAME_ROATION_POS_LOW_GIF)) {
+                } else if (fileHeadName.equals(StyleResEntity.FILENAME_ROATION_POS_LOW_GIF)) {
                     styleResEntity.setRoationPosLowNormalUri(uri);
                     index++;
-                } else if (file.getName().equals(StyleResEntity.FILENAME_ROATION_REV_HIGH_GIF)) {
+                } else if (fileHeadName.equals(StyleResEntity.FILENAME_ROATION_REV_HIGH_GIF)) {
                     styleResEntity.setRoationRevHighNormalUri(uri);
                     index++;
-                } else if (file.getName().equals(StyleResEntity.FILENAME_ROATION_REV_MID_GIF)) {
+                } else if (fileHeadName.equals(StyleResEntity.FILENAME_ROATION_REV_MID_GIF)) {
                     styleResEntity.setRoationRevMidNormalUri(uri);
                     index++;
-                } else if (file.getName().equals(StyleResEntity.FILENAME_ROATION_REV_LOW_GIF)) {
+                } else if (fileHeadName.equals(StyleResEntity.FILENAME_ROATION_REV_LOW_GIF)) {
                     styleResEntity.setRoationRevLowNormalUri(uri);
                     index++;
-                } else if (file.getName().equals(StyleResEntity.FILENAME_STOP)) {
+                } else if (fileHeadName.equals(StyleResEntity.FILENAME_STOP)) {
                     styleResEntity.setStopUri(uri);
                     index++;
-                } else if (file.getName().equals(StyleResEntity.FILENAME_WARMPILLOW)) {
+                } else if (fileHeadName.equals(StyleResEntity.FILENAME_WARMPILLOW)) {
                     styleResEntity.setWarmpillowUri(uri);
                     index++;
-                } else if (file.getName().equals(StyleResEntity.FILENAME_BACKGROUND)) {
+                } else if (fileHeadName.equals(StyleResEntity.FILENAME_BACKGROUND)) {
                     styleResEntity.setBackgroundUri(uri);
+                    index++;
+                }else if (fileHeadName.equals(StyleResEntity.FILENAME_PRODUCT_LOGO)) {
+                    styleResEntity.setLogoUri(uri);
                     index++;
                 }else {
                     RxLogTool.e(TAG, "other file condition,uri: " + uri);
@@ -290,12 +341,46 @@ public class AppTools {
         return arrayList;
     }
 
+    public static void downImageLoadingFiles(Context context,final CheckUpdateResponseDataEntity checkUpdateResponseDataEntity, final DeviceListViewModel deviceListViewModel) {
+        final String destFileDir = getLoadPath(context);
+        final String destFileName = FILENAME_ZIP_LOAD + ".zip";
+        DownLoadManager.getInstance().load(checkUpdateResponseDataEntity.getPackSavepath(), new ProgressCallBack<ResponseBody>(destFileDir, destFileName){
+            @Override
+            public void onStart() {
+                super.onStart();
+            }
+
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onSuccess(ResponseBody responseBody) {
+                //ToastUtils.showShort("文件下载完成！");
+                boolean isUnzip=RxZipTool.unzipFile(destFileDir+destFileName,destFileDir);
+                RxLogTool.d(TAG,"unzip loadImage: "+(destFileDir+destFileName)+" result is "+isUnzip);
+                if(isUnzip){
+                    deviceListViewModel.setLoadingVersion(checkUpdateResponseDataEntity.getNewestVerno());
+                }else{
+                    RxLogTool.e(TAG,"Loading资源文件解压失败");
+                }
+            }
+
+            @Override
+            public void progress(final long progress, final long total) {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                ToastUtils.showShort("loading文件下载失败！");
+            }
+        });
+    }
+
     public static void downImageLoadingFiles(Context context,final CheckUpdateResponseDataEntity checkUpdateResponseDataEntity, final LoadingViewModel loadingViewModel) {
         final String destFileDir = getLoadPath(context);
         final String destFileName = FILENAME_ZIP_LOAD + ".zip";
-//        if(!builder.build().isShowing()){
-//            builder.build().show();
-//        }
         DownLoadManager.getInstance().load(checkUpdateResponseDataEntity.getPackSavepath(), new ProgressCallBack<ResponseBody>(destFileDir, destFileName){
             @Override
             public void onStart() {
@@ -332,6 +417,55 @@ public class AppTools {
         });
     }
 
+    public static boolean isNetCanUse(Context context, boolean isNeedAlert) {
+        if (NetworkUtil.isNetworkAvailable(context)) {
+            return true;
+        } else {
+            if (isNeedAlert) {
+                ToastUtils.showLong(context.getString(R.string.toast_title_net_error));
+            }
+            return false;
+        }
+    }
+
+    public static void downImageBannerFiles(Context context, final CheckUpdateResponseDataEntity checkUpdateResponseDataEntity,  final DeviceListViewModel deviceListViewModel) {
+        final String destFileDir = getBannerPath(context);
+        final String destFileName = FILENAME_ZIP_BANNER + ".zip";
+        DownLoadManager.getInstance().load(checkUpdateResponseDataEntity.getPackSavepath(), new ProgressCallBack<ResponseBody>(destFileDir, destFileName) {
+            @Override
+            public void onStart() {
+                super.onStart();
+            }
+
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onSuccess(ResponseBody responseBody) {
+                //ToastUtils.showShort("文件下载完成！");
+                boolean isUnzip=RxZipTool.unzipFile(destFileDir+destFileName,destFileDir);
+                RxLogTool.d(TAG,"unzip banner: "+(destFileDir+destFileName)+" result is "+isUnzip);
+                if(isUnzip){
+                    deviceListViewModel.setBannerVersion(checkUpdateResponseDataEntity.getNewestVerno());
+                    deviceListViewModel.saveBannerPlayIndex(0);
+                }else{
+                    RxLogTool.e(TAG,"Banner资源文件解压失败");
+                }
+
+            }
+
+            @Override
+            public void progress(final long progress, final long total) {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                ToastUtils.showShort("banner文件下载失败！");
+            }
+        });
+    }
     public static void downImageBannerFiles(Context context, final CheckUpdateResponseDataEntity checkUpdateResponseDataEntity,  final LoadingViewModel loadingViewModel) {
         final String destFileDir = getBannerPath(context);
         final String destFileName = FILENAME_ZIP_BANNER + ".zip";
@@ -355,6 +489,7 @@ public class AppTools {
                 RxLogTool.d(TAG,"unzip banner: "+(destFileDir+destFileName)+" result is "+isUnzip);
                 if(isUnzip){
                     loadingViewModel.setBannerVersion(checkUpdateResponseDataEntity.getNewestVerno());
+                    loadingViewModel.saveBannerPlayIndex(0);
                 }else{
                     RxLogTool.e(TAG,"Banner资源文件解压失败");
                 }
@@ -386,7 +521,9 @@ public class AppTools {
         progressDialog.setTitle("正在下载产品资源文件，请稍后...");
         progressDialog.setCancelable(false);
         progressDialog.show();
-        DownLoadManager.getInstance().load(productInfoResponseEntity.getData().getStyleResPackSavepath(), new ProgressCallBack<ResponseBody>(destFileDir, destFileName) {
+
+
+        DownLoadManager.getInstance().load(productInfoResponseEntity.getData().getBrandResPackSavepath(), new ProgressCallBack<ResponseBody>(destFileDir, destFileName) {
             @Override
             public void onStart() {
                 super.onStart();
@@ -400,21 +537,56 @@ public class AppTools {
             public void onSuccess(ResponseBody responseBody) {
                 //ToastUtils.showShort("文件下载完成！");
                 boolean isUnzip=RxZipTool.unzipFile(destFileDir+destFileName,destFileDir);
-                RxLogTool.d(TAG,"unzip productinfo: "+(destFileDir+destFileName)+" result is "+isUnzip);
+                RxLogTool.d(TAG,"unzip BrandRes productinfo: "+(destFileDir+destFileName)+" result is "+isUnzip);
                 if(isUnzip){
-                    deviceListItemViewModel.saveProductInfoToDB(productInfoResponseEntity.getData());
-                }else{
-                    RxLogTool.e(TAG,"productinfo资源文件解压失败");
-                }
+                    DownLoadManager.getInstance().load(productInfoResponseEntity.getData().getStyleResPackSavepath(), new ProgressCallBack<ResponseBody>(destFileDir, destFileName) {
+                        @Override
+                        public void onStart() {
+                            super.onStart();
+                        }
+
+                        @Override
+                        public void onCompleted() {
+                        }
+
+                        @Override
+                        public void onSuccess(ResponseBody responseBody) {
+                            //ToastUtils.showShort("文件下载完成！");
+                            boolean isUnzip=RxZipTool.unzipFile(destFileDir+destFileName,destFileDir);
+                            RxLogTool.d(TAG,"unzip productinfo: "+(destFileDir+destFileName)+" result is "+isUnzip);
+                            if(isUnzip){
+                                deviceListItemViewModel.saveProductInfoToDB(productInfoResponseEntity.getData());
+                            }else{
+                                RxLogTool.e(TAG,"productinfo资源文件解压失败");
+                            }
 //                deviceListItemViewModel.jumpToControlFragment("1_1");
+                            deviceListItemViewModel.jumpToControlFragment(batchCode);
+                            progressDialog.dismiss();
+                        }
+
+                        @Override
+                        public void progress(final long progress, final long total) {
+                            progressDialog.setMax((int) total);
+                            progressDialog.setProgress((int)(progress<total?progress:total));
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            RxLogTool.e(TAG, "download err:", e);
+                            ToastUtils.showShort("产品资源文件下载失败！");
+                            deviceListItemViewModel.jumpToControlFragment(batchCode);
+                            progressDialog.dismiss();
+                        }
+                    });
+                }else{
+                    RxLogTool.e(TAG,"BrandRes productinfo资源文件解压失败");
+                }
                 deviceListItemViewModel.jumpToControlFragment(batchCode);
-                progressDialog.dismiss();
             }
 
             @Override
             public void progress(final long progress, final long total) {
-                progressDialog.setMax((int) total);
-                progressDialog.setProgress((int)(progress<total?progress:total));
+
             }
 
             @Override
@@ -425,6 +597,7 @@ public class AppTools {
                 progressDialog.dismiss();
             }
         });
+
     }
     public static void downFile(final Context context, String url,final LoadingViewModel viewModel) {
         final String destFileDir = context.getExternalCacheDir().getPath();
@@ -480,14 +653,16 @@ public class AppTools {
          切记不要胡乱强转！
          */
 //        eg：
-
+        RequestOptions options = new RequestOptions()
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true);
         //Glide 加载图片简单用法
         if(view instanceof ImageView){
-            Glide.with(context).load(path).into((ImageView)view);
+            Glide.with(context).load(path).apply(options).into((ImageView)view);
         }else{
             Glide.with(context)
                     .asBitmap()
-                    .load(path)
+                    .load(path).apply(options)
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {

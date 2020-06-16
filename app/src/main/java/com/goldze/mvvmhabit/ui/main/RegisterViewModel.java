@@ -92,8 +92,8 @@ public class RegisterViewModel extends BaseViewModel<DemoRepository> implements 
     public RegisterViewModel(@NonNull Application application, DemoRepository repository) {
         super(application, repository);
         //从本地取得数据绑定到View层
-        userName.set(model.getUserName());
-        password.set(model.getPassword());
+        userName.set("");
+        password.set("");
         verfyCodeText.set(STR_SENDVERIFY);
     }
 
@@ -183,7 +183,7 @@ public class RegisterViewModel extends BaseViewModel<DemoRepository> implements 
             ToastUtils.showLong("请先阅读并同意服务条款！");
             return;
         }
-        if (TextUtils.isEmpty(userName.get())&& !RxRegTool.isMobileSimple(userName.get())) {
+        if (TextUtils.isEmpty(userName.get())|| !RxRegTool.isMobileSimple(userName.get())) {
             ToastUtils.showLong("请输入正确的手机号！");
             return;
         }
@@ -224,9 +224,12 @@ public class RegisterViewModel extends BaseViewModel<DemoRepository> implements 
                     public void accept(Throwable throwable) throws Exception {
                         //关闭对话框
                         dismissDialog();
-                        if (throwable instanceof ResponseThrowable) {
-                            ToastUtils.showShort(((ResponseThrowable) throwable).message);
+                        if(AppTools.isNetCanUse(getApplication(),true)){
+                            if (throwable instanceof ResponseThrowable) {
+                                ToastUtils.showShort(((ResponseThrowable) throwable).message);
+                            }
                         }
+
                     }
                 }, new Action() {
                     @Override
@@ -238,8 +241,11 @@ public class RegisterViewModel extends BaseViewModel<DemoRepository> implements 
     }
 
     private void getVersionCode(){
-        if (TextUtils.isEmpty(userName.get())&& !RxRegTool.isMobileSimple(userName.get())) {
+        if (TextUtils.isEmpty(userName.get())|| !RxRegTool.isMobileSimple(userName.get())) {
             ToastUtils.showShort("请输入正确的手机号！");
+            return;
+        }
+        if(!AppTools.isNetCanUse(getApplication(),true)){
             return;
         }
 
@@ -265,9 +271,12 @@ public class RegisterViewModel extends BaseViewModel<DemoRepository> implements 
                     public void accept(Throwable throwable) throws Exception {
                         //关闭对话框
                         dismissDialog();
-                        if (throwable instanceof ResponseThrowable) {
-                            ToastUtils.showShort(((ResponseThrowable) throwable).message);
+                        if(AppTools.isNetCanUse(getApplication(),true)){
+                            if (throwable instanceof ResponseThrowable) {
+                                ToastUtils.showShort(((ResponseThrowable) throwable).message);
+                            }
                         }
+
                     }
                 }, new Action() {
                     @Override

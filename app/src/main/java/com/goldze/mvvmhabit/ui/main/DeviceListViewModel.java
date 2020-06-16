@@ -1,5 +1,6 @@
 package com.goldze.mvvmhabit.ui.main;
 
+import android.app.Activity;
 import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -10,9 +11,7 @@ import androidx.databinding.ObservableList;
 import androidx.annotation.NonNull;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 
 import com.goldze.mvvmhabit.BR;
 import com.goldze.mvvmhabit.R;
@@ -51,7 +50,7 @@ import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
 import me.goldze.mvvmhabit.deviceinterface.OnDeviceInfoListener;
 import me.goldze.mvvmhabit.http.NetworkUtil;
-import me.goldze.mvvmhabit.http.ResponseThrowable;
+import me.goldze.mvvmhabit.utils.MaterialDialogUtils;
 import me.goldze.mvvmhabit.utils.RxUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 import me.tatarka.bindingcollectionadapter2.ItemBinding;
@@ -71,15 +70,15 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
     public UIChangeObservable uc = new UIChangeObservable();
     //版本检测观察者
     public ObservableField<CheckUpdateResponseEntity> versionEvent = new ObservableField<>();
-    private Context contex;
+    private Activity activity;
 
 
-    public void setContext(Context context) {
-        this.contex = context;
+    public void setActivity(Activity activity) {
+        this.activity = activity;
     }
 
-    public Context getContext() {
-        return this.contex;
+    public Activity getActivity() {
+        return this.activity;
     }
 
     public class UIChangeObservable {
@@ -98,12 +97,14 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
      */
     public void initToolbar() {
         //初始化标题栏
-        //setRightIcon(R.mipmap.roundlogo);
-        //setRightIconVisible(View.VISIBLE);
-        //setRightTextVisible(View.GONE);
+//        setRightIcon(R.mipmap.roundlogo);
+//        setRightIconVisible(View.VISIBLE);
+//        setRightTextVisible(View.GONE);
         setTitleText(getApplication().getString(R.string.devicelist_title_devicelist));
     }
-
+    public void saveBannerPlayIndex(int playIndex) {
+        model.saveBannerPlayIndex(playIndex);
+    }
     @Override
     public void rightTextOnClick() {
         ToastUtils.showShort("更多");
@@ -144,17 +145,58 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
             RxLogTool.e(TAG, "getLocalClassName is " + AppManager.getAppManager().currentActivity().getLocalClassName() + ";cannot jump...");
             return;
         }
+        if (!NetworkUtil.isNetworkAvailable(activity)) {
+            if(AppTools.isStyleResDrawableTotal(activity, batchCode)){
+                Bundle bundle=new Bundle();
+                bundle.putString(AllDeviceControlFragment.KEY_PRODUCTID,batchCode);
+                startContainerActivity(AllDeviceControlFragment.class.getCanonicalName(),bundle);
+            }else{
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtils.showLong("无法匹配到当前批次号的完整资源，请联网后下载最新资源");
+//                        MaterialDialogUtils.showBasicDialogNoCancel(activity,"无法匹配到当前批次号的完整资源，请联网后下载最新资源");
+                    }
+                });
+
+            }
+            return;
+        }
         Bundle bundle=new Bundle();
         bundle.putString(AllDeviceControlFragment.KEY_PRODUCTID,batchCode);
         startContainerActivity(AllDeviceControlFragment.class.getCanonicalName(),bundle);
+    }
+    public void setBannerPlayModel(String playMode){
+        model.saveBannerPlayMode(playMode);
+    }
+    public String getBannerVersion(){
+        return model.getBannerVersion();
+    }
+
+    public void setBannerVersion(String version){
+        model.saveBannerVersion(version);
+    }
+    public void setLoadingVersion(String version){
+        model.saveLoadingVersion(version);
     }
     public void getProductInfo(final DeviceStatusInfoEntity deviceStatusInfoEntity){
         if (deviceStatusInfoEntity==null) {
             jumpToControlFragment(null);
             return;
         }
-        if (!NetworkUtil.isNetworkAvailable(contex)) {
-            jumpToControlFragment(deviceStatusInfoEntity.getBatchCode());
+        if (!NetworkUtil.isNetworkAvailable(activity)) {
+            if(AppTools.isStyleResDrawableTotal(activity, deviceStatusInfoEntity.getBatchCode())){
+                jumpToControlFragment(deviceStatusInfoEntity.getBatchCode());
+            }else{
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtils.showLong("无法匹配到当前批次号的完整资源，请联网后下载最新资源");
+//                        MaterialDialogUtils.showBasicDialogNoCancel(activity,"无法匹配到当前批次号的完整资源，请联网后下载最新资源");
+                    }
+                });
+
+            }
             return;
         }
         //deviceStatusInfoEntity.getBatchCode()
@@ -173,8 +215,10 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
                         boolean isOptionSuccess = entity.getStatus() == HttpStatus.STATUS_CODE_SUCESS;
                         RxLogTool.e(TAG, "ProductInfoResponseEntity getStatus is: " + entity.getStatus());
                         if (isOptionSuccess && (getProductDBInfo(entity.getData().getProdId()) == null || (getProductDBInfo(entity.getData().getProdId()) != null &&
-                                AppTools.isVersionNeedUpdate(getProductDBInfo(entity.getData().getProdId()).getStyleResNewestVerno(), entity.getData().getStyleResNewestVerno())))) {
-                            AppTools.downProductInfoImageFiles(contex, entity, DeviceListViewModel.this, deviceStatusInfoEntity.getBatchCode());
+                                (!AppTools.isStyleResDrawableTotal(activity, deviceStatusInfoEntity.getBatchCode())||AppTools.isVersionNeedUpdate(getProductDBInfo(entity.getData().getProdId()).getStyleResNewestVerno(), entity.getData().getStyleResNewestVerno()))
+                                ))) {
+                            model.saveProductname(deviceStatusInfoEntity.getBatchCode(),entity.getData().getProdName());
+                            AppTools.downProductInfoImageFiles(activity, entity, DeviceListViewModel.this, deviceStatusInfoEntity.getBatchCode());
                         } else {
                             RxLogTool.e(TAG, "ProductInfoStyleRes is newest");
                             jumpToControlFragment(deviceStatusInfoEntity.getBatchCode());

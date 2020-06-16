@@ -162,14 +162,25 @@
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/radio_selector</item>
     </style>
-    <style name="allcontrolText_larger_Selector">
-        <item name="android:layout_width">40dp</item>
-        <item name="android:layout_height">40dp</item>
-        <item name="android:textSize">12sp</item>
+    <style name="allcontrolText_larger_start_Selector">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">21dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:drawablePadding">2dp</item>
         <item name="android:textAlignment">center</item>
         <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/whiteColor88</item>
-        <item name="android:background">@drawable/highlight_yellow_selector</item>
+        <item name="android:textColor">@color/selector_white_yellow</item>
+        <item name="android:drawableStart">@drawable/highlight_control_start_selector</item>
+    </style>
+    <style name="allcontrolText_larger_end_Selector">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">21dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:drawablePadding">2dp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/selector_white_yellow</item>
+        <item name="android:drawableEnd">@drawable/highlight_control_end_selector</item>
     </style>
     <style name="controlText_larger_Selector">
         <item name="android:layout_width">42dp</item>

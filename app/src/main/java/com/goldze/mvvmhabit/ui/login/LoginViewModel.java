@@ -20,6 +20,7 @@ import com.goldze.mvvmhabit.entity.http.verifiedcode.VerifiedCodeResponseEntity;
 import com.goldze.mvvmhabit.ui.main.AgreementFragment;
 import com.goldze.mvvmhabit.ui.main.DeviceListActivity;
 import com.goldze.mvvmhabit.ui.main.RegisterActivity;
+import com.goldze.mvvmhabit.utils.AppTools;
 import com.goldze.mvvmhabit.utils.HttpStatus;
 import com.goldze.mvvmhabit.utils.RxRegTool;
 import com.tamsiree.rxtool.RxLogTool;
@@ -92,8 +93,8 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> implements Com
     public LoginViewModel(@NonNull Application application, DemoRepository repository) {
         super(application, repository);
         //从本地取得数据绑定到View层
-        userName.set(model.getUserName());
-        password.set(model.getPassword());
+        userName.set("");
+        password.set("");
         verfyCodeText.set(STR_SENDVERIFY);
     }
 
@@ -191,6 +192,9 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> implements Com
             ToastUtils.showShort("请输入正确的手机号！");
             return;
         }
+        if(!AppTools.isNetCanUse(getApplication(),true)){
+            return;
+        }
 
         //RaJava获取验证码
         addSubscribe(model.getVerifiedCode(new VerifiedCodeEntity(userName.get(),PRIVATE_TYPE_LOGIN))
@@ -214,7 +218,11 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> implements Com
                     public void accept(Throwable throwable) throws Exception {
                         //关闭对话框
                         dismissDialog();
-                        ToastUtils.showShort("请输入正确的手机号！");
+                        if(AppTools.isNetCanUse(getApplication(),true)){
+                            if (throwable instanceof ResponseThrowable) {
+                                ToastUtils.showShort(((ResponseThrowable) throwable).message);
+                            }
+                        }
                         RxLogTool.e(TAG,"accept error:; ",throwable);
                     }
                 }, new Action() {
@@ -273,9 +281,12 @@ public class LoginViewModel extends BaseViewModel<DemoRepository> implements Com
                     public void accept(Throwable throwable) throws Exception {
                         //关闭对话框
                         dismissDialog();
-                        if (throwable instanceof ResponseThrowable) {
-                            ToastUtils.showShort(((ResponseThrowable) throwable).message);
+                        if(AppTools.isNetCanUse(getApplication(),true)){
+                            if (throwable instanceof ResponseThrowable) {
+                                ToastUtils.showShort(((ResponseThrowable) throwable).message);
+                            }
                         }
+
                     }
                 }, new Action() {
                     @Override

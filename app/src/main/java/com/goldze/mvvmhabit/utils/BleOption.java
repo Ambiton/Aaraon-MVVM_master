@@ -30,7 +30,7 @@ import me.goldze.mvvmhabit.utils.StringUtils;
  */
 public class BleOption {
     public static final int REQUEST_TIMEOUT = 0x01;
-    public static final long DURATION_HEART_QUERY = 3 * 1000;
+    public static final long DURATION_HEART_QUERY = 6 * 1000;
     private final static String DEVICE_NAME = "BLE_MYZR_";
     private static final String TAG = "BleOption";
     private static final UUID UUID_SERVICE_CHANNEL
@@ -67,9 +67,9 @@ public class BleOption {
     private static final byte OPTION_VOL_SILENT = 0x15;
 
     private static final int DELAY_WRITEDATA = 10;
-    private static final int PERIOD_WRITEDATA = 200;
+    private static final int PERIOD_WRITEDATA = 3000;
 
-    private static final int MAX_REWRITEDATA_TIMES = 4;
+    private static final int MAX_REWRITEDATA_TIMES = 2;
 
     private static BleOption instance;
     private String curDeviceMac;

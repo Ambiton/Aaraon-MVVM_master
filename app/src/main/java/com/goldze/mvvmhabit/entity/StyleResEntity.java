@@ -10,17 +10,18 @@ import com.goldze.mvvmhabit.R;
  * @date : 2020/5/16 22:45
  */
 public class StyleResEntity {
-    public static String FILENAME_BACKGROUND = "mainbackground.png";
-    public static String FILENAME_PILLOW = "pillow.png";
-    public static String FILENAME_STOP = "stop.png";
-    public static String FILENAME_WARMPILLOW = "warmpillow.png";
-    public static String FILENAME_PAUSE = "pause.png";
-    public static String FILENAME_ROATION_POS_HIGH_GIF = "roation_pos_high_normal.gif";
-    public static String FILENAME_ROATION_POS_MID_GIF = "roation_pos_mid_normal.gif";
-    public static String FILENAME_ROATION_POS_LOW_GIF = "roation_pos_low_normal.gif";
-    public static String FILENAME_ROATION_REV_HIGH_GIF = "roation_rev_high_normal.gif";
-    public static String FILENAME_ROATION_REV_MID_GIF = "roation_rev_low_normal.gif";
-    public static String FILENAME_ROATION_REV_LOW_GIF = "roation_rev_mid_normal.gif";
+    public static String FILENAME_BACKGROUND = "mainbackground";
+    public static String FILENAME_PILLOW = "pillow";
+    public static String FILENAME_STOP = "stop";
+    public static String FILENAME_WARMPILLOW = "warmpillow";
+    public static String FILENAME_PAUSE = "pause";
+    public static String FILENAME_ROATION_POS_HIGH_GIF = "roation_pos_high_normal";
+    public static String FILENAME_ROATION_POS_MID_GIF = "roation_pos_mid_normal";
+    public static String FILENAME_ROATION_POS_LOW_GIF = "roation_pos_low_normal";
+    public static String FILENAME_ROATION_REV_HIGH_GIF = "roation_rev_high_normal";
+    public static String FILENAME_ROATION_REV_MID_GIF = "roation_rev_low_normal";
+    public static String FILENAME_ROATION_REV_LOW_GIF = "roation_rev_mid_normal";
+    public static String FILENAME_PRODUCT_LOGO = "logo";
     private Uri pillowUri;
     private Uri stopUri;
     private Uri warmpillowUri;
@@ -33,6 +34,16 @@ public class StyleResEntity {
     private Uri roationRevHighNormalUri;
     private Uri roationRevMidNormalUri;
     private Uri roationRevLowNormalUri;
+
+    private Uri logoUri;
+    public Object getLogoUri() {
+        return logoUri == null ? R.mipmap.applauncher : logoUri;
+    }
+
+    public void setLogoUri(Uri logoUri) {
+        this.logoUri = logoUri;
+    }
+
 
     public Object getBackgroundUri() {
         return backgroundUri == null ? R.mipmap.mainbackground : backgroundUri;

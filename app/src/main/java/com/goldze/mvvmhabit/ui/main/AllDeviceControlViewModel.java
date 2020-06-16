@@ -47,6 +47,7 @@ public class AllDeviceControlViewModel extends ToolbarViewModel<DemoRepository> 
     public ObservableField<DeviceStatusInfoEntity> statusInfoChageObeserver = new ObservableField();
     public ObservableField<DeviceStatusInfoEntity> statusRoationModeUserChageObeserver = new ObservableField();
     public ObservableField<Boolean> writeDataResult = new ObservableField();
+    public ObservableField<Boolean> isTrunOff = new ObservableField(false);
     public ObservableField<String> testStr = new ObservableField("test");
     //封装一个界面发生改变的观察者
     public UIChangeObservable uc = new UIChangeObservable();
@@ -60,6 +61,10 @@ public class AllDeviceControlViewModel extends ToolbarViewModel<DemoRepository> 
 
     @Override
     public void onNotify(UUID service, UUID character, byte[] value) {
+        if(isTrunOff.get()){
+            RxLogTool.e(TAG, "isTrunOff,,,, " );
+            return;
+        }
         RxLogTool.e(TAG, "data  length is " + value.length);
         RxLogTool.e(TAG, "onNotify UUID is " + character + ",data is " + RxDataTool.bytes2HexString(value));
         if (value.length == 6 || value.length == 10) {
@@ -224,15 +229,15 @@ public class AllDeviceControlViewModel extends ToolbarViewModel<DemoRepository> 
         return result;
     }
 
+    public String getProductName(String batchCode){
+        return model.getProductname(batchCode);
+    }
     /**
      * 初始化Toolbar
      */
-    public void initToolbar() {
+    public void initToolbar(String batchCode) {
         //初始化标题栏
-        setRightIcon(R.mipmap.applauncher);
-        setRightIconVisible(View.GONE);
-        setRightTextVisible(View.GONE);
-        setTitleText(getApplication().getString(R.string.devicelist_title_mydevice));
+
         uc.powerSwitch.setValue(false);
         uc.warmSwitch.setValue(false);
         //BleOption.getInstance().startTimerGetDeviceInfo(DeviceControlViewModel.this);
@@ -275,8 +280,10 @@ public class AllDeviceControlViewModel extends ToolbarViewModel<DemoRepository> 
         deviceStatusInfoEntity.setIsDeviceOpen(aBoolean ? DeviceStatusInfoEntity.FLAG_TRUE : DeviceStatusInfoEntity.FLAG_FALSE);
         RxLogTool.e("setPowerSwitchStatus is "+aBoolean);
         if (aBoolean) {
+            isTrunOff.set(false);
             BleOption.getInstance().turnOnDevice(AllDeviceControlViewModel.this);
         } else {
+            isTrunOff.set(true);
             BleOption.getInstance().turnOffDevice(AllDeviceControlViewModel.this);
         }
         setUserActionData(AppTools.UserActionFlagAndValue.FLAG_SWITCH_DEVICE,String.valueOf(deviceStatusInfoEntity.getIsDeviceOpen()));

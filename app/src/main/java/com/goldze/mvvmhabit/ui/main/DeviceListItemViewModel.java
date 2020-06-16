@@ -3,8 +3,6 @@ package com.goldze.mvvmhabit.ui.main;
 import androidx.databinding.ObservableField;
 
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -14,13 +12,8 @@ import com.goldze.mvvmhabit.R;
 import com.goldze.mvvmhabit.app.AppApplication;
 import com.goldze.mvvmhabit.entity.BlutoothDeviceInfoEntity;
 import com.goldze.mvvmhabit.entity.DeviceStatusInfoEntity;
-import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
-import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
-import com.goldze.mvvmhabit.entity.http.productinfo.ProductInfoResponseDataEntity;
 import com.goldze.mvvmhabit.utils.AppTools;
 import com.goldze.mvvmhabit.utils.BleOption;
-import com.goldze.mvvmhabit.utils.HttpsUtils;
-import com.goldze.mvvmhabit.utils.RxDataTool;
 import com.inuker.bluetooth.library.connect.response.BleConnectResponse;
 import com.inuker.bluetooth.library.connect.response.BleNotifyResponse;
 import com.inuker.bluetooth.library.connect.response.BleWriteResponse;
@@ -29,19 +22,15 @@ import com.tamsiree.rxtool.RxLogTool;
 
 import java.util.UUID;
 
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.base.AppManager;
 import me.goldze.mvvmhabit.base.ItemViewModel;
 import me.goldze.mvvmhabit.binding.command.BindingAction;
 import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.deviceinterface.OnDeviceInfoListener;
 import me.goldze.mvvmhabit.utils.MaterialDialogUtils;
-import me.goldze.mvvmhabit.utils.RxUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 
 import static com.inuker.bluetooth.library.Constants.REQUEST_SUCCESS;
-import static com.inuker.bluetooth.library.Constants.SERVICE_UNREADY;
 
 /**
  * Created by goldze on 2017/7/17.
@@ -62,7 +51,7 @@ public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> 
         deviceListViewModel = viewModel;
         //ImageView的占位图片，可以解决RecyclerView中图片错误问题
         drawableImg = ContextCompat.getDrawable(viewModel.getApplication(), R.mipmap.massagechair);
-        dialog = MaterialDialogUtils.showIndeterminateProgressDialog(viewModel.getContext(), "正在连接设备，请稍后..." + this.entity.get().getMacAddress(), false).build();
+        dialog = MaterialDialogUtils.showIndeterminateProgressDialog(viewModel.getActivity(), "正在连接设备，请稍后..." + this.entity.get().getMacAddress(), false).build();
     }
 
     /**
@@ -176,7 +165,7 @@ public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> 
             if (connectedTimes > MAX_CONNECTETIMES) {
                 dialog.dismiss();
                 connectedTimes = 0;
-                ToastUtils.showLong(viewModel.getContext().getString(R.string.toast_title_connect_error));
+                ToastUtils.showLong(viewModel.getActivity().getString(R.string.toast_title_connect_error));
             } else {
                 RxLogTool.e(TAG, "ReconnectDevice times is " + connectedTimes);
                 BleOption.getInstance().connectDevice(entity.get().getMacAddress(), DeviceListItemViewModel.this);
@@ -193,7 +182,7 @@ public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> 
             connectedTimes = 0;
             BleOption.getInstance().connectDevice(entity.get().getMacAddress(), DeviceListItemViewModel.this);
         } else {
-            MaterialDialogUtils.showBasicDialog(viewModel.getContext(), "连接失败", "非法的设备串号");
+            MaterialDialogUtils.showBasicDialog(viewModel.getActivity(), "连接失败", "非法的设备串号");
         }
     }
 

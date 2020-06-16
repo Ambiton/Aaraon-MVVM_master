@@ -43,7 +43,7 @@ public class LoadingViewModel extends BaseViewModel <DemoRepository>{
     }
 
     public boolean isNeedLogin(Context context){
-        return TextUtils.isEmpty(model.getToken())&& NetworkUtil.isNetworkAvailable(context) ;
+        return TextUtils.isEmpty(model.getToken()) ;
     }
     public boolean isNeedCheckUpdate(Context context){
         return !TextUtils.isEmpty(model.getToken())&& NetworkUtil.isNetworkAvailable(context) ;
@@ -68,6 +68,10 @@ public class LoadingViewModel extends BaseViewModel <DemoRepository>{
     public void setBannerNewst(boolean isNew){
         bannerNewst.set(isNew);
         bannerNewst.notifyChange();
+    }
+
+    public void saveBannerPlayIndex(int playIndex) {
+        model.saveBannerPlayIndex(playIndex);
     }
     public void setLoadNewst(boolean isNew){
         loadNewst.set(isNew);
