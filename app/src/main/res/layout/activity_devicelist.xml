@@ -4,9 +4,9 @@
 
     <data>
 
-        <import type="com.goldze.mvvmhabit.ui.main.DeviceListViewModel" />
+        <import type="com.myzr.allproduct.ui.main.DeviceListViewModel" />
 
-        <import type="com.goldze.mvvmhabit.ui.viewpager.adapter.DeviceListBindingAdapter" />
+        <import type="com.myzr.allproduct.ui.viewpager.adapter.DeviceListBindingAdapter" />
 
         <variable
             name="viewModel"
@@ -70,7 +70,7 @@
                         android:layout_margin="@dimen/margin_med"
                         android:text="@={viewModel.bindListStr}" />
 
-                    <com.goldze.mvvmhabit.utils.view.DefineHeightRecycleListView
+                    <com.myzr.allproduct.utils.view.DefineHeightRecycleListView
 
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -98,7 +98,7 @@
                         android:textSize="@dimen/text_max"
                         android:text="@={viewModel.canUseListStr}" />
 
-                    <com.goldze.mvvmhabit.utils.view.DefineHeightRecycleListView
+                    <com.myzr.allproduct.utils.view.DefineHeightRecycleListView
 
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

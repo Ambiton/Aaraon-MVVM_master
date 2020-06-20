@@ -3,9 +3,9 @@
 
     <data>
 
-        <import type="com.goldze.mvvmhabit.ui.network.NetWorkViewModel" />
+        <import type="com.myzr.allproduct.ui.network.NetWorkViewModel" />
 
-        <import type="com.goldze.mvvmhabit.ui.viewpager.adapter.NetWorkBindingAdapter" />
+        <import type="com.myzr.allproduct.ui.viewpager.adapter.NetWorkBindingAdapter" />
 
         <variable
             name="viewModel"

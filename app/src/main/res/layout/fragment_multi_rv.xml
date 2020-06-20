@@ -3,9 +3,9 @@
 
     <data>
 
-        <import type="com.goldze.mvvmhabit.ui.rv_multi.MultiRecycleViewModel" />
+        <import type="com.myzr.allproduct.ui.rv_multi.MultiRecycleViewModel" />
 
-        <import type="com.goldze.mvvmhabit.ui.viewpager.adapter.MultiRvBindingAdapter" />
+        <import type="com.myzr.allproduct.ui.viewpager.adapter.MultiRvBindingAdapter" />
 
         <variable
             name="viewModel"

@@ -4,11 +4,11 @@
 
     <data>
 
-        <import type="com.goldze.mvvmhabit.ui.main.WebViewActivity" />
+        <import type="com.myzr.allproduct.ui.main.WebViewActivity" />
 
         <variable
             name="viewModel"
-            type="com.goldze.mvvmhabit.ui.main.WebViewViewModel" />
+            type="com.myzr.allproduct.ui.main.WebViewViewModel" />
     </data>
 
     <LinearLayout

@@ -5,9 +5,9 @@
     xmlns:custom="http://schemas.android.com/tools">
 
     <data>
-        <import type="com.goldze.mvvmhabit.ui.main.AllDeviceControlViewModel" />
+        <import type="com.myzr.allproduct.ui.main.AllDeviceControlViewModel" />
         <import type="me.tatarka.bindingcollectionadapter2.BindingRecyclerViewAdapter" />
-        <import type="com.goldze.mvvmhabit.entity.DeviceStatusInfoEntity" />
+        <import type="com.myzr.allproduct.entity.DeviceStatusInfoEntity" />
         <variable
             name="viewModel"
             type="AllDeviceControlViewModel" />

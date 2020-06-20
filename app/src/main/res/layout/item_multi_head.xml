@@ -3,7 +3,7 @@
 
     <data>
 
-        <import type="com.goldze.mvvmhabit.ui.rv_multi.MultiRecycleHeadViewModel" />
+        <import type="com.myzr.allproduct.ui.rv_multi.MultiRecycleHeadViewModel" />
 
         <variable
             name="viewModel"

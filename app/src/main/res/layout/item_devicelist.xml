@@ -3,11 +3,11 @@
 
     <data>
 
-        <import type="com.goldze.mvvmhabit.ui.main.DeviceListItemViewModel" />
+        <import type="com.myzr.allproduct.ui.main.DeviceListItemViewModel" />
 
         <variable
             name="viewModel"
-            type="com.goldze.mvvmhabit.ui.main.DeviceListItemViewModel" />
+            type="com.myzr.allproduct.ui.main.DeviceListItemViewModel" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

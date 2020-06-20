@@ -2,12 +2,10 @@
 <layout>
 
     <data>
-
-        <import type="com.goldze.mvvmhabit.ui.main.AgreementViewModel" />
-
+        <import type="com.myzr.allproduct.ui.main.AgreementViewModel" />
         <variable
             name="viewModel"
-            type="com.goldze.mvvmhabit.ui.main.AgreementViewModel" />
+            type="com.myzr.allproduct.ui.main.AgreementViewModel" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

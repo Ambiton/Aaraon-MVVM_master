@@ -3,7 +3,7 @@
 
     <data>
 
-        <import type="com.goldze.mvvmhabit.ui.main.DemoViewModel" />
+        <import type="com.myzr.allproduct.ui.main.DemoViewModel" />
 
         <variable
             name="viewModel"

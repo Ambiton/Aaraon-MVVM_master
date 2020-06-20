@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.goldze.mvvmhabit.ui.login.LoginViewModel" />
+            type="com.myzr.allproduct.ui.login.LoginViewModel" />
     </data>
 
     <RelativeLayout

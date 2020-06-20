@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="com.goldze.mvvmhabit.ui.register.UserHeightViewModel" />
+            type="com.myzr.allproduct.ui.register.UserHeightViewModel" />
     </data>
 
         <LinearLayout
