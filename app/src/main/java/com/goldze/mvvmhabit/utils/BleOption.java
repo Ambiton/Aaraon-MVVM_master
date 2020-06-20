@@ -7,6 +7,7 @@ import com.goldze.mvvmhabit.entity.DeviceStatusInfoEntity;
 import com.inuker.bluetooth.library.Code;
 import com.inuker.bluetooth.library.Constants;
 import com.inuker.bluetooth.library.connect.listener.BleConnectStatusListener;
+import com.inuker.bluetooth.library.connect.options.BleConnectOptions;
 import com.inuker.bluetooth.library.connect.response.BleConnectResponse;
 import com.inuker.bluetooth.library.connect.response.BleNotifyResponse;
 import com.inuker.bluetooth.library.connect.response.BleReadResponse;
@@ -30,7 +31,7 @@ import me.goldze.mvvmhabit.utils.StringUtils;
  */
 public class BleOption {
     public static final int REQUEST_TIMEOUT = 0x01;
-    public static final long DURATION_HEART_QUERY = 6 * 1000;
+    public static final long DURATION_HEART_QUERY = 2 * 1000;
     private final static String DEVICE_NAME = "BLE_MYZR_";
     private static final String TAG = "BleOption";
     private static final UUID UUID_SERVICE_CHANNEL
@@ -67,9 +68,9 @@ public class BleOption {
     private static final byte OPTION_VOL_SILENT = 0x15;
 
     private static final int DELAY_WRITEDATA = 10;
-    private static final int PERIOD_WRITEDATA = 3000;
+    private static final int PERIOD_WRITEDATA = 500;
 
-    private static final int MAX_REWRITEDATA_TIMES = 2;
+    private static final int MAX_REWRITEDATA_TIMES = 3;
 
     private static BleOption instance;
     private String curDeviceMac;
@@ -326,7 +327,15 @@ public class BleOption {
      */
     public void connectDevice(String curDeviceMac, BleConnectResponse bleConnectResponse) {
         setMac(curDeviceMac);
-        AppApplication.getBluetoothClient(AppApplication.getInstance()).connect(BluetoothUtils.getRemoteDevice(curDeviceMac).getAddress(), bleConnectResponse);
+        BleConnectOptions options = new BleConnectOptions.Builder()
+                .setConnectRetry(2)   // 连接如果失败重试3次
+                .setConnectTimeout(3000)   // 连接超时30s
+                .setServiceDiscoverRetry(1)  // 发现服务如果失败重试3次
+                .setServiceDiscoverTimeout(2000)  // 发现服务超时20s
+                .build();
+
+        AppApplication.getBluetoothClient(AppApplication.getInstance()).connect(curDeviceMac, options, bleConnectResponse);
+//        AppApplication.getBluetoothClient(AppApplication.getInstance()).connect(BluetoothUtils.getRemoteDevice(curDeviceMac).getAddress(), bleConnectResponse);
     }
 
     /**

@@ -5,13 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
+
 import androidx.core.content.FileProvider;
+
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,6 +27,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.goldze.mvvmhabit.R;
+import com.goldze.mvvmhabit.app.AppApplication;
 import com.goldze.mvvmhabit.entity.LocalBannerInfo;
 import com.goldze.mvvmhabit.entity.StyleResEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseDataEntity;
@@ -40,7 +44,11 @@ import com.tamsiree.rxtool.RxZipTool;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -50,6 +58,7 @@ import me.goldze.mvvmhabit.http.NetworkUtil;
 import me.goldze.mvvmhabit.http.download.ProgressCallBack;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 import okhttp3.ResponseBody;
+import pl.droidsonroids.gif.GifImageView;
 
 /**
  * @author Areo
@@ -57,28 +66,29 @@ import okhttp3.ResponseBody;
  * @date : 2020/3/8 16:49
  */
 public class AppTools {
-    public static final String CUREENT_SERIONUM="123456";//按摩椅的设备串号
-    public static final String APPKEY="1uMqYWpHo3MoLH";
-    public static final String APPSIGN="sig-result";
-    public static final String KEY_REGISTER_USERINFO="registeruserinfo";
-    private static final String TAG="AppTools";
-    private static final String FILENAME_ZIP_BANNER="bannerImages";
-    private static final String FILENAME_ZIP_LOAD="loadImages";
+    public static final String CUREENT_SERIONUM = "123456";//按摩椅的设备串号
+    public static final String APPKEY = "1uMqYWpHo3MoLH";
+    public static final String APPSIGN = "sig-result";
+    public static final String KEY_REGISTER_USERINFO = "registeruserinfo";
+    private static final String TAG = "AppTools";
+    private static final String FILENAME_ZIP_BANNER = "bannerImages";
+    private static final String FILENAME_ZIP_LOAD = "loadImages";
 
 
-    public static class UserActionFlagAndValue{
-        public static final String FLAG_ROATION_MODE="roationMode";
-        public static final String FLAG_SPEED_VALUE="speedValue";
-        public static final String FLAG_SWITCH_WARM="warmSwitch";
-        public static final String FLAG_SWITCH_DEVICE="openSwitch";
-        public static final String FLAG_VOICE_VOLUME="voiceVolume";
+    public static class UserActionFlagAndValue {
+        public static final String FLAG_ROATION_MODE = "roationMode";
+        public static final String FLAG_SPEED_VALUE = "speedValue";
+        public static final String FLAG_SWITCH_WARM = "warmSwitch";
+        public static final String FLAG_SWITCH_DEVICE = "openSwitch";
+        public static final String FLAG_VOICE_VOLUME = "voiceVolume";
     }
+
     public static boolean install(Context con, String filePath) {
         try {
-            if(TextUtils.isEmpty(filePath))
+            if (TextUtils.isEmpty(filePath))
                 return false;
             File file = new File(filePath);
-            if(!file.exists()){
+            if (!file.exists()) {
                 return false;
             }
             Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -119,58 +129,63 @@ public class AppTools {
         return uri;
     }
 
-    private static String getCurrentAppVersion(Context context){
-        String versionCode="01.00";
+    public static String getCurrentAppVersion() {
+        String versionCode = "01.00";
         try {
-            PackageManager manager = context.getPackageManager();
-            PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
+            PackageManager manager = AppApplication.getInstance().getPackageManager();
+            PackageInfo info = manager.getPackageInfo(AppApplication.getInstance().getPackageName(), 0);
             versionCode = info.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            RxLogTool.e(TAG, "PackageManager.NameNotFoundException: ", e);
         }
         return versionCode;
     }
 
-    public static boolean isNeedUpdate(Context context,String latestVersion){
-        float latest=Float.parseFloat(latestVersion);
-        float cur=Float.parseFloat(getCurrentAppVersion(context));
-        return latest>cur;
+    public static boolean isNeedUpdate(Context context, String latestVersion) {
+        float latest = Float.parseFloat(latestVersion);
+        float cur = Float.parseFloat(getCurrentAppVersion());
+        return latest > cur;
     }
 
-    public static boolean isVersionNeedUpdate(String cureentVersion,String latestVersion){
-        float latest=Float.parseFloat(latestVersion);
-        float cur=Float.parseFloat(cureentVersion);
-        return latest>cur;
+    public static boolean isVersionNeedUpdate(String cureentVersion, String latestVersion) {
+        float latest = Float.parseFloat(latestVersion);
+        float cur = Float.parseFloat(cureentVersion);
+        return latest > cur;
     }
 
-    private static String getStyleResPackSavePath(Context context,String batchCode){
-        return context.getExternalCacheDir().getPath()+File.separator+"styleRes/"+batchCode+File.separator;
+    private static String getStyleResPackSavePath(Context context, String batchCode) {
+        return context.getExternalCacheDir().getPath() + File.separator + "styleRes/" + batchCode + File.separator;
     }
 
 
-    private static String getBannerPath(Context context){
-        return context.getExternalCacheDir().getPath()+File.separator+"bannerImages/";
-    }
-    private static String getLoadPath(Context context){
-        return context.getExternalCacheDir().getPath()+File.separator+"loadImages/";
+    private static String getBannerPath(Context context) {
+        return context.getExternalCacheDir().getPath() + File.separator + "bannerImages/";
     }
 
-    public static boolean isAutoPlayMode(String playMode){
+    private static String getLoadPath(Context context) {
+        return context.getExternalCacheDir().getPath() + File.separator + "loadImages/";
+    }
+
+    public static boolean isAutoPlayMode(String playMode) {
         return CheckUpdateResponseDataEntity.PLAYMODE_AUTO.equals(playMode);
     }
 
     /**
      * 获取控制页面图片
+     *
      * @return
      */
-    public static boolean isStyleResDrawableTotal(Context context, String batchCode) {
+    public static boolean isStyleResDrawableTotalComplete(Context context, String batchCode) {
+        if(TextUtils.isEmpty(batchCode)){
+            return false;
+        }
         File fileDir = RxFileTool.getFileByPath(getStyleResPackSavePath(context, batchCode));
-        int index=0;
+        int index = 0;
         if (fileDir.exists() && fileDir.isDirectory() && fileDir.list().length > 0) {
             for (File file : fileDir.listFiles()) {
                 Uri uri = Uri.fromFile(file);
-                String fileHeadName=file.getName().split("\\.")[0];
+                String fileHeadName = file.getName().split("\\.")[0];
                 if (fileHeadName.equals(StyleResEntity.FILENAME_PAUSE)) {
                     index++;
                 } else if (fileHeadName.equals(StyleResEntity.FILENAME_PILLOW)) {
@@ -193,28 +208,29 @@ public class AppTools {
                     index++;
                 } else if (fileHeadName.equals(StyleResEntity.FILENAME_BACKGROUND)) {
                     index++;
-                }else if (fileHeadName.equals(StyleResEntity.FILENAME_PRODUCT_LOGO)) {
+                } else if (fileHeadName.equals(StyleResEntity.FILENAME_PRODUCT_LOGO)) {
                     index++;
-                }else {
+                } else {
                     RxLogTool.e(TAG, "other file condition,uri: " + uri);
                 }
             }
         }
-        return index==12;
+        return index == 12;
     }
 
     /**
      * 获取控制页面图片
+     *
      * @return
      */
     public static StyleResEntity getStyleResDrawableEntity(Context context, String batchCode) {
         StyleResEntity styleResEntity = new StyleResEntity();
         File fileDir = RxFileTool.getFileByPath(getStyleResPackSavePath(context, batchCode));
-        int index=0;
+        int index = 0;
         if (fileDir.exists() && fileDir.isDirectory() && fileDir.list().length > 0) {
             for (File file : fileDir.listFiles()) {
                 Uri uri = Uri.fromFile(file);
-                String fileHeadName=file.getName().split("\\.")[0];
+                String fileHeadName = file.getName().split("\\.")[0];
                 if (fileHeadName.equals(StyleResEntity.FILENAME_PAUSE)) {
                     styleResEntity.setPauseUri(uri);
                     index++;
@@ -248,10 +264,10 @@ public class AppTools {
                 } else if (fileHeadName.equals(StyleResEntity.FILENAME_BACKGROUND)) {
                     styleResEntity.setBackgroundUri(uri);
                     index++;
-                }else if (fileHeadName.equals(StyleResEntity.FILENAME_PRODUCT_LOGO)) {
+                } else if (fileHeadName.equals(StyleResEntity.FILENAME_PRODUCT_LOGO)) {
                     styleResEntity.setLogoUri(uri);
                     index++;
-                }else {
+                } else {
                     RxLogTool.e(TAG, "other file condition,uri: " + uri);
                 }
             }
@@ -261,90 +277,133 @@ public class AppTools {
 
     /**
      * 获取轮播图片是否存在
+     *
      * @return
      */
-    public static ArrayList<Object> getBannerUnZipFilesOld(Context context){
-        ArrayList<Object>arrayList=new ArrayList<>();
-        File fileDir= RxFileTool.getFileByPath(getBannerPath(context));
-        if(fileDir.exists()&&fileDir.isDirectory()&&fileDir.list().length>0){
-            for(File file:fileDir.listFiles()){
-                if(!file.getName().endsWith(".zip")){
+    public static ArrayList<Object> getBannerUnZipFilesOld(Context context) {
+        ArrayList<Object> arrayList = new ArrayList<>();
+        File fileDir = RxFileTool.getFileByPath(getBannerPath(context));
+        if (fileDir.exists() && fileDir.isDirectory() && fileDir.list().length > 0) {
+            for (File file : fileDir.listFiles()) {
+                if (!file.getName().endsWith(".zip")) {
                     arrayList.add(Uri.fromFile(file));
                 }
             }
         }
-        if(arrayList.size()==0){
+        if (arrayList.size() == 0) {
             arrayList.add(R.mipmap.banner1);
         }
         return arrayList;
     }
 
-    /**
-     * 获取轮播图片是否存在
-     * @return
-     */
-    public static ArrayList<LocalBannerInfo> getBannerUnZipFiles(Context context){
-        ArrayList<LocalBannerInfo> localBannerInfos=new ArrayList<>();
-        File fileDir= RxFileTool.getFileByPath(getBannerPath(context));
-        String jsonContent="";
-        if(fileDir.exists()&&fileDir.isDirectory()&&fileDir.list().length>0){
-            for(File file:fileDir.listFiles()){
+
+    public static boolean isBannerUnZipFilesNormal(Context context) {
+        boolean isNormal = false;
+        File fileDir = RxFileTool.getFileByPath(getBannerPath(context));
+        String jsonContent = "";
+        if (fileDir.exists() && fileDir.isDirectory() && fileDir.list().length > 0) {
+            for (File file : fileDir.listFiles()) {
                 if (file.getName().equals("banner.json")) {
-                    jsonContent=RxFileTool.readFile2String(file,"utf8");
+                    isNormal = true;
                 }
             }
         }
-        if(fileDir.exists()&&fileDir.isDirectory()&&fileDir.list().length>0){
-            for(File file:fileDir.listFiles()){
+        return isNormal;
+    }
+
+    /**
+     * 获取轮播图片是否存在
+     *
+     * @return
+     */
+    public static ArrayList<LocalBannerInfo> getBannerUnZipFiles(Context context) {
+        ArrayList<LocalBannerInfo> localBannerInfos = new ArrayList<>();
+        File fileDir = RxFileTool.getFileByPath(getBannerPath(context));
+        String jsonContent = "";
+        if (fileDir.exists() && fileDir.isDirectory() && fileDir.list().length > 0) {
+            for (File file : fileDir.listFiles()) {
+                if (file.getName().equals("banner.json")) {
+                    jsonContent = RxFileTool.readFile2String(file, "utf8");
+                }
+            }
+        }
+        if (fileDir.exists() && fileDir.isDirectory() && fileDir.list().length > 0) {
+            for (File file : fileDir.listFiles()) {
                 if ((file.getName().endsWith(".jpg") || file.getName().endsWith(".png")) && file.getName().startsWith("banner")) {
-                    String fileHeadName=file.getName().split("\\.")[0];
-                    LocalBannerInfo localBannerInfo=new LocalBannerInfo(fileHeadName,Uri.fromFile(file),getBannerPicUrl(jsonContent,fileHeadName));
+                    String fileHeadName = file.getName().split("\\.")[0];
+                    LocalBannerInfo localBannerInfo = new LocalBannerInfo(fileHeadName, Uri.fromFile(file), getBannerPicUrl(jsonContent, fileHeadName));
                     localBannerInfos.add(localBannerInfo);
                 }
             }
         }
-        if(localBannerInfos.size()==0){
-            localBannerInfos.add(new LocalBannerInfo("localBitmap",R.mipmap.banner1,""));
+        if (localBannerInfos.size() == 0) {
+            AssetManager manager = context.getAssets();
+            try {
+                InputStream inputStream = manager.open("banner.json");
+                InputStreamReader isr = new InputStreamReader(inputStream,
+                        "UTF-8");
+                BufferedReader br = new BufferedReader(isr);
+                StringBuilder sb = new StringBuilder();
+                String length;
+                while ((length = br.readLine()) != null) {
+                    sb.append(length + "\n");
+                }
+                //关流
+                br.close();
+                isr.close();
+                inputStream.close();
+
+                jsonContent = sb.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            localBannerInfos.add(new LocalBannerInfo("banner1", R.mipmap.banner1, getBannerPicUrl(jsonContent, "banner1")));
+            localBannerInfos.add(new LocalBannerInfo("banner2", R.mipmap.banner2, getBannerPicUrl(jsonContent, "banner2")));
+            localBannerInfos.add(new LocalBannerInfo("banner3", R.mipmap.banner3, getBannerPicUrl(jsonContent, "banner3")));
+            localBannerInfos.add(new LocalBannerInfo("banner4", R.mipmap.banner4, getBannerPicUrl(jsonContent, "banner4")));
+            localBannerInfos.add(new LocalBannerInfo("banner5", R.mipmap.banner5, getBannerPicUrl(jsonContent, "banner5")));
+            localBannerInfos.add(new LocalBannerInfo("banner6", R.mipmap.banner6, getBannerPicUrl(jsonContent, "banner6")));
         }
         return localBannerInfos;
     }
 
-    private static String getBannerPicUrl(String jsonContent,String fileHeadName){
-        String result="";
+    private static String getBannerPicUrl(String jsonContent, String fileHeadName) {
+        String result = "";
         try {
             JSONObject jsonObject = new JSONObject(jsonContent);
             JSONObject filenameJson = jsonObject.getJSONObject(fileHeadName);
             result = filenameJson.optString("url");
         } catch (JSONException e) {
-            RxLogTool.e(TAG,"JSONException is :",e);
+            RxLogTool.e(TAG, "JSONException is :", e);
         }
         return result;
     }
 
     /**
      * 获取轮播图片是否存在
+     *
      * @return
      */
-    public static ArrayList<Object> getLoadImage(Context context){
-        ArrayList<Object>arrayList=new ArrayList<>();
-        File fileDir= RxFileTool.getFileByPath(getLoadPath(context));
-        if(fileDir.exists()&&fileDir.isDirectory()&&fileDir.list().length>0){
-            for(File file:fileDir.listFiles()){
-                if(!file.getName().endsWith(".zip")){
+    public static ArrayList<Object> getLoadImage(Context context) {
+        ArrayList<Object> arrayList = new ArrayList<>();
+        File fileDir = RxFileTool.getFileByPath(getLoadPath(context));
+        if (fileDir.exists() && fileDir.isDirectory() && fileDir.list().length > 0) {
+            for (File file : fileDir.listFiles()) {
+                if (!file.getName().endsWith(".zip")) {
                     arrayList.add(Uri.fromFile(file));
                 }
             }
         }
-        if(arrayList.size()==0){
+        if (arrayList.size() == 0) {
             arrayList.add(R.mipmap.mainbackground);
         }
         return arrayList;
     }
 
-    public static void downImageLoadingFiles(Context context,final CheckUpdateResponseDataEntity checkUpdateResponseDataEntity, final DeviceListViewModel deviceListViewModel) {
+    public static void downImageLoadingFiles(Context context, final CheckUpdateResponseDataEntity checkUpdateResponseDataEntity, final DeviceListViewModel deviceListViewModel) {
         final String destFileDir = getLoadPath(context);
         final String destFileName = FILENAME_ZIP_LOAD + ".zip";
-        DownLoadManager.getInstance().load(checkUpdateResponseDataEntity.getPackSavepath(), new ProgressCallBack<ResponseBody>(destFileDir, destFileName){
+        DownLoadManager.getInstance().load(checkUpdateResponseDataEntity.getPackSavepath(), new ProgressCallBack<ResponseBody>(destFileDir, destFileName) {
             @Override
             public void onStart() {
                 super.onStart();
@@ -357,12 +416,12 @@ public class AppTools {
             @Override
             public void onSuccess(ResponseBody responseBody) {
                 //ToastUtils.showShort("文件下载完成！");
-                boolean isUnzip=RxZipTool.unzipFile(destFileDir+destFileName,destFileDir);
-                RxLogTool.d(TAG,"unzip loadImage: "+(destFileDir+destFileName)+" result is "+isUnzip);
-                if(isUnzip){
+                boolean isUnzip = RxZipTool.unzipFile(destFileDir + destFileName, destFileDir);
+                RxLogTool.d(TAG, "unzip loadImage: " + (destFileDir + destFileName) + " result is " + isUnzip);
+                if (isUnzip) {
                     deviceListViewModel.setLoadingVersion(checkUpdateResponseDataEntity.getNewestVerno());
-                }else{
-                    RxLogTool.e(TAG,"Loading资源文件解压失败");
+                } else {
+                    RxLogTool.e(TAG, "Loading资源文件解压失败");
                 }
             }
 
@@ -372,16 +431,16 @@ public class AppTools {
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
-                ToastUtils.showShort("loading文件下载失败！");
+                RxLogTool.e(TAG, "DeviceListView,loading image download failed :", e);
+                //ToastUtils.showShort("loading文件下载失败！");
             }
         });
     }
 
-    public static void downImageLoadingFiles(Context context,final CheckUpdateResponseDataEntity checkUpdateResponseDataEntity, final LoadingViewModel loadingViewModel) {
+    public static void downImageLoadingFiles(Context context, final CheckUpdateResponseDataEntity checkUpdateResponseDataEntity, final LoadingViewModel loadingViewModel) {
         final String destFileDir = getLoadPath(context);
         final String destFileName = FILENAME_ZIP_LOAD + ".zip";
-        DownLoadManager.getInstance().load(checkUpdateResponseDataEntity.getPackSavepath(), new ProgressCallBack<ResponseBody>(destFileDir, destFileName){
+        DownLoadManager.getInstance().load(checkUpdateResponseDataEntity.getPackSavepath(), new ProgressCallBack<ResponseBody>(destFileDir, destFileName) {
             @Override
             public void onStart() {
                 super.onStart();
@@ -394,12 +453,12 @@ public class AppTools {
             @Override
             public void onSuccess(ResponseBody responseBody) {
                 //ToastUtils.showShort("文件下载完成！");
-                boolean isUnzip=RxZipTool.unzipFile(destFileDir+destFileName,destFileDir);
-                RxLogTool.d(TAG,"unzip loadImage: "+(destFileDir+destFileName)+" result is "+isUnzip);
-                if(isUnzip){
+                boolean isUnzip = RxZipTool.unzipFile(destFileDir + destFileName, destFileDir);
+                RxLogTool.d(TAG, "unzip loadImage: " + (destFileDir + destFileName) + " result is " + isUnzip);
+                if (isUnzip) {
                     loadingViewModel.setLoadingVersion(checkUpdateResponseDataEntity.getNewestVerno());
-                }else{
-                    RxLogTool.e(TAG,"Loading资源文件解压失败");
+                } else {
+                    RxLogTool.e(TAG, "Loading资源文件解压失败");
                 }
 //                builder.build().dismiss();
                 loadingViewModel.setLoadNewst(true);
@@ -411,8 +470,9 @@ public class AppTools {
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
-                ToastUtils.showShort("loading文件下载失败！");
+                loadingViewModel.setLoadNewst(true);
+                RxLogTool.e(TAG, "LoadingActivity ,loading image download failed :", e);
+//                ToastUtils.showShort("loading文件下载失败！");
             }
         });
     }
@@ -428,7 +488,7 @@ public class AppTools {
         }
     }
 
-    public static void downImageBannerFiles(Context context, final CheckUpdateResponseDataEntity checkUpdateResponseDataEntity,  final DeviceListViewModel deviceListViewModel) {
+    public static void downImageBannerFiles(Context context, final CheckUpdateResponseDataEntity checkUpdateResponseDataEntity, final DeviceListViewModel deviceListViewModel) {
         final String destFileDir = getBannerPath(context);
         final String destFileName = FILENAME_ZIP_BANNER + ".zip";
         DownLoadManager.getInstance().load(checkUpdateResponseDataEntity.getPackSavepath(), new ProgressCallBack<ResponseBody>(destFileDir, destFileName) {
@@ -444,13 +504,13 @@ public class AppTools {
             @Override
             public void onSuccess(ResponseBody responseBody) {
                 //ToastUtils.showShort("文件下载完成！");
-                boolean isUnzip=RxZipTool.unzipFile(destFileDir+destFileName,destFileDir);
-                RxLogTool.d(TAG,"unzip banner: "+(destFileDir+destFileName)+" result is "+isUnzip);
-                if(isUnzip){
+                boolean isUnzip = RxZipTool.unzipFile(destFileDir + destFileName, destFileDir);
+                RxLogTool.d(TAG, "unzip banner: " + (destFileDir + destFileName) + " result is " + isUnzip);
+                if (isUnzip) {
                     deviceListViewModel.setBannerVersion(checkUpdateResponseDataEntity.getNewestVerno());
                     deviceListViewModel.saveBannerPlayIndex(0);
-                }else{
-                    RxLogTool.e(TAG,"Banner资源文件解压失败");
+                } else {
+                    RxLogTool.e(TAG, "Banner资源文件解压失败");
                 }
 
             }
@@ -461,12 +521,13 @@ public class AppTools {
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
-                ToastUtils.showShort("banner文件下载失败！");
+                RxLogTool.e(TAG, "DeviceListView,banner download failed :", e);
+                RxLogTool.e(TAG,"banner文件下载失败！");
             }
         });
     }
-    public static void downImageBannerFiles(Context context, final CheckUpdateResponseDataEntity checkUpdateResponseDataEntity,  final LoadingViewModel loadingViewModel) {
+
+    public static void downImageBannerFiles(Context context, final CheckUpdateResponseDataEntity checkUpdateResponseDataEntity, final LoadingViewModel loadingViewModel) {
         final String destFileDir = getBannerPath(context);
         final String destFileName = FILENAME_ZIP_BANNER + ".zip";
 //        if(!builder.build().isShowing()){
@@ -485,13 +546,13 @@ public class AppTools {
             @Override
             public void onSuccess(ResponseBody responseBody) {
                 //ToastUtils.showShort("文件下载完成！");
-                boolean isUnzip=RxZipTool.unzipFile(destFileDir+destFileName,destFileDir);
-                RxLogTool.d(TAG,"unzip banner: "+(destFileDir+destFileName)+" result is "+isUnzip);
-                if(isUnzip){
+                boolean isUnzip = RxZipTool.unzipFile(destFileDir + destFileName, destFileDir);
+                RxLogTool.d(TAG, "unzip banner: " + (destFileDir + destFileName) + " result is " + isUnzip);
+                if (isUnzip) {
                     loadingViewModel.setBannerVersion(checkUpdateResponseDataEntity.getNewestVerno());
                     loadingViewModel.saveBannerPlayIndex(0);
-                }else{
-                    RxLogTool.e(TAG,"Banner资源文件解压失败");
+                } else {
+                    RxLogTool.e(TAG, "Banner资源文件解压失败");
                 }
 //                builder.build().dismiss();
                 loadingViewModel.setBannerNewst(true);
@@ -503,15 +564,16 @@ public class AppTools {
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
+                RxLogTool.e(TAG, "banner download failed :", e);
                 ToastUtils.showShort("banner文件下载失败！");
+                loadingViewModel.setBannerNewst(true);
             }
         });
     }
 
-    public static void downProductInfoImageFiles(Context context, final ProductInfoResponseEntity productInfoResponseEntity, final DeviceListViewModel deviceListItemViewModel,final String batchCode) {
+    public static void downProductInfoImageFiles(Context context, final ProductInfoResponseEntity productInfoResponseEntity, final DeviceListViewModel deviceListItemViewModel, final String batchCode) {
         if (context == null || productInfoResponseEntity == null || productInfoResponseEntity.getData() == null) {
-            deviceListItemViewModel.jumpToControlFragment(batchCode);
+            deviceListItemViewModel.jumpToControlFragment(batchCode,1);
             return;
         }
         final String destFileDir = getStyleResPackSavePath(context, batchCode);
@@ -521,7 +583,6 @@ public class AppTools {
         progressDialog.setTitle("正在下载产品资源文件，请稍后...");
         progressDialog.setCancelable(false);
         progressDialog.show();
-
 
         DownLoadManager.getInstance().load(productInfoResponseEntity.getData().getBrandResPackSavepath(), new ProgressCallBack<ResponseBody>(destFileDir, destFileName) {
             @Override
@@ -536,9 +597,9 @@ public class AppTools {
             @Override
             public void onSuccess(ResponseBody responseBody) {
                 //ToastUtils.showShort("文件下载完成！");
-                boolean isUnzip=RxZipTool.unzipFile(destFileDir+destFileName,destFileDir);
-                RxLogTool.d(TAG,"unzip BrandRes productinfo: "+(destFileDir+destFileName)+" result is "+isUnzip);
-                if(isUnzip){
+                boolean isUnzip = RxZipTool.unzipFile(destFileDir + destFileName, destFileDir);
+                RxLogTool.d(TAG, "unzip BrandRes productinfo: " + (destFileDir + destFileName) + " result is " + isUnzip);
+                if (isUnzip) {
                     DownLoadManager.getInstance().load(productInfoResponseEntity.getData().getStyleResPackSavepath(), new ProgressCallBack<ResponseBody>(destFileDir, destFileName) {
                         @Override
                         public void onStart() {
@@ -552,36 +613,41 @@ public class AppTools {
                         @Override
                         public void onSuccess(ResponseBody responseBody) {
                             //ToastUtils.showShort("文件下载完成！");
-                            boolean isUnzip=RxZipTool.unzipFile(destFileDir+destFileName,destFileDir);
-                            RxLogTool.d(TAG,"unzip productinfo: "+(destFileDir+destFileName)+" result is "+isUnzip);
-                            if(isUnzip){
+                            boolean isUnzip = RxZipTool.unzipFile(destFileDir + destFileName, destFileDir);
+                            RxLogTool.d(TAG, "unzip productinfo: " + (destFileDir + destFileName) + " result is " + isUnzip);
+                            if (isUnzip) {
                                 deviceListItemViewModel.saveProductInfoToDB(productInfoResponseEntity.getData());
-                            }else{
-                                RxLogTool.e(TAG,"productinfo资源文件解压失败");
+                            } else {
+                                RxLogTool.e(TAG, "productinfo资源文件解压失败");
                             }
 //                deviceListItemViewModel.jumpToControlFragment("1_1");
-                            deviceListItemViewModel.jumpToControlFragment(batchCode);
+                            deviceListItemViewModel.jumpToControlFragment(batchCode,2);
                             progressDialog.dismiss();
                         }
 
                         @Override
                         public void progress(final long progress, final long total) {
                             progressDialog.setMax((int) total);
-                            progressDialog.setProgress((int)(progress<total?progress:total));
+                            int realPro=(int) (progress < total ? progress : total);
+                            if(realPro>=progressDialog.getProgress()){
+                                progressDialog.setProgress(realPro);
+                            }
                         }
 
                         @Override
                         public void onError(Throwable e) {
                             RxLogTool.e(TAG, "download err:", e);
                             ToastUtils.showShort("产品资源文件下载失败！");
-                            deviceListItemViewModel.jumpToControlFragment(batchCode);
+                            deviceListItemViewModel.jumpToControlFragment(batchCode,3);
                             progressDialog.dismiss();
                         }
                     });
-                }else{
-                    RxLogTool.e(TAG,"BrandRes productinfo资源文件解压失败");
+                } else {
+                    RxLogTool.e(TAG, "BrandRes productinfo资源文件解压失败");
+                    deviceListItemViewModel.jumpToControlFragment(batchCode,4);
+                    progressDialog.dismiss();
                 }
-                deviceListItemViewModel.jumpToControlFragment(batchCode);
+
             }
 
             @Override
@@ -591,15 +657,15 @@ public class AppTools {
 
             @Override
             public void onError(Throwable e) {
-                RxLogTool.e(TAG, "download err:", e);
-                ToastUtils.showShort("产品资源文件下载失败！");
-                deviceListItemViewModel.jumpToControlFragment(batchCode);
+                RxLogTool.e(TAG, "产品资源文件下载失败！,download err:", e);
+                deviceListItemViewModel.jumpToControlFragment(batchCode,5);
                 progressDialog.dismiss();
             }
         });
 
     }
-    public static void downFile(final Context context, String url,final LoadingViewModel viewModel) {
+
+    public static void downFile(final Context context, String url, final LoadingViewModel viewModel) {
         final String destFileDir = context.getExternalCacheDir().getPath();
         final String destFileName = "myzr" + ".apk";
         final ProgressDialog progressDialog = new ProgressDialog(context);
@@ -621,8 +687,8 @@ public class AppTools {
             @Override
             public void onSuccess(ResponseBody responseBody) {
                 //ToastUtils.showShort("文件下载完成！");
-                boolean isInstall=AppTools.install(context,destFileDir+File.separator+destFileName);
-                if(viewModel!=null){
+                boolean isInstall = AppTools.install(context, destFileDir + File.separator + destFileName);
+                if (viewModel != null) {
                     viewModel.setApkNewst(true);
                 }
                 progressDialog.dismiss();
@@ -632,13 +698,19 @@ public class AppTools {
             @Override
             public void progress(final long progress, final long total) {
                 progressDialog.setMax((int) total);
-                progressDialog.setProgress((int)(progress<total?progress:total));
+                int realPro=(int) (progress < total ? progress : total);
+                if(realPro>=progressDialog.getProgress()){
+                    progressDialog.setProgress(realPro);
+                }
             }
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
-                ToastUtils.showShort("文件下载失败！");
+                RxLogTool.e(TAG, "File download err:", e);
+                ToastUtils.showShort("文件下载失败~");
+                if (viewModel != null) {
+                    viewModel.setApkNewst(true);
+                }
                 progressDialog.dismiss();
             }
         });
@@ -653,16 +725,13 @@ public class AppTools {
          切记不要胡乱强转！
          */
 //        eg：
-        RequestOptions options = new RequestOptions()
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true);
         //Glide 加载图片简单用法
-        if(view instanceof ImageView){
-            Glide.with(context).load(path).apply(options).into((ImageView)view);
-        }else{
+        if (view instanceof ImageView) {
+            Glide.with(context).load(path).into((ImageView) view);
+        } else {
             Glide.with(context)
                     .asBitmap()
-                    .load(path).apply(options)
+                    .load(path)
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
@@ -673,7 +742,6 @@ public class AppTools {
                     });
 
         }
-
 
 
         //Picasso 加载图片简单用法

@@ -67,6 +67,7 @@ public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> 
     public BindingCommand itemClick = new BindingCommand(new BindingAction() {
         @Override
         public void call() {
+            RxLogTool.e(TAG,"getBondState is: "+AppApplication.getBluetoothClient(viewModel.getApplication()).getBondState(entity.get().getMacAddress()));
             //这里可以通过一个标识,做出判断，已达到跳入不同界面的逻辑
             viewModel.checkDeviceInfo(AppTools.CUREENT_SERIONUM, DeviceListItemViewModel.this);
 //            AppApplication.getBluetoothClient(viewModel.getContext()).connect(BluetoothUtils.getRemoteDevice(entity.get().getMacAddress()).getAddress(), new BleConnectResponse() {
@@ -162,14 +163,15 @@ public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> 
             BleOption.getInstance().getNotifyData(this);
             BleOption.getInstance().getDeviceInfo(this);
         } else {
-            if (connectedTimes > MAX_CONNECTETIMES) {
+//            if (connectedTimes > MAX_CONNECTETIMES) {
                 dialog.dismiss();
                 connectedTimes = 0;
                 ToastUtils.showLong(viewModel.getActivity().getString(R.string.toast_title_connect_error));
-            } else {
-                RxLogTool.e(TAG, "ReconnectDevice times is " + connectedTimes);
-                BleOption.getInstance().connectDevice(entity.get().getMacAddress(), DeviceListItemViewModel.this);
-            }
+                viewModel.requestDeviceList();
+//            } else {
+//                RxLogTool.e(TAG, "ReconnectDevice times is " + connectedTimes);
+//                BleOption.getInstance().connectDevice(entity.get().getMacAddress(), DeviceListItemViewModel.this);
+//            }
 
         }
     }
@@ -202,7 +204,7 @@ public class DeviceListItemViewModel extends ItemViewModel<DeviceListViewModel> 
         BleOption.getInstance().clearLatestWriteCommondAndFlag();
         if (value.length == 10) {
             DeviceStatusInfoEntity recDeviceStatusInfoEntity = new DeviceStatusInfoEntity(value);
-            deviceListViewModel.getProductInfo(recDeviceStatusInfoEntity);
+            deviceListViewModel.getProductInfo(entity.get().getMacAddress(),recDeviceStatusInfoEntity);
         } else {
 //            DeviceStatusInfoEntity recDeviceStatusInfoEntity = new DeviceStatusInfoEntity();
 //            recDeviceStatusInfoEntity.setProductType((byte)1);

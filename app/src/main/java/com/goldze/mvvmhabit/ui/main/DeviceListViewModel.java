@@ -4,13 +4,14 @@ import android.app.Activity;
 import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.Context;
+
 import androidx.databinding.ObservableArrayList;
 import androidx.databinding.ObservableField;
 import androidx.databinding.ObservableList;
 import androidx.annotation.NonNull;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.goldze.mvvmhabit.BR;
@@ -21,13 +22,13 @@ import com.goldze.mvvmhabit.entity.BlutoothDeviceInfoEntity;
 import com.goldze.mvvmhabit.entity.DeviceStatusInfoEntity;
 import com.goldze.mvvmhabit.entity.db.ProductInfoData;
 import com.goldze.mvvmhabit.entity.db.UserActionData;
-import com.goldze.mvvmhabit.entity.http.ResponseNetDeviceInfoEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateBodyEntity;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseEntity;
 import com.goldze.mvvmhabit.entity.http.productinfo.ProductInfoResponseDataEntity;
 import com.goldze.mvvmhabit.entity.http.productinfo.ProductInfoResponseEntity;
 import com.goldze.mvvmhabit.entity.http.useraction.SubmitActionDataResponseEntity;
 import com.goldze.mvvmhabit.ui.base.viewmodel.ToolbarViewModel;
+import com.goldze.mvvmhabit.ui.login.LoginActivity;
 import com.goldze.mvvmhabit.utils.AppTools;
 import com.goldze.mvvmhabit.utils.BleOption;
 import com.goldze.mvvmhabit.utils.HttpStatus;
@@ -50,7 +51,6 @@ import me.goldze.mvvmhabit.binding.command.BindingCommand;
 import me.goldze.mvvmhabit.bus.event.SingleLiveEvent;
 import me.goldze.mvvmhabit.deviceinterface.OnDeviceInfoListener;
 import me.goldze.mvvmhabit.http.NetworkUtil;
-import me.goldze.mvvmhabit.utils.MaterialDialogUtils;
 import me.goldze.mvvmhabit.utils.RxUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 import me.tatarka.bindingcollectionadapter2.ItemBinding;
@@ -145,26 +145,44 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
             RxLogTool.e(TAG, "getLocalClassName is " + AppManager.getAppManager().currentActivity().getLocalClassName() + ";cannot jump...");
             return;
         }
-        if (!NetworkUtil.isNetworkAvailable(activity)) {
-            if(AppTools.isStyleResDrawableTotal(activity, batchCode)){
+//        if (!NetworkUtil.isNetworkAvailable(activity)) {
+        if(AppTools.isStyleResDrawableTotalComplete(activity, batchCode)){
+            Bundle bundle=new Bundle();
+            bundle.putString(AllDeviceControlFragment.KEY_BATCHCODE,batchCode);
+            startContainerActivity(AllDeviceControlFragment.class.getCanonicalName(),bundle);
+            dismissDialog();
+        }else{
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtils.showLong("*****无法匹配到当前批次号的完整资源，请联网后下载相关资源");
+//                        MaterialDialogUtils.showBasicDialogNoCancel(activity,"无法匹配到当前批次号的完整资源，请联网后下载最新资源");
+                }
+            });
+
+        }
+    }
+    public void jumpToControlFragment(String batchCode,final int test){
+        if (!AppManager.getAppManager().currentActivity().getLocalClassName().equals("ui.main.DeviceListActivity")) {
+            RxLogTool.e(TAG, "getLocalClassName is " + AppManager.getAppManager().currentActivity().getLocalClassName() + ";cannot jump...");
+            return;
+        }
+//        if (!NetworkUtil.isNetworkAvailable(activity)) {
+            if(AppTools.isStyleResDrawableTotalComplete(activity, batchCode)){
                 Bundle bundle=new Bundle();
-                bundle.putString(AllDeviceControlFragment.KEY_PRODUCTID,batchCode);
+                bundle.putString(AllDeviceControlFragment.KEY_BATCHCODE,batchCode);
                 startContainerActivity(AllDeviceControlFragment.class.getCanonicalName(),bundle);
+                dismissDialog();
             }else{
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ToastUtils.showLong("无法匹配到当前批次号的完整资源，请联网后下载最新资源");
+                        ToastUtils.showLong(test+"*****无法匹配到当前批次号的完整资源，请联网后下载相关资源");
 //                        MaterialDialogUtils.showBasicDialogNoCancel(activity,"无法匹配到当前批次号的完整资源，请联网后下载最新资源");
                     }
                 });
 
             }
-            return;
-        }
-        Bundle bundle=new Bundle();
-        bundle.putString(AllDeviceControlFragment.KEY_PRODUCTID,batchCode);
-        startContainerActivity(AllDeviceControlFragment.class.getCanonicalName(),bundle);
     }
     public void setBannerPlayModel(String playMode){
         model.saveBannerPlayMode(playMode);
@@ -173,20 +191,23 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
         return model.getBannerVersion();
     }
 
+    public String getLoadingVersion(){
+        return model.getLoadingVersion();
+    }
     public void setBannerVersion(String version){
         model.saveBannerVersion(version);
     }
     public void setLoadingVersion(String version){
         model.saveLoadingVersion(version);
     }
-    public void getProductInfo(final DeviceStatusInfoEntity deviceStatusInfoEntity){
+    public void getProductInfo(final String mac,final DeviceStatusInfoEntity deviceStatusInfoEntity){
         if (deviceStatusInfoEntity==null) {
             jumpToControlFragment(null);
             return;
         }
         if (!NetworkUtil.isNetworkAvailable(activity)) {
-            if(AppTools.isStyleResDrawableTotal(activity, deviceStatusInfoEntity.getBatchCode())){
-                jumpToControlFragment(deviceStatusInfoEntity.getBatchCode());
+            if(AppTools.isStyleResDrawableTotalComplete(activity, deviceStatusInfoEntity.getBatchCode())){
+                jumpToControlFragment(deviceStatusInfoEntity.getBatchCode(),6);
             }else{
                 activity.runOnUiThread(new Runnable() {
                     @Override
@@ -214,15 +235,32 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
                         dismissDialog();
                         boolean isOptionSuccess = entity.getStatus() == HttpStatus.STATUS_CODE_SUCESS;
                         RxLogTool.e(TAG, "ProductInfoResponseEntity getStatus is: " + entity.getStatus());
-                        if (isOptionSuccess && (getProductDBInfo(entity.getData().getProdId()) == null || (getProductDBInfo(entity.getData().getProdId()) != null &&
-                                (!AppTools.isStyleResDrawableTotal(activity, deviceStatusInfoEntity.getBatchCode())||AppTools.isVersionNeedUpdate(getProductDBInfo(entity.getData().getProdId()).getStyleResNewestVerno(), entity.getData().getStyleResNewestVerno()))
-                                ))) {
-                            model.saveProductname(deviceStatusInfoEntity.getBatchCode(),entity.getData().getProdName());
-                            AppTools.downProductInfoImageFiles(activity, entity, DeviceListViewModel.this, deviceStatusInfoEntity.getBatchCode());
-                        } else {
-                            RxLogTool.e(TAG, "ProductInfoStyleRes is newest");
-                            jumpToControlFragment(deviceStatusInfoEntity.getBatchCode());
+                        if(entity.getStatus()== HttpStatus.STATUS_CODE_TOKEN_OVERDUE){
+                            ToastUtils.showLong(R.string.tip_errtoken);
+                            startActivity(LoginActivity.class);
+                            finish();
+                            return;
                         }
+                        if(!isOptionSuccess){
+                            ToastUtils.showLong("操作无效,"+entity.getMessage());
+                            return;
+                        }
+                        if(entity.getData().getProdId() != null ){
+                            model.saveProductnameByMac(mac, entity.getData().getProdName());
+                            model.saveProductname(deviceStatusInfoEntity.getBatchCode(),entity.getData().getProdName());
+                            if (getProductDBInfo(entity.getData().getProdId()) == null ||(!AppTools.isStyleResDrawableTotalComplete(activity, deviceStatusInfoEntity.getBatchCode())||
+                                    AppTools.isVersionNeedUpdate(getProductDBInfo(entity.getData().getProdId()).getStyleResNewestVerno(), entity.getData().getStyleResNewestVerno()))) {
+                                AppTools.downProductInfoImageFiles(activity, entity, DeviceListViewModel.this, deviceStatusInfoEntity.getBatchCode());
+                            } else {
+                                RxLogTool.e(TAG, "ProductInfoStyleRes is newest");
+                                jumpToControlFragment(deviceStatusInfoEntity.getBatchCode(),7);
+                            }
+                        }else{
+                            ToastUtils.showLong("操作无效,"+entity.getMessage());
+                            return;
+                        }
+
+
 
                     }
                 }, new Consumer<Throwable>() {
@@ -230,7 +268,8 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
                     public void accept(Throwable throwable) throws Exception {
                         //关闭对话框
                         dismissDialog();
-                        jumpToControlFragment(deviceStatusInfoEntity.getBatchCode());
+                        RxLogTool.e(TAG, "ProductInfoStyleRes throwable :",throwable);
+                        jumpToControlFragment(deviceStatusInfoEntity.getBatchCode(),8);
                     }
                 }, new Action() {
                     @Override
@@ -247,7 +286,7 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
 
     public void checkVersion(){
         //RaJava检测更新
-        addSubscribe(model.checkUpdate(AppTools.APPKEY,"sig-result",model.getToken(), HttpsUtils.getCurrentMills(),new CheckUpdateBodyEntity("01.00","01.00","01.00"))
+        addSubscribe(model.checkUpdate(AppTools.APPKEY,"sig-result",model.getToken(), HttpsUtils.getCurrentMills(),new CheckUpdateBodyEntity(AppTools.getCurrentAppVersion(),getLoadingVersion(),getBannerVersion()))
                 .compose(RxUtils.schedulersTransformer()) //线程调度
                 .doOnSubscribe(new Consumer<Disposable>() {
                     @Override
@@ -260,6 +299,12 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
                     public void accept(CheckUpdateResponseEntity entity) throws Exception {
                         dismissDialog();
                         Log.e(TAG,"getStatus is:;Array is "+entity);
+                        if(entity.getStatus()== HttpStatus.STATUS_CODE_TOKEN_OVERDUE){
+                            ToastUtils.showLong(R.string.tip_errtoken);
+                            startActivity(LoginActivity.class);
+                            finish();
+                            return;
+                        }
                         //保存账号密码
                         versionEvent.set(entity);
                         versionEvent.notifyChange();
@@ -307,6 +352,13 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
                                 submitUserDeviceOption();
                                 RxLogTool.e(TAG,"go on  submit action Data...");
                             }
+                        }else if(entity.getStatus()== HttpStatus.STATUS_CODE_TOKEN_OVERDUE){
+                            ToastUtils.showLong(R.string.tip_errtoken);
+                            startActivity(LoginActivity.class);
+                            finish();
+                            return;
+                        }else{
+                            RxLogTool.e(TAG,"other submitUserDeviceOption condition ...");
                         }
 
                     }
@@ -326,38 +378,39 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
     }
 
     public void checkDeviceInfo(String serioNum, final OnDeviceInfoListener onDeviceInfoListener){
-        addSubscribe(model.getDeviceInfo(serioNum,AppTools.APPKEY,"sig-result",model.getToken(), HttpsUtils.getCurrentMills())
-                .compose(RxUtils.schedulersTransformer()) //线程调度
-                .doOnSubscribe(new Consumer<Disposable>() {
-                    @Override
-                    public void accept(Disposable disposable) throws Exception {
-                        showDialog();
-                    }
-                })
-                .subscribe(new Consumer<ResponseNetDeviceInfoEntity>() {
-                    @Override
-                    public void accept(ResponseNetDeviceInfoEntity entity) throws Exception {
-                        dismissDialog();
-                        RxLogTool.e(TAG,"getStatus is:; "+entity.getStatus());
-                        boolean isCanUse=entity.getStatus()== HttpStatus.STATUS_CODE_SUCESS;
-                        model.saveUnitId(entity.getData().getUnitId());
-                        onDeviceInfoListener.onDeviceCanUseResult(isCanUse);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        //关闭对话框
-                        dismissDialog();
-                        RxLogTool.e(TAG,"getStatus error:; ",throwable);
-                        onDeviceInfoListener.onDeviceCanUseResult(true);
-                    }
-                }, new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        //关闭对话框
-                        dismissDialog();
-                    }
-                }));
+        onDeviceInfoListener.onDeviceCanUseResult(true);
+//        addSubscribe(model.getDeviceInfo(serioNum,AppTools.APPKEY,"sig-result",model.getToken(), HttpsUtils.getCurrentMills())
+//                .compose(RxUtils.schedulersTransformer()) //线程调度
+//                .doOnSubscribe(new Consumer<Disposable>() {
+//                    @Override
+//                    public void accept(Disposable disposable) throws Exception {
+//                        showDialog();
+//                    }
+//                })
+//                .subscribe(new Consumer<ResponseNetDeviceInfoEntity>() {
+//                    @Override
+//                    public void accept(ResponseNetDeviceInfoEntity entity) throws Exception {
+//                        dismissDialog();
+//                        RxLogTool.e(TAG,"getStatus is:; "+entity.getStatus());
+//                        boolean isCanUse=entity.getStatus()== HttpStatus.STATUS_CODE_SUCESS;
+//                        model.saveUnitId(entity.getData().getUnitId());
+//                        onDeviceInfoListener.onDeviceCanUseResult(isCanUse);
+//                    }
+//                }, new Consumer<Throwable>() {
+//                    @Override
+//                    public void accept(Throwable throwable) throws Exception {
+//                        //关闭对话框
+//                        dismissDialog();
+//                        RxLogTool.e(TAG,"getStatus error:; ",throwable);
+//                        onDeviceInfoListener.onDeviceCanUseResult(true);
+//                    }
+//                }, new Action() {
+//                    @Override
+//                    public void run() throws Exception {
+//                        //关闭对话框
+//                        dismissDialog();
+//                    }
+//                }));
     }
     /**
      * 停止扫描
@@ -394,6 +447,9 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
             @Override
             public void onDeviceFounded(SearchResult device) {
                 BlutoothDeviceInfoEntity entity = new BlutoothDeviceInfoEntity(R.mipmap.applauncher, device.rssi, device.getName(), device.getAddress());
+                if(!TextUtils.isEmpty(device.getAddress())&&!TextUtils.isEmpty(model.getProductnameByMac(device.getAddress()))){
+                    entity.setDeviceName(model.getProductnameByMac(device.getAddress()));
+                }
                 BluetoothLog.e("device  is " + device.getName()+";device.getAddress() is "+device.getAddress());
                 if (AppApplication.getBluetoothClient(getApplication()).getBondState(device.getAddress()) == BluetoothDevice.BOND_BONDED) {
                     if (BleOption.getInstance().isDeviceBluetooth(device.getName()) && bindeduseList.add(device.getAddress())) {
@@ -409,6 +465,8 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
                         BluetoothLog.e("CanUseList is " + device.getName() + " MacAdress is " + device.getAddress());
                     }
                 }
+
+
             }
 
             @Override

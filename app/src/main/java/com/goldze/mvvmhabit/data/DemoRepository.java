@@ -176,8 +176,18 @@ public class DemoRepository extends BaseModel implements HttpDataSource, LocalDa
     }
 
     @Override
+    public void saveProductnameByMac(String mac, String productname) {
+        mLocalDataSource.saveProductnameByMac(mac,productname);
+    }
+
+    @Override
     public String getProductname(String batchcode) {
         return mLocalDataSource.getProductname(batchcode);
+    }
+
+    @Override
+    public String getProductnameByMac(String mac) {
+        return mLocalDataSource.getProductnameByMac(mac);
     }
 
     @Override

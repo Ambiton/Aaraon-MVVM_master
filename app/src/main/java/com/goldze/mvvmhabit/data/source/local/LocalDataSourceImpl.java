@@ -20,6 +20,7 @@ public class LocalDataSourceImpl implements LocalDataSource {
     private volatile static LocalDataSourceImpl INSTANCE = null;
     private static final String KEY_USERNAME = "UserName";
     private static final String KEY_PASSWORD = "password";
+    private static final String KEY_MAC_FOR_PRODUCT = "MacForProduct";
     private static final String KEY_TOKEN = "Token";
     private static final String KEY_USERID = "userid";
     private static final String KEY_UNITID = "unitid";
@@ -80,6 +81,14 @@ public class LocalDataSourceImpl implements LocalDataSource {
     @Override
     public void saveProductname(String batchcode, String productname) {
         SPUtils.getInstance().put(batchcode, productname);
+    }
+    @Override
+    public void saveProductnameByMac(String mac, String productname) {
+        SPUtils.getInstance().put(KEY_MAC_FOR_PRODUCT+mac, productname);
+    }
+    @Override
+    public String getProductnameByMac(String mac) {
+        return  SPUtils.getInstance().getString(KEY_MAC_FOR_PRODUCT+mac, "");
     }
 
     @Override

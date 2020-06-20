@@ -42,9 +42,19 @@ public interface LocalDataSource {
     void saveProductname(String batchcode,String productname);
 
     /**
+     * 保存mac 对应的 productname
+     */
+    void saveProductnameByMac(String mac,String productname);
+
+    /**
      * 获取bathcode 对应的 productname
      */
     String getProductname(String batchcode);
+
+    /**
+     * 获取mac 对应的 productname
+     */
+    String getProductnameByMac(String mac);
 
     /**
      * 保存Banner版本

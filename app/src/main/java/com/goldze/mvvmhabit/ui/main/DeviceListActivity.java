@@ -28,8 +28,13 @@ import com.goldze.mvvmhabit.databinding.ActivityDevicelistBinding;
 import com.goldze.mvvmhabit.entity.http.checkversion.CheckUpdateResponseDataEntity;
 import com.goldze.mvvmhabit.ui.viewpager.adapter.DeviceListBindingAdapter;
 import com.goldze.mvvmhabit.utils.AppTools;
+import com.inuker.bluetooth.library.connect.listener.BluetoothStateListener;
+import com.inuker.bluetooth.library.receiver.listener.BluetoothBondListener;
 import com.tamsiree.rxtool.RxLogTool;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import io.reactivex.functions.Consumer;
 import me.goldze.mvvmhabit.base.AppManager;
@@ -45,6 +50,7 @@ import me.goldze.mvvmhabit.utils.ToastUtils;
 public class DeviceListActivity extends BaseActivity<ActivityDevicelistBinding, DeviceListViewModel> {
     private static final String TAG="DeviceListActivity";
     private int GPS_REQUEST_CODE = 1;
+    private Timer timer=new Timer();
     @Override
     public int initContentView(Bundle savedInstanceState) {
         return R.layout.activity_devicelist;
@@ -80,6 +86,37 @@ public class DeviceListActivity extends BaseActivity<ActivityDevicelistBinding, 
         binding.include.ivRightIcon.setVisibility(View.VISIBLE);
         viewModel.initToolbar();
         viewModel.checkVersion();
+        AppApplication.getBluetoothClient(getApplication()).registerBluetoothStateListener(new BluetoothStateListener() {
+            @Override
+            public void onBluetoothStateChanged(boolean openOrClosed) {
+                if(!openOrClosed){
+                    ToastUtils.showLong("蓝牙已关闭，为了确保能正常使用设备，请打开手机蓝牙...");
+                }
+                viewModel.requestDeviceList();
+            }
+        });
+
+        startRequestTimer();
+    }
+
+    private void startRequestTimer(){
+//        stopRequestTimer();
+//        if(timer==null){
+//            timer=new Timer();
+//        }
+//        timer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                viewModel.requestDeviceList();
+//            }
+//        },1000,8000);
+    }
+
+    private void stopRequestTimer(){
+//        if(timer!=null){
+//            timer.cancel();
+//            timer=null;
+//        }
     }
 
     private void openGPSSEtting() {
@@ -198,7 +235,7 @@ public class DeviceListActivity extends BaseActivity<ActivityDevicelistBinding, 
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
                 if(viewModel.versionEvent.get()!=null&&viewModel.versionEvent.get().getResponseDataEntityArray()!=null
-                        &&viewModel.versionEvent.get().getResponseDataEntityArray().length>=3){
+                        &&viewModel.versionEvent.get().getResponseDataEntityArray().length>0){
                     for(CheckUpdateResponseDataEntity checkUpdateResponseDataEntity:viewModel.versionEvent.get().getResponseDataEntityArray()){
                         if(CheckUpdateResponseDataEntity.TYPE_APP.equals(checkUpdateResponseDataEntity.getType())){
                             final CheckUpdateResponseDataEntity appCheckUpdateResponseDataEntity=checkUpdateResponseDataEntity;
@@ -210,20 +247,26 @@ public class DeviceListActivity extends BaseActivity<ActivityDevicelistBinding, 
                                         dialog.dismiss();
                                         AppTools.downFile(DeviceListActivity.this,appCheckUpdateResponseDataEntity.getPackSavepath(),null);
                                     }
+                                }).onNegative(new MaterialDialog.SingleButtonCallback() {
+                                    @Override
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                                    }
                                 }).show();
+
                             }
                             break;
                         }else if (CheckUpdateResponseDataEntity.TYPE_BANNER.equals(checkUpdateResponseDataEntity.getType())) {
                             viewModel.setBannerPlayModel(checkUpdateResponseDataEntity.getPlayMode());
                             //Banner 版本检测更新
-                            if(AppTools.isVersionNeedUpdate(viewModel.getBannerVersion(),checkUpdateResponseDataEntity.getNewestVerno())){
+                            if(!AppTools.isBannerUnZipFilesNormal(DeviceListActivity.this)||AppTools.isVersionNeedUpdate(viewModel.getBannerVersion(),checkUpdateResponseDataEntity.getNewestVerno())){
                                 RxLogTool.e("TAG","banner need update...");
                                 AppTools.downImageBannerFiles(DeviceListActivity.this, checkUpdateResponseDataEntity, viewModel);
                             }
 
                         } else if (CheckUpdateResponseDataEntity.TYPE_LOAD_RES.equals(checkUpdateResponseDataEntity.getType())) {
                             //Loading图 版本检测更新
-                            if(AppTools.isVersionNeedUpdate(viewModel.getBannerVersion(),checkUpdateResponseDataEntity.getNewestVerno())){
+                            if(AppTools.isVersionNeedUpdate(viewModel.getLoadingVersion(),checkUpdateResponseDataEntity.getNewestVerno())){
                                 RxLogTool.e("TAG","loadImage need update...");
                                 AppTools.downImageLoadingFiles(DeviceListActivity.this, checkUpdateResponseDataEntity,viewModel);
                             }
@@ -231,6 +274,8 @@ public class DeviceListActivity extends BaseActivity<ActivityDevicelistBinding, 
                             RxLogTool.e(TAG,"other version retrun...");
                         }
                     }
+                }else{
+                    RxLogTool.e(TAG,"no version retrun...");
                 }
 
             }

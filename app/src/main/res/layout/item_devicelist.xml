@@ -32,7 +32,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="6dp"
-            android:textSize="@dimen/text_max"
+            android:textSize="@dimen/text_med"
+            android:gravity="center"
             android:textColor="@color/text_color_gray"
             android:text="@{viewModel.entity.deviceName}" />
     </LinearLayout>

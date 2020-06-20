@@ -91,7 +91,7 @@ public class LoadingActivity extends BaseActivity<ActivityLoadingBinding, Loadin
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
                 if (viewModel.versionEvent.get() != null && viewModel.versionEvent.get().getResponseDataEntityArray() != null
-                        && viewModel.versionEvent.get().getResponseDataEntityArray().length >= 3) {
+                        && viewModel.versionEvent.get().getResponseDataEntityArray().length >0) {
 //                    MaterialDialog.Builder builderLoading = MaterialDialogUtils.showUpdateResProgressDialog(LoadingActivity.this, false);
                     for (CheckUpdateResponseDataEntity checkUpdateResponseDataEntity : viewModel.versionEvent.get().getResponseDataEntityArray()) {
                         if (CheckUpdateResponseDataEntity.TYPE_APP.equals(checkUpdateResponseDataEntity.getType())) {
@@ -106,7 +106,7 @@ public class LoadingActivity extends BaseActivity<ActivityLoadingBinding, Loadin
                         } else if (CheckUpdateResponseDataEntity.TYPE_BANNER.equals(checkUpdateResponseDataEntity.getType())) {
                             viewModel.setBannerPlayModel(checkUpdateResponseDataEntity.getPlayMode());
                             //Banner 版本检测更新
-                            if(AppTools.isVersionNeedUpdate(viewModel.getBannerVersion(),checkUpdateResponseDataEntity.getNewestVerno())){
+                            if (!AppTools.isBannerUnZipFilesNormal(LoadingActivity.this) || AppTools.isVersionNeedUpdate(viewModel.getBannerVersion(),checkUpdateResponseDataEntity.getNewestVerno())){
                                 RxLogTool.e("TAG","banner need update...");
                                 AppTools.downImageBannerFiles(LoadingActivity.this, checkUpdateResponseDataEntity, viewModel);
                             }else{
@@ -125,8 +125,8 @@ public class LoadingActivity extends BaseActivity<ActivityLoadingBinding, Loadin
                             RxLogTool.e(TAG,"other version retrun...");
                         }
                     }
-
-
+                }else{
+                    startJump();
                 }
 
             }
@@ -185,12 +185,12 @@ public class LoadingActivity extends BaseActivity<ActivityLoadingBinding, Loadin
     private void openGPSSEtting() {
         if (checkGpsIsOpen()) {
             RxLogTool.e("Yuanjian",this.getExternalCacheDir().getPath());
-            if (viewModel.isNeedCheckUpdate(LoadingActivity.this)) {
-                RxLogTool.e("Yuanjian","here");
-                viewModel.checkVersion();
-            } else {
+//            if (viewModel.isNeedCheckUpdate(LoadingActivity.this)) {
+//                RxLogTool.e("Yuanjian","here");
+//                viewModel.checkVersion();
+//            } else {
                 startJump();
-            }
+//            }
 
         } else {
             new AlertDialog.Builder(this).setTitle("为了保证扫描设备过程正常，请打开 GPS")
