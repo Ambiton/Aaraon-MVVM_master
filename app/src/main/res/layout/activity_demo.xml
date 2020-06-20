@@ -3,7 +3,7 @@
 
     <data>
 
-        <import type="com.myzr.allproduct.ui.main.DemoViewModel" />
+        <import type="com.myzr.allproducts.ui.main.DemoViewModel" />
 
         <variable
             name="viewModel"

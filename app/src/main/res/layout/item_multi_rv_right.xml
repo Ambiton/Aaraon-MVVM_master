@@ -3,7 +3,7 @@
 
     <data>
 
-        <import type="com.myzr.allproduct.ui.rv_multi.MultiRecycleRightItemViewModel" />
+        <import type="com.myzr.allproducts.ui.rv_multi.MultiRecycleRightItemViewModel" />
 
         <variable
             name="viewModel"

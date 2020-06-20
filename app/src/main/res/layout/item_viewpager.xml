@@ -3,7 +3,7 @@
 
     <data>
 
-        <import type="com.myzr.allproduct.ui.viewpager.vm.ViewPagerItemViewModel" />
+        <import type="com.myzr.allproducts.ui.viewpager.vm.ViewPagerItemViewModel" />
 
         <variable
             name="viewModel"

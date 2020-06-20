@@ -26,7 +26,7 @@
 
 #------------------------------------------主项目混淆规则----------------------------------------------
 #实体类不参与混淆
--keep class com.myzr.allproduct.entity.** { *; }
+-keep class com.myzr.allproducts.entity.** { *; }
 
 #tkrefreshlayout
 -keep class com.lcodecore.tkrefreshlayout.** { *; }

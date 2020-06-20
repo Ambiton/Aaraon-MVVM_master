@@ -3,9 +3,9 @@
 
     <data>
 
-        <import type="com.myzr.allproduct.ui.network.NetWorkViewModel" />
+        <import type="com.myzr.allproducts.ui.network.NetWorkViewModel" />
 
-        <import type="com.myzr.allproduct.ui.viewpager.adapter.NetWorkBindingAdapter" />
+        <import type="com.myzr.allproducts.ui.viewpager.adapter.NetWorkBindingAdapter" />
 
         <variable
             name="viewModel"

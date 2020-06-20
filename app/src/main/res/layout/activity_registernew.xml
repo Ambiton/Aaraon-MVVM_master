@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="com.myzr.allproduct.ui.main.RegisterViewModel" />
+            type="com.myzr.allproducts.ui.main.RegisterViewModel" />
     </data>
 
     <RelativeLayout

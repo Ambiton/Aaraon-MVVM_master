@@ -3,9 +3,9 @@
 
     <data>
 
-        <import type="com.myzr.allproduct.ui.viewpager.vm.ViewPagerViewModel" />
+        <import type="com.myzr.allproducts.ui.viewpager.vm.ViewPagerViewModel" />
 
-        <import type="com.myzr.allproduct.ui.viewpager.adapter.ViewPagerBindingAdapter" />
+        <import type="com.myzr.allproducts.ui.viewpager.adapter.ViewPagerBindingAdapter" />
 
         <variable
             name="viewModel"

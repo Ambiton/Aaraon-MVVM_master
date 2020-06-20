@@ -3,11 +3,11 @@
 
     <data>
 
-        <import type="com.myzr.allproduct.ui.form.FormViewModel" />
+        <import type="com.myzr.allproducts.ui.form.FormViewModel" />
 
         <variable
             name="viewModel"
-            type="com.myzr.allproduct.ui.form.FormViewModel" />
+            type="com.myzr.allproducts.ui.form.FormViewModel" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

@@ -159,7 +159,7 @@ CaocConfig.Builder.create()
 <layout>
     <data>
         <variable
-            type="com.myzr.allproduct.ui.login.LoginViewModel"
+            type="com.myzr.allproducts.ui.login.LoginViewModel"
             name="viewModel"
         />
     </data>

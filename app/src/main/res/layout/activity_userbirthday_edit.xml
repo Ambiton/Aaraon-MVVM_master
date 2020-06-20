@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="com.myzr.allproduct.ui.register.BirthdayChooseViewModel" />
+            type="com.myzr.allproducts.ui.register.BirthdayChooseViewModel" />
     </data>
 
     <LinearLayout

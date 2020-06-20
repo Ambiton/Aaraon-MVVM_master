@@ -3,9 +3,9 @@
 
     <data>
 
-        <import type="com.myzr.allproduct.ui.rv_multi.MultiRecycleViewModel" />
+        <import type="com.myzr.allproducts.ui.rv_multi.MultiRecycleViewModel" />
 
-        <import type="com.myzr.allproduct.ui.viewpager.adapter.MultiRvBindingAdapter" />
+        <import type="com.myzr.allproducts.ui.viewpager.adapter.MultiRvBindingAdapter" />
 
         <variable
             name="viewModel"

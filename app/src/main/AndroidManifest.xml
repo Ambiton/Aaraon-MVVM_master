@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.myzr.allproduct">
+    package="com.myzr.allproducts">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA"/>
@@ -18,7 +18,7 @@
     <uses-permission android:name="android.permission.READ_LOGS" />
     <application
         tools:replace="android:icon"
-            android:name="com.myzr.allproduct.app.AppApplication"
+            android:name="com.myzr.allproducts.app.AppApplication"
             android:allowBackup="true"
             android:icon="@mipmap/applauncher"
             android:label="@string/app_name"
@@ -36,37 +36,37 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"/>
         </provider>
-        <activity android:name="com.myzr.allproduct.ui.main.LoadingActivity">
+        <activity android:name="com.myzr.allproducts.ui.main.LoadingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.myzr.allproduct.ui.login.LoginActivity"
+        <activity android:name="com.myzr.allproducts.ui.login.LoginActivity"
             android:launchMode="singleTask"></activity>
-        <activity android:name="com.myzr.allproduct.ui.main.WebViewActivity"
+        <activity android:name="com.myzr.allproducts.ui.main.WebViewActivity"
             android:launchMode="singleTask"></activity>
-        <activity android:name="com.myzr.allproduct.ui.main.RegisterActivity"
+        <activity android:name="com.myzr.allproducts.ui.main.RegisterActivity"
             android:launchMode="singleTask"></activity>
-        <activity android:name="com.myzr.allproduct.ui.main.DeviceListActivity"
+        <activity android:name="com.myzr.allproducts.ui.main.DeviceListActivity"
             android:launchMode="singleTask"></activity>
-        <activity android:name="com.myzr.allproduct.ui.register.UserNickNameActivity"
+        <activity android:name="com.myzr.allproducts.ui.register.UserNickNameActivity"
             android:launchMode="singleTask"
             ></activity>
-        <activity android:name="com.myzr.allproduct.ui.register.SexChooseActivity"
+        <activity android:name="com.myzr.allproducts.ui.register.SexChooseActivity"
             android:launchMode="singleTask"></activity>
-        <activity android:name="com.myzr.allproduct.ui.register.BirthdayChooseActivity"
+        <activity android:name="com.myzr.allproducts.ui.register.BirthdayChooseActivity"
             android:launchMode="singleTask"></activity>
-        <activity android:name="com.myzr.allproduct.ui.register.UserWeightActivity"
+        <activity android:name="com.myzr.allproducts.ui.register.UserWeightActivity"
             android:launchMode="singleTask"></activity>
-        <activity android:name="com.myzr.allproduct.ui.register.UserHeightActivity"
+        <activity android:name="com.myzr.allproducts.ui.register.UserHeightActivity"
             android:launchMode="singleTask"></activity>
-        <activity android:name="com.myzr.allproduct.ui.main.DemoActivity"
+        <activity android:name="com.myzr.allproducts.ui.main.DemoActivity"
             android:launchMode="singleTask"></activity>
-        <activity android:name="com.myzr.allproduct.ui.tab_bar.activity.TabBarActivity"
+        <activity android:name="com.myzr.allproducts.ui.tab_bar.activity.TabBarActivity"
             android:launchMode="singleTask"></activity>
-        <activity android:name="com.myzr.allproduct.ui.viewpager.activity.ViewPagerActivity"
+        <activity android:name="com.myzr.allproducts.ui.viewpager.activity.ViewPagerActivity"
             android:launchMode="singleTask"></activity>
     </application>
 

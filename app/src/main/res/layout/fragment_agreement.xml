@@ -2,10 +2,10 @@
 <layout>
 
     <data>
-        <import type="com.myzr.allproduct.ui.main.AgreementViewModel" />
+        <import type="com.myzr.allproducts.ui.main.AgreementViewModel" />
         <variable
             name="viewModel"
-            type="com.myzr.allproduct.ui.main.AgreementViewModel" />
+            type="com.myzr.allproducts.ui.main.AgreementViewModel" />
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

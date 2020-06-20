@@ -4,11 +4,11 @@
 
     <data>
 
-        <import type="com.myzr.allproduct.ui.main.WebViewActivity" />
+        <import type="com.myzr.allproducts.ui.main.WebViewActivity" />
 
         <variable
             name="viewModel"
-            type="com.myzr.allproduct.ui.main.WebViewViewModel" />
+            type="com.myzr.allproducts.ui.main.WebViewViewModel" />
     </data>
 
     <LinearLayout
