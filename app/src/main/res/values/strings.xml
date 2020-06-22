@@ -4,7 +4,7 @@
     <string name="des_loading">让每一秒的享受都是健康</string>
     <string name="accept_agreement">接受明远按摩器产品相关的服务条款</string>
     <string name="tip_errtoken">Token过期，请重新登录</string>
-    <string name="tip_errservice">服务器忙</string>
+    <string name="tip_errservice">服务器忙,请稍后重试</string>
     <string name="user_nickname">用户昵称</string>
     <string name="user_nickname_hint">长度不大于10</string>
     <string name="btn_nextstep">下一步</string>

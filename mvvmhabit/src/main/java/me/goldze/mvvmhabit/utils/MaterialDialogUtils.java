@@ -156,6 +156,25 @@ public class MaterialDialogUtils {
      * @param
      * @return MaterialDialog.Builder
      */
+    public static MaterialDialog.Builder showSingleBtnBasicDialog(final Context context, String
+            content) {
+
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(context)
+                .title(content)
+                .positiveText("确定")
+                .btnStackedGravity(GravityEnum.END)         //按钮排列位置
+                .cancelable(false).canceledOnTouchOutside(false)
+                ;
+
+        return builder;
+    }
+
+    /***
+     * 获取基本对话框
+     *
+     * @param
+     * @return MaterialDialog.Builder
+     */
     public static MaterialDialog.Builder showBasicDialog(final Context context, String
             content) {
 

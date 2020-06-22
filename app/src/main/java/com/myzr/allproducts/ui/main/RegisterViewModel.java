@@ -262,8 +262,14 @@ public class RegisterViewModel extends BaseViewModel<DemoRepository> implements 
                     public void accept(VerifiedCodeResponseEntity entity) throws Exception {
                         Log.e(TAG,"getStatus is:"+entity.getStatus()+";smstoken is "+entity.getData());
                         //保存Token
-                        smsToken=entity.getData();
-                        model.saveSmsToken(entity.getData());
+                        if(entity.getStatus()==HttpStatus.STATUS_CODE_SUCESS){
+                            smsToken=entity.getData();
+                            model.saveSmsToken(entity.getData());
+                        }else{
+                            if(!TextUtils.isEmpty(entity.getMessage())){
+                                ToastUtils.showLong(entity.getMessage());
+                            }
+                        }
                     }
                 }, new Consumer<Throwable>() {
                     @Override

@@ -235,14 +235,20 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
                         dismissDialog();
                         boolean isOptionSuccess = entity.getStatus() == HttpStatus.STATUS_CODE_SUCESS;
                         RxLogTool.e(TAG, "ProductInfoResponseEntity getStatus is: " + entity.getStatus());
-                        if(entity.getStatus()== HttpStatus.STATUS_CODE_TOKEN_OVERDUE){
-                            ToastUtils.showLong(R.string.tip_errtoken);
-                            startActivity(LoginActivity.class);
-                            finish();
-                            return;
-                        }
                         if(!isOptionSuccess){
-                            ToastUtils.showLong("操作无效,"+entity.getMessage());
+                            final String msg=entity.getMessage();
+                            if(AppTools.isTokenErr(entity.getStatus())){
+                                AppTools.dearWithErrorReturn(getActivity(),entity.getStatus(),entity.getMessage());
+                            }else{
+                                RxLogTool.e(TAG,"statusCode is other condition...");
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ToastUtils.showLong("操作无效,"+msg);
+                                    }
+                                });
+                            }
+
                             return;
                         }
                         if(entity.getData().getProdId() != null ){
@@ -291,23 +297,24 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
                 .doOnSubscribe(new Consumer<Disposable>() {
                     @Override
                     public void accept(Disposable disposable) throws Exception {
-                        showDialog();
+//                        showDialog();
                     }
                 })
                 .subscribe(new Consumer<CheckUpdateResponseEntity>() {
                     @Override
                     public void accept(CheckUpdateResponseEntity entity) throws Exception {
                         dismissDialog();
-                        Log.e(TAG,"getStatus is:;Array is "+entity);
-                        if(entity.getStatus()== HttpStatus.STATUS_CODE_TOKEN_OVERDUE){
-                            ToastUtils.showLong(R.string.tip_errtoken);
-                            startActivity(LoginActivity.class);
-                            finish();
-                            return;
+                        RxLogTool.e(TAG,"getStatus is:;Array is "+entity);
+                        if(entity.getStatus()== HttpStatus.STATUS_CODE_SUCESS){
+                            //保存账号密码
+                            versionEvent.set(entity);
+                            versionEvent.notifyChange();
+                        } else if(AppTools.isTokenErr(entity.getStatus())){
+                           AppTools.dearWithErrorReturn(getActivity(),entity.getStatus(),entity.getMessage());
+                        }else{
+                            RxLogTool.e(TAG,"statusCode is other condition...");
                         }
-                        //保存账号密码
-                        versionEvent.set(entity);
-                        versionEvent.notifyChange();
+
 
                     }
                 }, new Consumer<Throwable>() {
@@ -352,11 +359,8 @@ public class DeviceListViewModel extends ToolbarViewModel<DemoRepository> {
                                 submitUserDeviceOption();
                                 RxLogTool.e(TAG,"go on  submit action Data...");
                             }
-                        }else if(entity.getStatus()== HttpStatus.STATUS_CODE_TOKEN_OVERDUE){
-                            ToastUtils.showLong(R.string.tip_errtoken);
-                            startActivity(LoginActivity.class);
-                            finish();
-                            return;
+                        }else if(AppTools.isTokenErr(entity.getStatus())){
+                            AppTools.dearWithErrorReturn(getActivity(),entity.getStatus(),entity.getMessage());
                         }else{
                             RxLogTool.e(TAG,"other submitUserDeviceOption condition ...");
                         }

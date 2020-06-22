@@ -1,5 +1,6 @@
 package com.myzr.allproducts.utils;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 
 import android.text.TextUtils;
@@ -20,6 +22,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -29,6 +33,7 @@ import com.myzr.allproducts.entity.LocalBannerInfo;
 import com.myzr.allproducts.entity.StyleResEntity;
 import com.myzr.allproducts.entity.http.checkversion.CheckUpdateResponseDataEntity;
 import com.myzr.allproducts.entity.http.productinfo.ProductInfoResponseEntity;
+import com.myzr.allproducts.ui.login.LoginActivity;
 import com.myzr.allproducts.ui.main.DeviceListViewModel;
 import com.myzr.allproducts.ui.main.LoadingViewModel;
 import com.tamsiree.rxtool.RxFileTool;
@@ -48,6 +53,7 @@ import java.util.ArrayList;
 import me.goldze.mvvmhabit.http.DownLoadManager;
 import me.goldze.mvvmhabit.http.NetworkUtil;
 import me.goldze.mvvmhabit.http.download.ProgressCallBack;
+import me.goldze.mvvmhabit.utils.MaterialDialogUtils;
 import me.goldze.mvvmhabit.utils.ToastUtils;
 import okhttp3.ResponseBody;
 
@@ -160,6 +166,57 @@ public class AppTools {
 
     public static boolean isAutoPlayMode(String playMode) {
         return CheckUpdateResponseDataEntity.PLAYMODE_AUTO.equals(playMode);
+    }
+
+    public static boolean isTokenErr(int statusCode){
+        return statusCode==HttpStatus.STATUS_CODE_OTHER_ERR||statusCode==HttpStatus.STATUS_CODE_TOKEN_NOUSE||statusCode==HttpStatus.STATUS_CODE_TOKEN_OVERDUE||
+                statusCode==HttpStatus.STATUS_CODE_TOKEN_OVERDUE_OLD||statusCode==HttpStatus.STATUS_CODE_TOKEN_FORBIDDEN;
+    }
+
+    public static void dearWithErrorReturn(final Activity activity, final int statusCode, final String msg){
+
+        if(isTokenErr(statusCode)){
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(statusCode==HttpStatus.STATUS_CODE_TOKEN_FORBIDDEN){
+                            String text=msg;
+                            if(TextUtils.isEmpty(msg)){
+                                text="当前Token已被禁用，如有疑问,请联系工作人员处理";
+                            }
+                            MaterialDialogUtils.showSingleBtnBasicDialog(activity,text).onPositive(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    AppApplication.getInstance().exitApp();
+                                }
+                            }).show();
+                        }else if(statusCode==HttpStatus.STATUS_CODE_OTHER_ERR){
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    String text = msg;
+                                    if (TextUtils.isEmpty(msg)) {
+                                        text = activity.getString(R.string.tip_errservice);
+                                    }
+                                    ToastUtils.showLong(text);
+                                }
+                            });
+                        }else{
+                            String text=msg;
+                            if(TextUtils.isEmpty(msg)){
+                                text=activity.getString(R.string.tip_errtoken);
+                            }
+                            ToastUtils.showLong(text);
+                            Intent intent=new Intent(activity,LoginActivity.class);
+                            activity.startActivity(intent);
+                            activity.finish();
+                        }
+
+                    }
+                });
+        } else{
+            RxLogTool.d(TAG,"not common ErrCode");
+        }
     }
 
     /**

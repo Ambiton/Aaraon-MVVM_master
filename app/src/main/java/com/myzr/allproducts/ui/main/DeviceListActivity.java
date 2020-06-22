@@ -185,7 +185,6 @@ public class DeviceListActivity extends BaseActivity<ActivityDevicelistBinding, 
     public void onDestroy() {
         super.onDestroy();
         viewModel.cancelScan();
-        AppApplication.getInstance().exitApp();
     }
 
 
