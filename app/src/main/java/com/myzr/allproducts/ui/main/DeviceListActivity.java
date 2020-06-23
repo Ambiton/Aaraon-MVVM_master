@@ -83,17 +83,17 @@ public class DeviceListActivity extends BaseActivity<ActivityDevicelistBinding, 
         binding.include.ivRightIcon.setVisibility(View.VISIBLE);
         viewModel.initToolbar();
         viewModel.checkVersion();
-        AppApplication.getBluetoothClient(getApplication()).registerBluetoothStateListener(new BluetoothStateListener() {
-            @Override
-            public void onBluetoothStateChanged(boolean openOrClosed) {
-                if(!openOrClosed){
-                    ToastUtils.showLong("蓝牙已关闭，为了确保能正常使用设备，请打开手机蓝牙...");
-                }
-                viewModel.requestDeviceList();
-            }
-        });
-
-        startRequestTimer();
+//        AppApplication.getBluetoothClient(getApplication()).registerBluetoothStateListener(new BluetoothStateListener() {
+//            @Override
+//            public void onBluetoothStateChanged(boolean openOrClosed) {
+//                if(!openOrClosed){
+//                    ToastUtils.showLong("蓝牙已关闭，为了确保能正常使用设备，请打开手机蓝牙...");
+//                }
+//                viewModel.requestDeviceList();
+//            }
+//        });
+//
+//        startRequestTimer();
     }
 
     private void startRequestTimer(){
