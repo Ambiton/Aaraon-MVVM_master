@@ -37,11 +37,7 @@
                 android:resource="@xml/file_paths"/>
         </provider>
         <activity android:name="com.myzr.allproducts.ui.main.LoadingActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name="com.myzr.allproducts.ui.login.LoginActivity"
             android:launchMode="singleTask"></activity>
@@ -68,6 +64,16 @@
             android:launchMode="singleTask"></activity>
         <activity android:name="com.myzr.allproducts.ui.viewpager.activity.ViewPagerActivity"
             android:launchMode="singleTask"></activity>
+
+        <activity android:name=".ui.main.lisa.LisaActivity"
+
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

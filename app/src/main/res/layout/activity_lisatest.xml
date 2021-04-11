@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:binding="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="com.myzr.allproducts.ui.main.lisa.LisaViewModel" />
+        <variable
+            name="viewModel"
+            type="LisaViewModel" />
+    </data>
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/white">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textViewTotalDays"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="计算总天数(天):" />
+
+                <EditText
+                    android:id="@+id/editText_TotalDays"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@={viewModel.allDays}" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textViewOrder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="期望的配套顺序:" />
+
+                <EditText
+                    android:id="@+id/editText_Order"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="以 _隔开[top,bottom,int],[top1,bottom1,int1]..."
+                    android:text="@={viewModel.order}" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textViewMoreLeft"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="期望每天多预留的套数:" />
+
+                <EditText
+                    android:id="@+id/editText_MoreLeft"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@={viewModel.moreLeft}" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_title_top"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Top:" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textViewToaA1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TOP a1数量（片）:" />
+
+                    <EditText
+                        android:id="@+id/editText_Top_a1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="使用,号隔开"
+                        android:text="@={viewModel.topA1}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textViewA8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TOP a8数量（片）:" />
+
+                    <EditText
+                        android:id="@+id/editText_Top_a8"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:hint="使用,号隔开"
+                        android:text="@={viewModel.topA8}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textViewCom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TOP com数量（片）:" />
+
+                    <EditText
+                        android:id="@+id/editText_Top_com"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:hint="使用,号隔开"
+                        android:text="@={viewModel.topCom}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textViewOpc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TOP opc数量（片）:" />
+
+                    <EditText
+                        android:id="@+id/editText_Top_opc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:hint="使用,号隔开"
+                        android:text="@={viewModel.topOpc}" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_title_bottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Bottom:" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textViewBottomA1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bottom a1数量（片）:" />
+
+                    <EditText
+                        android:id="@+id/editText_Bottom_a1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="使用,号隔开"
+                        android:text="@={viewModel.bottomA1}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textViewBottomA8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bottom a8数量（片）:" />
+
+                    <EditText
+                        android:id="@+id/editText_Bottom_a8"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:hint="使用,号隔开"
+                        android:text="@={viewModel.bottomA8}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textViewBottomCom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TOP com数量（片）:" />
+
+                    <EditText
+                        android:id="@+id/editText_Bottom_com"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:hint="使用,号隔开"
+                        android:text="@={viewModel.bottomCom}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textViewBottomOpc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bottom opc数量（片）:" />
+
+                    <EditText
+                        android:id="@+id/editText_Bottom_opc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="使用,号隔开"
+                        android:text="@={viewModel.bottomOpc}" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_title_int"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Int:" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textViewIntmAva"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Int ava数量（片）:" />
+
+                    <EditText
+                        android:id="@+id/editText_Int_ava"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="使用,号隔开"
+                        android:text="@={viewModel.intAva}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textViewIntCom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="INT com数量（片）:" />
+
+                    <EditText
+                        android:id="@+id/editText_Int_com"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="使用,号隔开"
+                        android:text="@={viewModel.intCom}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textViewIntCctc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="INT cctc数量（片）:" />
+
+                    <EditText
+                        android:id="@+id/editText_Int_cctc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="使用,号隔开"
+                        android:text="@={viewModel.intCctc}" />
+                </LinearLayout>
+
+            </LinearLayout>
+            <EditText
+                android:id="@+id/et_complete_task"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@={viewModel.completeTaskStr}"
+                android:hint="输入每一天需要完成的套数，以,号隔开，如320,440,410..."/>
+            <Button
+                android:id="@+id/bt_getresult"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/blueRoundButton"
+                android:layout_marginTop="16dp"
+                android:text="Lisa思维计算"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                binding:onClickCommand="@{viewModel.getResultOnClickCommand}" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@={viewModel.resultStr}"
+                android:textColor="@color/bluecc"/>
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
+</layout>

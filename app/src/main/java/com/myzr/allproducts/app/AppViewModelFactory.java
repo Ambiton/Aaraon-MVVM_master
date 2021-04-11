@@ -14,6 +14,7 @@ import com.myzr.allproducts.ui.main.DeviceControlViewModel;
 import com.myzr.allproducts.ui.main.DeviceListViewModel;
 import com.myzr.allproducts.ui.main.LoadingViewModel;
 import com.myzr.allproducts.ui.main.RegisterViewModel;
+import com.myzr.allproducts.ui.main.lisa.LisaViewModel;
 import com.myzr.allproducts.ui.network.NetWorkViewModel;
 import com.myzr.allproducts.ui.register.UserHeightViewModel;
 
@@ -66,6 +67,8 @@ public class AppViewModelFactory extends ViewModelProvider.NewInstanceFactory {
             return (T) new UserHeightViewModel(mApplication, mRepository);
         } else if (modelClass.isAssignableFrom(AllDeviceControlViewModel.class)) {
             return (T) new AllDeviceControlViewModel(mApplication, mRepository);
+        }else if (modelClass.isAssignableFrom(LisaViewModel.class)) {
+            return (T) new LisaViewModel(mApplication, mRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }
